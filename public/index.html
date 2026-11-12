@@ -1,0 +1,2386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tasador Inmobiliario IA | Chile - Valuación Financiera Profesional</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              navy: '#0f172a',
+              card: '#1e293b',
+              accent: '#10b981',
+              highlight: '#1e3a8a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Identity Services SDK (OAuth 2.0) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <!-- Google Fonts & Custom CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col justify-between">
+
+  <!-- ========================================== -->
+  <!-- 1. SECCIÓN DE AUTENTICACIÓN (LOGIN / REGISTRO) -->
+  <!-- ========================================== -->
+  <section id="authSection" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-9 max-w-md w-full shadow-2xl text-white animate-fade-in">
+      
+      <!-- Logo y Título -->
+      <div class="text-center mb-6">
+        <div class="w-14 h-14 rounded-2xl bg-emerald-500 mx-auto flex items-center justify-center shadow-lg shadow-emerald-500/30 text-white mb-3">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+        </div>
+        <span class="text-[10px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-emerald-950 border border-emerald-800 text-emerald-400">
+          Tasador IA / Chile • SaaS
+        </span>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-white mt-2" id="authTitle">Bienvenido a Tasador IA</h2>
+        <p class="text-xs text-slate-400 mt-1" id="authSubtitle">Plataforma inteligente de valuación y homologación inmobiliaria para Chile.</p>
+      </div>
+
+      <!-- Mensaje de Error en Auth -->
+      <div id="authErrorBox" class="hidden mb-4 p-3 bg-red-950/80 border border-red-800/80 rounded-xl text-red-200 text-xs flex items-center gap-2">
+        <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <span id="authErrorMsg">Error</span>
+      </div>
+
+      <!-- Alerta Informativa si falta configurar Google Client ID -->
+      <div id="googleConfigNotice" class="hidden mb-4 p-3.5 bg-amber-950/60 border border-amber-800/80 rounded-2xl text-amber-200 text-xs leading-relaxed">
+        <div class="font-bold flex items-center gap-1.5 mb-1 text-amber-300">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          Google OAuth en Configuración
+        </div>
+        <span>Debes agregar tu <strong>GOOGLE_CLIENT_ID</strong> en el archivo <code>.env</code> para habilitar el inicio de sesión con tu cuenta de Google.</span>
+      </div>
+
+      <!-- Contenedor del Botón de Google OAuth -->
+      <div class="space-y-3.5 my-6">
+        <!-- Botón Grande y Elegante "Continuar con Google" -->
+        <button id="btnContinuarGoogle" type="button" class="w-full bg-white hover:bg-slate-100 text-slate-900 font-bold py-3.5 px-4 rounded-2xl shadow-xl hover:shadow-2xl transition duration-200 flex items-center justify-center gap-3 border border-slate-200 text-sm group transform active:scale-[0.99] cursor-pointer">
+          <svg class="w-5 h-5 shrink-0 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
+          <span id="btnContinuarGoogleText" class="tracking-wide">Continuar con Google</span>
+        </button>
+
+        <!-- Contenedor Oficial Google Identity Services (GSI) -->
+        <div id="googleGsiBtnContainer" class="flex justify-center hidden"></div>
+
+        <!-- Indicador de Carga -->
+        <div id="googleAuthLoading" class="hidden text-center py-2 text-xs text-emerald-400 flex items-center justify-center gap-2">
+          <svg class="animate-spin w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+          </svg>
+          <span>Validando credenciales con Google...</span>
+        </div>
+      </div>
+
+      <!-- Garantía de Seguridad / Badges de Confianza -->
+      <div class="mt-6 pt-5 border-t border-slate-800 text-center space-y-2">
+        <div class="flex items-center justify-center gap-2 text-[11px] text-slate-400">
+          <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+          <span>Acceso seguro mediante Google Identity Services (OAuth 2.0)</span>
+        </div>
+        <p class="text-[10px] text-slate-500 leading-tight">
+          Sin contraseñas que recordar. Tu sesión se valida directamente con los servidores seguros de Google.
+        </p>
+      </div>
+
+      <!-- Acceso Rápido de Desarrollo / Fallback -->
+      <div class="mt-5 pt-3 border-t border-slate-800/60">
+        <details class="text-left group">
+          <summary class="text-[11px] text-slate-500 hover:text-slate-300 cursor-pointer flex items-center justify-between select-none py-1">
+            <span>Acceso rápido de desarrollo</span>
+            <span class="text-[9px] text-purple-400 group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          <div class="mt-2.5 p-2.5 rounded-xl bg-slate-950/90 border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between text-[11px] text-slate-400">
+              <span>Admin:</span>
+              <button id="btnQuickLoginAdmin" type="button" class="text-purple-400 hover:text-purple-300 font-bold underline">
+                informatica.full@gmail.com
+              </button>
+            </div>
+            <div class="flex items-center justify-between text-[11px] text-slate-400">
+              <span>Cliente (5 cr):</span>
+              <button id="btnQuickLoginDemo" type="button" class="text-emerald-400 hover:text-emerald-300 font-bold underline">
+                cliente@correo.cl
+              </button>
+            </div>
+          </div>
+        </details>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- 2. APLICACIÓN PRINCIPAL (SOLO USUARIOS AUTENTICADOS) -->
+  <!-- ========================================== -->
+  <div id="mainAppSection" class="hidden flex flex-col justify-between min-h-screen">
+
+    <!-- Header / Barra Superior con Datos del Usuario -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        
+        <!-- Logo y Título -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center shadow-md shadow-emerald-500/20 text-white shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.2 rounded-full bg-emerald-100 text-emerald-800">
+                Tasador IA / Chile
+              </span>
+              <span class="text-[10px] text-slate-400 font-medium">DeepSeek Engine</span>
+            </div>
+            <h1 class="text-base sm:text-xl font-extrabold text-slate-900 tracking-tight leading-tight">
+              Tasación Inmobiliaria Profesional
+            </h1>
+          </div>
+        </div>
+
+        <!-- Acciones y Perfil de Usuario -->
+        <div class="flex flex-wrap items-center justify-between md:justify-end gap-2.5">
+          
+          <!-- Badge de Créditos Restantes y Botón Recargar (Alta Visibilidad y Accesibilidad) -->
+          <div class="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-blue-50/90 border-2 border-blue-200 text-blue-950 shadow-sm hover:border-blue-300 transition">
+            <svg class="w-5 h-5 text-indigo-700 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span class="text-sm sm:text-base font-bold text-slate-700">Créditos:</span>
+            <span id="userCreditsBadge" class="text-base sm:text-lg font-black text-indigo-700 font-mono-numbers">0</span>
+            <button id="btnHeaderRecargar" type="button" class="ml-1.5 text-xs sm:text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-3.5 py-1.5 rounded-xl transition duration-150 flex items-center gap-1 shadow-sm hover:shadow active:scale-95 cursor-pointer" title="Adquirir más créditos de tasación">
+              <span>+ Recargar</span>
+            </button>
+          </div>
+
+          <!-- Botón Panel Admin (Solo visible si rol === 'admin' o informatica.full@gmail.com) -->
+          <button id="btnOpenAdminModal" type="button" class="hidden text-xs font-bold px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white transition flex items-center gap-1 shadow-sm">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            Panel Admin
+          </button>
+
+          <!-- Botón Historial -->
+          <button id="btnVerHistorial" type="button" class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-sm transition flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Historial
+            <span id="badgeHistorialCount" class="hidden ml-1 px-1.5 py-0.2 bg-slate-200 text-slate-700 text-xs rounded-full font-bold">0</span>
+          </button>
+
+          <!-- Botón Ver Metodología y Fuentes -->
+          <button id="btnVerMetodologiaHeader" type="button" class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 shadow-xs transition flex items-center gap-1.5" title="Ver Metodología de Cálculo y Fuentes">
+            <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+            Metodología y Fuentes
+          </button>
+
+          <!-- Botón Configuración del Motor de Tasación (Exclusivo Tasador Certificado y Admin) -->
+          <button id="btnConfigMotorHeader" type="button" class="hidden text-xs font-bold px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 shadow-2xs transition flex items-center gap-1.5 cursor-pointer" title="Configurar parámetros del motor de tasación">
+            <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <span>⚙️ Motor de Tasación</span>
+            <span class="text-[9px] font-black uppercase tracking-wider bg-amber-200 text-amber-900 px-1.5 py-0.2 rounded-full">Pro</span>
+          </button>
+
+          <!-- Perfil de Usuario y Cerrar Sesión -->
+          <div class="flex items-center gap-2 pl-2 border-l border-slate-200">
+            <img id="userAvatarDisplay" class="hidden w-7 h-7 rounded-full border border-slate-300 object-cover shadow-xs" src="" alt="Avatar" referrerpolicy="no-referrer">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+              <span id="userEmailDisplay" class="text-xs font-semibold text-slate-700 truncate max-w-[130px] sm:max-w-[180px]" title="Usuario actual">-</span>
+              <!-- Badge de Rol Profesional Clickeable para editar -->
+              <button id="btnBadgeRol" type="button" title="Haz clic para cambiar tu rol profesional" class="hidden inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 hover:border-indigo-300 transition shadow-2xs cursor-pointer group">
+                <span id="badgeRolIcon">🏠</span>
+                <span id="badgeRolTexto">Particular</span>
+                <svg class="w-2.5 h-2.5 text-indigo-400 group-hover:text-indigo-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                </svg>
+              </button>
+            </div>
+            <button id="btnLogout" type="button" title="Cerrar Sesión" class="text-xs font-semibold p-1.5 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+              </svg>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Banner de Bloqueo mientras no tenga Rol Profesional -->
+    <div id="bannerBloqueoRol" class="hidden max-w-2xl mx-auto px-4 py-16 text-center animate-fade-in flex-col items-center justify-center">
+      <div class="w-16 h-16 rounded-3xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-3xl mb-4 shadow-sm border border-indigo-200">
+        🔒
+      </div>
+      <h3 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight mb-2">
+        Selecciona tu Perfil Profesional para Continuar
+      </h3>
+      <p class="text-xs sm:text-sm text-slate-600 max-w-md mx-auto mb-6 leading-relaxed">
+        Para calibrar tus informes de tasación y adaptar los cálculos a tu actividad, necesitamos que elijas tu rol: Particular, Corredor de Propiedades o Tasador Certificado.
+      </p>
+      <button id="btnReabrirModalRol" type="button" class="px-6 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 transition flex items-center gap-2 cursor-pointer">
+        <span>✨ Elegir mi Rol Profesional</span>
+      </button>
+    </div>
+
+    <!-- Contenido Principal de Tasación -->
+    <main id="contenidoPrincipalTasacion" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full flex-1">
+      
+      <!-- Barra informativa de Créditos y Cargar Ejemplo -->
+      <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="text-xs sm:text-sm text-slate-700 font-medium">
+            Cada análisis consume <strong>1 crédito</strong>. Saldo disponible: <strong id="userCreditsBanner" class="text-indigo-700 font-black font-mono-numbers text-sm sm:text-base">0</strong> crédito(s).
+          </span>
+          <button id="btnBannerRecargar" type="button" class="text-xs sm:text-sm font-bold text-emerald-700 hover:text-emerald-800 underline ml-1 cursor-pointer">
+            + Recargar créditos
+          </button>
+        </div>
+        <button id="btnEjemplo" type="button" class="self-start sm:self-auto text-xs font-semibold px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          Cargar Datos de Ejemplo (Las Condes)
+        </button>
+      </div>
+
+      <!-- Contenedor Principal en Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
+        
+        <!-- Columna Izquierda: Formulario (Tarjeta Navy) -->
+        <section class="lg:col-span-7 xl:col-span-7 bg-slate-900 text-white rounded-2xl shadow-xl p-5 sm:p-8 border border-slate-800">
+          
+          <form id="formTasacion" novalidate>
+            
+            <!-- Encabezado de la Sección 1 -->
+            <div class="flex items-center justify-between pb-4 mb-5 sm:mb-6 border-b border-slate-800">
+              <div>
+                <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  Inmueble a Valuar
+                </h2>
+                <p class="text-xs text-slate-400 mt-0.5">Ingresa las características físicas y de ubicación del inmueble objetivo.</p>
+              </div>
+              <span class="text-[11px] sm:text-xs uppercase tracking-wider font-semibold text-slate-400 bg-slate-800 px-2.5 py-1 rounded-md">
+                Paso 1 de 2
+              </span>
+            </div>
+
+            <!-- Grid de 8 Campos del Inmueble -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-6 sm:mb-8">
+              
+              <!-- 1. Tipo (Casa / Departamento) -->
+              <div>
+                <label for="tipoInmueble" class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center">
+                  <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                  </svg>
+                  Tipo de Inmueble *
+                </label>
+                <select id="tipoInmueble" name="tipoInmueble" required class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                  <option value="Departamento" selected>Departamento</option>
+                  <option value="Casa">Casa</option>
+                </select>
+              </div>
+
+              <!-- 2. Superficie m² -->
+              <div>
+                <label for="superficieM2" class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center">
+                  <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10a1 1 0 001 1h14a1 1 0 001-1V7a1 1 0 00-1-1H5a1 1 0 00-1 1zm4 0v4m4-4v2m4-2v4"/>
+                  </svg>
+                  Superficie Útil (m²) *
+                </label>
+                <input type="number" id="superficieM2" name="superficieM2" min="1" step="0.5" placeholder="Ej: 85" required class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+              </div>
+
+              <!-- 3. Dormitorios -->
+              <div>
+                <label for="dormitorios" class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center">
+                  <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v11m0-4h18m0-7v11M7 10h4a2 2 0 002-2V7a1 1 0 00-1-1H8a1 1 0 00-1 1v1z"/>
+                  </svg>
+                  Dormitorios *
+                </label>
+                <input type="number" id="dormitorios" name="dormitorios" min="1" max="20" placeholder="Ej: 3" required class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+              </div>
+
+              <!-- 4. Baños -->
+              <div>
+                <label for="banos" class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center">
+                  <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
+                  </svg>
+                  Baños *
+                </label>
+                <input type="number" id="banos" name="banos" min="1" max="15" placeholder="Ej: 2" required class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+              </div>
+
+              <!-- 5. Antigüedad (años) -->
+              <div>
+                <label for="antiguedad" class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center">
+                  <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                  Antigüedad (años) *
+                </label>
+                <input type="number" id="antiguedad" name="antiguedad" min="0" max="150" placeholder="Ej: 5 (0 = nuevo)" required class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+              </div>
+
+              <!-- 6. Estado de conservación -->
+              <div>
+                <label for="estadoConservacion" class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center">
+                  <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  Estado de Conservación *
+                </label>
+                <select id="estadoConservacion" name="estadoConservacion" required class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                  <option value="Bueno" selected>Bueno</option>
+                  <option value="Regular">Regular</option>
+                  <option value="Necesita reparaciones">Necesita reparaciones</option>
+                </select>
+              </div>
+
+              <!-- 7. Comuna -->
+              <div>
+                <label for="comuna" class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center justify-between">
+                  <span class="flex items-center">
+                    <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    Comuna *
+                  </span>
+                  <span class="text-[10px] text-slate-400">Región Metropolitana</span>
+                </label>
+                <select id="comuna" name="comuna" required class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                  <option value="" disabled selected>Selecciona una comuna...</option>
+                  <optgroup label="── Región Metropolitana (Santiago) ──">
+                    <option value="Alhué">Alhué</option>
+                    <option value="Buin">Buin</option>
+                    <option value="Calera de Tango">Calera de Tango</option>
+                    <option value="Cerrillos">Cerrillos</option>
+                    <option value="Cerro Navia">Cerro Navia</option>
+                    <option value="Colina">Colina</option>
+                    <option value="Conchalí">Conchalí</option>
+                    <option value="Curacaví">Curacaví</option>
+                    <option value="El Bosque">El Bosque</option>
+                    <option value="El Monte">El Monte</option>
+                    <option value="Estación Central">Estación Central</option>
+                    <option value="Huechuraba">Huechuraba</option>
+                    <option value="Independencia">Independencia</option>
+                    <option value="Isla de Maipo">Isla de Maipo</option>
+                    <option value="La Cisterna">La Cisterna</option>
+                    <option value="La Florida">La Florida</option>
+                    <option value="La Granja">La Granja</option>
+                    <option value="La Pintana">La Pintana</option>
+                    <option value="La Reina">La Reina</option>
+                    <option value="Lampa">Lampa</option>
+                    <option value="Las Condes">Las Condes</option>
+                    <option value="Lo Barnechea">Lo Barnechea</option>
+                    <option value="Lo Espejo">Lo Espejo</option>
+                    <option value="Lo Prado">Lo Prado</option>
+                    <option value="Macul">Macul</option>
+                    <option value="Maipú">Maipú</option>
+                    <option value="María Pinto">María Pinto</option>
+                    <option value="Melipilla">Melipilla</option>
+                    <option value="Ñuñoa">Ñuñoa</option>
+                    <option value="Padre Hurtado">Padre Hurtado</option>
+                    <option value="Paine">Paine</option>
+                    <option value="Pedro Aguirre Cerda">Pedro Aguirre Cerda</option>
+                    <option value="Peñaflor">Peñaflor</option>
+                    <option value="Peñalolén">Peñalolén</option>
+                    <option value="Pirque">Pirque</option>
+                    <option value="Providencia">Providencia</option>
+                    <option value="Pudahuel">Pudahuel</option>
+                    <option value="Puente Alto">Puente Alto</option>
+                    <option value="Quilicura">Quilicura</option>
+                    <option value="Quinta Normal">Quinta Normal</option>
+                    <option value="Recoleta">Recoleta</option>
+                    <option value="Renca">Renca</option>
+                    <option value="San Bernardo">San Bernardo</option>
+                    <option value="San Joaquín">San Joaquín</option>
+                    <option value="San José de Maipo">San José de Maipo</option>
+                    <option value="San Miguel">San Miguel</option>
+                    <option value="San Pedro">San Pedro</option>
+                    <option value="San Ramón">San Ramón</option>
+                    <option value="Santiago">Santiago (Centro)</option>
+                    <option value="Talagante">Talagante</option>
+                    <option value="Tiltil">Tiltil</option>
+                    <option value="Vitacura">Vitacura</option>
+                  </optgroup>
+                  <optgroup label="── Principales Comunas de Regiones ──">
+                    <option value="Antofagasta">Antofagasta</option>
+                    <option value="Concepción">Concepción</option>
+                    <option value="Concón">Concón</option>
+                    <option value="Coquimbo">Coquimbo</option>
+                    <option value="Iquique">Iquique</option>
+                    <option value="La Serena">La Serena</option>
+                    <option value="Puerto Montt">Puerto Montt</option>
+                    <option value="Quilpué">Quilpué</option>
+                    <option value="Rancagua">Rancagua</option>
+                    <option value="San Antonio">San Antonio</option>
+                    <option value="Talca">Talca</option>
+                    <option value="Temuco">Temuco</option>
+                    <option value="Valdivia">Valdivia</option>
+                    <option value="Valparaíso">Valparaíso</option>
+                    <option value="Villa Alemana">Villa Alemana</option>
+                    <option value="Viña del Mar">Viña del Mar</option>
+                  </optgroup>
+                </select>
+              </div>
+
+              <!-- 8. Precio de Referencia (Opcional) -->
+              <div>
+                <label for="precioReferencia" class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center">
+                  <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                  </svg>
+                  Precio de Referencia CLP (Opcional)
+                </label>
+                <input type="text" inputmode="numeric" id="precioReferencia" name="precioReferencia" placeholder="Ej: 160.000.000" class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+              </div>
+
+            </div>
+
+            <!-- Sección 2: Inmuebles Comparables -->
+            <div class="pt-5 sm:pt-6 border-t border-slate-800 mb-6">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 mb-4">
+                <div>
+                  <div class="flex items-center flex-wrap gap-2.5">
+                    <h3 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+                      <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                      Inmuebles Comparables de Mercado
+                    </h3>
+                    <!-- Botón de Ayuda Interactivo (Alta Visibilidad y Accesibilidad) -->
+                    <button id="btnAyudaComparables" type="button" title="¿Qué es esto? Haz clic para ver una explicación sencilla"
+                      class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs sm:text-sm font-bold bg-white hover:bg-blue-50 text-slate-900 border-2 border-blue-400 shadow-md hover:shadow-blue-500/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group">
+                      <span class="w-4 h-4 rounded-full bg-blue-600 text-white flex items-center justify-center text-[11px] font-black group-hover:bg-blue-700 transition-colors shrink-0">
+                        ?
+                      </span>
+                      <span class="text-slate-900 font-extrabold tracking-tight">¿Qué es esto?</span>
+                    </button>
+                  </div>
+                  <p class="text-xs text-slate-400 mt-0.5">Agrega entre 2 y 5 propiedades comparables del sector.</p>
+                </div>
+                <button id="btnAgregarComparable" type="button"
+                  class="w-full sm:w-auto text-xs font-bold px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white transition flex items-center justify-center gap-2 shadow-sm whitespace-nowrap shrink-0">
+                  <span class="flex items-center gap-1.5">
+                    <svg id="iconAgregarComparable" class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    <span id="btnAgregarTexto">Agregar Comparable</span>
+                  </span>
+                  <span id="badgeComparables" class="inline-flex items-center px-1.5 py-0.5 rounded-md text-[11px] font-bold font-mono bg-blue-800/80 text-blue-100 border border-blue-400/40">
+                    <span id="countComparables">3</span>/5
+                  </span>
+                </button>
+              </div>
+
+              <!-- Botón IA: Sugerir Comparables -->
+              <button id="btnSugerirComparables" type="button"
+                class="w-full mb-4 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm text-white transition shadow-lg
+                       bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600
+                       hover:from-violet-500 hover:via-purple-500 hover:to-indigo-500
+                       focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-slate-900
+                       active:scale-[0.98]">
+                <!-- Icono varita mágica -->
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M5 3l1.5 1.5M3 5l1.5 1.5M12 3l1.5 1.5M14 5l-1.5 1.5M19 12l1.5 1.5M17 14l1.5-1.5M5 19l1.5-1.5M3 17l1.5 1.5
+                       M9.5 9.5l5 5M7 7l10 10"/>
+                </svg>
+                <span id="btnSugerirTexto">✨ Sugerir Comparables con IA</span>
+                <!-- Spinner oculto mientras carga -->
+                <svg id="spinnerSugerir" class="hidden w-4 h-4 animate-spin shrink-0" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                </svg>
+              </button>
+
+              <!-- Toast de resultado de sugerencias -->
+              <div id="toastSugerencias" class="hidden mb-3 px-3.5 py-2.5 rounded-xl text-xs font-medium border animate-fade-in"></div>
+
+              <!-- Aviso Legal / UX para Comparables con IA -->
+              <div id="avisoLegalSugerencias" class="hidden mb-4 p-3 sm:p-3.5 rounded-xl bg-amber-950/50 border border-amber-600/50 text-amber-200 text-xs flex items-start gap-2.5 shadow-sm animate-fade-in">
+                <span class="text-base shrink-0 leading-none mt-0.5">⚠️</span>
+                <div class="leading-relaxed">
+                  <p class="text-amber-200 text-[11px] sm:text-xs font-medium">
+                    Estos comparables son generados por IA como referencia educativa. Debes verificar los precios y datos reales en portales inmobiliarios antes de usar la tasación para un cliente.
+                  </p>
+                  <p class="text-[10px] text-amber-300/80 mt-1">
+                    ✏️ <em>Puedes editar cualquiera de los datos autocompletados directamente en las tarjetas de abajo.</em>
+                  </p>
+                </div>
+              </div>
+
+              <!-- Contenedor dinámico de comparables -->
+              <div id="contenedorComparables" class="space-y-4">
+                <!-- Renderizado dinámico vía JavaScript -->
+              </div>
+            </div>
+
+            <!-- Botón de Envío Principal -->
+            <div class="pt-4">
+              <button id="btnGenerarAnalisis" type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-emerald-600/30 transition duration-200 flex items-center justify-center gap-2 text-base group">
+                <svg id="iconSubmit" class="w-5 h-5 text-emerald-200 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+                <span id="btnSubmitText">Generar Análisis (Consume 1 Crédito)</span>
+              </button>
+              <p class="text-center text-xs text-slate-400 mt-2.5">
+                Procesamiento seguro con IA DeepSeek y almacenamiento en tu cuenta.
+              </p>
+            </div>
+
+          </form>
+
+        </section>
+
+        <!-- Columna Derecha: Tarjeta de Resultados Compacta o Guía Inicial -->
+        <section class="lg:col-span-5 xl:col-span-5 space-y-6">
+          
+          <!-- Estado Inicial: Guía Informativa cuando no hay tasación activa -->
+          <div id="panelBienvenida" class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-8 shadow-sm">
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-4">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+            </div>
+            <h3 class="text-base sm:text-lg font-bold text-slate-900 mb-2">Metodología de Tasación Homologada</h3>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
+              Esta plataforma implementa el <strong>Método Comparativo de Mercado</strong> estándar en la tasación inmobiliaria chilena, integrando un motor de IA que pondera:
+            </p>
+            <ul class="text-xs text-slate-600 space-y-2 mb-6">
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-500 font-bold">✓</span>
+                <span><strong>Superficie Útil:</strong> Ajuste proporcional por elasticidad de m².</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-500 font-bold">✓</span>
+                <span><strong>Distancia Relativa:</strong> Coeficiente de proximidad al centroide urbano.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-500 font-bold">✓</span>
+                <span><strong>Factores de Conservación:</strong> Depreciación según antigüedad y mantenimiento.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-500 font-bold">✓</span>
+                <span><strong>Rango y Exportación:</strong> Generación instantánea en PDF institucional y Excel editable.</span>
+              </li>
+            </ul>
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-3">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+              <span class="text-xs text-slate-600">Sistema listo. Puedes usar el botón <strong>"Cargar Datos de Ejemplo"</strong> para una prueba inmediata.</span>
+            </div>
+          </div>
+
+          <!-- Tarjeta de Resultado Compacta -->
+          <div id="panelResumenCompacto" class="hidden bg-slate-900 text-white rounded-2xl shadow-xl p-5 sm:p-6 border border-slate-800 animate-fade-in space-y-4">
+            
+            <!-- Encabezado de Estado Exitoso -->
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/70 border border-emerald-800/60 px-2.5 py-0.5 rounded-full">
+                  Análisis Procesado con Éxito
+                </span>
+              </div>
+              <span class="text-[11px] text-slate-400 font-medium whitespace-nowrap" id="resCompactoFecha">-</span>
+            </div>
+
+            <!-- Inmueble y Comuna -->
+            <div>
+              <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold block">Propiedad Valuada</span>
+              <h3 class="text-sm sm:text-base font-extrabold text-white" id="resCompactoTitulo">Las Condes (Departamento)</h3>
+            </div>
+
+            <!-- Caja Destacada del Valor Comercial -->
+            <div class="bg-gradient-to-br from-blue-900 to-indigo-950 border border-blue-500/40 rounded-xl p-4 text-white shadow-inner">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-blue-200 block">
+                Valor Comercial de Referencia
+              </span>
+              <div class="text-2xl sm:text-3xl font-extrabold text-white mt-0.5 font-mono-numbers break-words" id="resCompactoValor">
+                $ 0 CLP
+              </div>
+              <div class="mt-2 pt-2 border-t border-blue-800/60 flex items-center justify-between text-xs">
+                <span class="text-blue-300">Precio Unitario:</span>
+                <span class="font-bold text-white font-mono-numbers" id="resCompactoUnitario">$ 0 / m²</span>
+              </div>
+            </div>
+
+            <!-- BOTÓN DESTACADO: Ver Informe Completo -->
+            <div class="pt-1">
+              <button id="btnAbrirInformeModal" type="button" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-emerald-600/30 transition duration-150 flex items-center justify-center gap-2 text-sm group">
+                <svg class="w-4 h-4 text-emerald-200 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span>Ver Informe Completo</span>
+                <span class="text-xs bg-emerald-700/80 px-2 py-0.5 rounded-md text-emerald-100 font-semibold ml-1">Detalle</span>
+              </button>
+              <p class="text-[11px] text-center text-slate-400 mt-2">
+                Despliega la matriz de factores de ajuste, conclusiones y advertencias.
+              </p>
+            </div>
+
+            <!-- Acciones Rápidas de Descarga -->
+            <div class="pt-3 border-t border-slate-800 grid grid-cols-2 gap-2">
+              <button id="btnCompactoPdf" type="button" class="text-xs font-semibold px-3 py-2 rounded-xl bg-red-600/90 hover:bg-red-500 text-white shadow-sm transition flex items-center justify-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                </svg>
+                Descargar PDF
+              </button>
+
+              <button id="btnCompactoExcel" type="button" class="text-xs font-semibold px-3 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white shadow-sm transition flex items-center justify-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Descargar Excel
+              </button>
+            </div>
+
+          </div>
+
+        </section>
+
+      </div>
+
+      <!-- ========================================== -->
+      <!-- SECCIÓN: METODOLOGÍA Y FUENTES DE INFORMACIÓN -->
+      <!-- ========================================== -->
+      <section id="seccionMetodologiaFuentes" class="mt-8 bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm">
+        <div class="flex items-center gap-3 pb-4 mb-5 border-b border-slate-100">
+          <div class="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-base shadow-xs">
+            ⚖️
+          </div>
+          <div>
+            <h3 class="text-sm sm:text-base font-extrabold text-slate-900">Metodología y Fuentes de Información</h3>
+            <p class="text-xs text-slate-500">Marco técnico normativo y estándar de homologación para el mercado chileno.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Columna 1: Metodología de Cálculo -->
+          <div class="bg-slate-50 border border-slate-200/90 rounded-2xl p-5 hover:border-blue-300 transition">
+            <h4 class="text-xs font-bold text-blue-900 uppercase tracking-wider mb-2.5 flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+              Metodología de Cálculo
+            </h4>
+            <p class="text-xs text-slate-700 leading-relaxed">
+              Esta herramienta utiliza el <strong>Método Comparativo de Mercado</strong>, estándar en la industria inmobiliaria (basado en los lineamientos de la <strong>Norma Chilena NCh 2613</strong>). El cálculo se realiza de forma híbrida: nuestro sistema procesa matemáticamente los datos de los comparables ingresados, aplicando factores de ajuste por superficie, distancia y plusvalía del entorno. Posteriormente, un modelo de lenguaje (IA) redacta el informe final.
+            </p>
+          </div>
+
+          <!-- Columna 2: Fuentes de Información -->
+          <div class="bg-slate-50 border border-slate-200/90 rounded-2xl p-5 hover:border-emerald-300 transition">
+            <h4 class="text-xs font-bold text-emerald-900 uppercase tracking-wider mb-2.5 flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+              Fuentes de Información
+            </h4>
+            <p class="text-xs text-slate-700 leading-relaxed">
+              Los datos de los comparables son ingresados por el usuario (corredor o tasador). Los factores de ajuste y las fórmulas de homologación se basan en criterios técnicos de tasación estándar del mercado chileno. Los valores entregados son referenciales y no constituyen una tasación legal ni un avalúo fiscal.
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer Institucional -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-10 sm:mt-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3 text-center sm:text-left">
+        <div>
+          <span class="font-bold text-slate-700">Tasador Inmobiliario IA / Chile</span> — Sistema SaaS de Valuación con DeepSeek, SQLite, JWT, PDFKit & ExcelJS.
+        </div>
+        <div class="flex items-center gap-3">
+          <span>Chile • UF & CLP</span>
+          <span>•</span>
+          <span>Node.js & Express</span>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 3. VISTA INDEPENDIENTE: PANEL DE ADMINISTRACIÓN (BACKOFFICE PANTALLA COMPLETA) -->
+  <!-- ========================================== -->
+  <div id="adminViewSection" class="hidden min-h-screen bg-slate-950 text-white flex flex-col justify-between animate-fade-in">
+
+    <!-- Header Superior del Backoffice -->
+    <header class="bg-slate-900/95 border-b border-slate-800 sticky top-0 z-40 backdrop-blur-md shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
+        
+        <!-- Logo e Información de Backoffice -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-purple-600/30 text-purple-400 flex items-center justify-center border border-purple-500/40 shadow-inner shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 class="text-base sm:text-lg font-extrabold text-white tracking-tight">
+                Panel de Administración
+              </h2>
+              <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-purple-950 text-purple-300 border border-purple-800">
+                Backoffice PRO
+              </span>
+            </div>
+            <p class="text-xs text-slate-400 hidden sm:block">
+              Gestión centralizada de usuarios, roles profesionales y asignación de créditos
+            </p>
+          </div>
+        </div>
+
+        <!-- Acciones del Header de Backoffice -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- Botón Manual de Operaciones Admin -->
+          <button id="btnAbrirManualAdmin" type="button" class="px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-purple-950/90 hover:bg-purple-900 text-purple-200 hover:text-white border border-purple-700/80 font-bold text-xs sm:text-sm transition flex items-center gap-2 shadow-sm cursor-pointer shrink-0 group" title="Ver Manual de Operaciones y Flujo Comercial">
+            <span class="text-base group-hover:scale-110 transition-transform">📖</span>
+            <span class="hidden sm:inline">Manual del Admin</span>
+            <span class="sm:hidden">Manual</span>
+          </button>
+
+          <!-- Botón Volver a la App -->
+          <button id="btnVolverAppDesdeAdmin" type="button" class="px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 font-bold text-xs sm:text-sm transition flex items-center gap-2 shadow-sm cursor-pointer shrink-0 group">
+            <svg class="w-4 h-4 text-purple-400 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            <span>Volver a la App</span>
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Contenido Principal: Grilla de 2 Columnas -->
+    <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1">
+      
+      <!-- Mensaje de estado en Admin (Alertas dinámicas de éxito / error) -->
+      <div id="adminAlertBox" class="hidden mb-6 p-4 rounded-2xl text-xs sm:text-sm flex items-center gap-2.5 shadow-md">
+        <span id="adminAlertMsg">Resultado</span>
+      </div>
+
+      <!-- Grilla Principal: Izquierda (Usuarios) - Derecha (Asignación) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Columna Izquierda: Tabla y Buscador de Usuarios -->
+        <section class="lg:col-span-7 xl:col-span-8 bg-slate-900 border border-slate-800 rounded-3xl p-4 sm:p-6 shadow-xl flex flex-col">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-4 flex-wrap gap-2">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                  <span>Usuarios Registrados</span>
+                  <span id="adminTotalUsuariosBadge" class="text-xs px-2 py-0.5 rounded-full bg-purple-950 text-purple-300 border border-purple-800 font-mono font-bold">0</span>
+                </h3>
+                <p class="text-[11px] text-slate-400">Listado general de cuentas, roles y saldos en vivo</p>
+              </div>
+            </div>
+
+            <button id="btnAdminRefreshUsers" type="button" class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-purple-300 hover:text-white border border-slate-700 flex items-center gap-1.5 transition cursor-pointer">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+              </svg>
+              <span>Refrescar Lista</span>
+            </button>
+          </div>
+
+          <!-- Input de Búsqueda -->
+          <div class="relative mb-4">
+            <input type="text" id="adminSearchUserInput" placeholder="Buscar por email, nombre, rol, plan o ID..." class="w-full bg-slate-950 text-white text-xs sm:text-sm rounded-xl pl-10 pr-4 py-2.5 border border-slate-700/80 focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder:text-slate-500">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </div>
+
+          <!-- Contenedor scrollable de usuarios con generosa altura en pantalla completa -->
+          <div id="adminUsersListContainer" class="max-h-[620px] overflow-y-auto space-y-2.5 pr-1.5">
+            <div class="text-slate-500 text-center py-6 text-xs sm:text-sm">Cargando lista de usuarios...</div>
+          </div>
+        </section>
+
+        <!-- Columna Derecha: Formulario de Asignación y Gestión de Créditos -->
+        <aside class="lg:col-span-5 xl:col-span-4 space-y-6">
+          <div class="bg-slate-900 border border-purple-500/30 rounded-3xl p-5 sm:p-6 shadow-xl sticky top-24">
+            
+            <div class="flex items-center gap-2.5 pb-3 border-b border-slate-800 mb-4">
+              <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-base font-bold text-white">Gestión de Créditos</h3>
+                <p class="text-[11px] text-slate-400">Asigna, suma o ajusta saldos de tasación</p>
+              </div>
+            </div>
+
+            <form id="formAdminCreditos" class="space-y-4">
+              <!-- Campo Email y Saldo Actual del Usuario -->
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label for="adminUserEmail" class="block text-xs font-semibold text-slate-300">
+                    Email del Usuario Seleccionado *
+                  </label>
+                  <div id="adminUserCurrentSaldoBox" class="hidden text-[11px] text-purple-300 flex items-center gap-1 font-medium">
+                    <span>Saldo actual:</span>
+                    <span id="adminUserCurrentSaldoVal" class="font-mono font-bold text-emerald-400 bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">0 cr</span>
+                  </div>
+                </div>
+                <input type="email" id="adminUserEmail" required placeholder="cliente@correo.cl" class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-purple-400 font-medium">
+              </div>
+
+              <!-- Selector de Acción a Realizar (Segmented Control) -->
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                  </svg>
+                  Acción a Realizar *
+                </label>
+                <div class="grid grid-cols-3 gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+                  <button type="button" id="btnAccionSumar" data-accion="sumar" class="adminAccionBtn py-2 px-1 rounded-lg font-bold bg-emerald-600 text-white shadow-sm flex items-center justify-center gap-1 transition text-[11px] sm:text-xs">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    <span>Sumar</span>
+                  </button>
+                  <button type="button" id="btnAccionRestar" data-accion="restar" class="adminAccionBtn py-2 px-1 rounded-lg font-semibold text-slate-400 hover:text-white transition flex items-center justify-center gap-1 text-[11px] sm:text-xs">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+                    <span>Restar</span>
+                  </button>
+                  <button type="button" id="btnAccionEstablecer" data-accion="establecer" class="adminAccionBtn py-2 px-1 rounded-lg font-semibold text-slate-400 hover:text-white transition flex items-center justify-center gap-1 text-[11px] sm:text-xs">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/></svg>
+                    <span>Exacto</span>
+                  </button>
+                </div>
+                <input type="hidden" id="adminAccionInput" value="sumar">
+              </div>
+
+              <!-- Selector de Pack (Solo visible al Sumar créditos) -->
+              <div id="adminPackContainer">
+                <label for="adminPackSelect" class="block text-xs font-semibold text-slate-300 mb-1">
+                  Pack Adquirido (se guardará como último plan)
+                </label>
+                <select id="adminPackSelect" class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-purple-400 font-medium">
+                  <option value="Pack Profesional (3 informes)" data-creditos="3" data-monto="$45.000 CLP" selected>Pack Profesional (3 informes - $45.000 CLP)</option>
+                  <option value="Pack Inicial (1 informe)" data-creditos="1" data-monto="$20.000 CLP">Pack Inicial (1 informe - $20.000 CLP)</option>
+                  <option value="Pack Corredor (5 informes)" data-creditos="5" data-monto="$70.000 CLP">Pack Corredor (5 informes - $70.000 CLP)</option>
+                  <option value="Personalizado" data-creditos="" data-monto="">Personalizado / Otra cantidad</option>
+                </select>
+              </div>
+
+              <!-- Campo de Cantidad de Créditos Dinámico -->
+              <div>
+                <label for="adminCreditosCantidad" id="adminCreditosLabel" class="block text-xs font-semibold text-slate-300 mb-1">
+                  Cantidad de Créditos a Sumar *
+                </label>
+                <input type="number" id="adminCreditosCantidad" min="1" step="1" value="3" required class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-purple-400 font-medium font-mono">
+                <p id="adminCreditosHelp" class="text-[11px] text-slate-400 mt-1">Se sumará esta cantidad al saldo existente del usuario.</p>
+              </div>
+
+              <!-- Botón de Envío Dinámico -->
+              <button type="submit" id="btnAdminSubmit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-emerald-600/30 transition flex items-center justify-center gap-2 text-sm cursor-pointer">
+                <span id="btnAdminSubmitText">Sumar Créditos al Usuario</span>
+              </button>
+            </form>
+
+            <!-- Tip informativo -->
+            <div class="mt-4 p-3 rounded-2xl bg-slate-950/80 border border-slate-800 text-xs text-slate-400 flex items-start gap-2">
+              <span class="text-sm">💡</span>
+              <p class="leading-relaxed">
+                <strong class="text-slate-200">Tip de administración:</strong> Haz clic en cualquier usuario de la tabla izquierda para autocompletar su email y visualizar su saldo actual en tiempo real.
+              </p>
+            </div>
+
+          </div>
+        </aside>
+
+      </div>
+    </main>
+
+    <!-- Footer Discreto del Backoffice -->
+    <footer class="border-t border-slate-900 py-4 text-center text-xs text-slate-500">
+      Tasador Inmobiliario IA • Panel de Control Administrativo Backoffice
+    </footer>
+
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 4. MODAL: PACKS DE RECARGA Y FLUJO DE PAGO VÍA WHATSAPP -->
+  <!-- ========================================== -->
+  <div id="modalSinCreditos" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-5">
+    <div id="modalRecargaContainer" class="bg-slate-900 border border-slate-700/80 rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl text-white animate-fade-in relative transition-all duration-300">
+      
+      <!-- Botón de Cerrar (X) -->
+      <button id="btnCloseSinCreditos" type="button" title="Cerrar modal" class="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 text-slate-400 hover:text-white transition p-2 rounded-xl hover:bg-slate-800 z-30">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+
+      <!-- ========================================== -->
+      <!-- PASO 1: SELECCIÓN DE PACKS DE RECARGA      -->
+      <!-- ========================================== -->
+      <div id="vistaPacksRecarga" class="p-5 sm:p-8 overflow-y-auto max-h-[90vh] flex-1">
+        <!-- Encabezado del Modal -->
+        <div class="text-center max-w-xl mx-auto mb-6 sm:mb-8 pt-2">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-800 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-2.5">
+            <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            Packs de Tasación • Activación Inmediata
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Recarga tus Créditos</h2>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1.5 leading-relaxed">
+            Selecciona el pack ideal para tus requerimientos inmobiliarios. A continuación verás los datos para transferir y podrás confirmar tu pago por WhatsApp.
+          </p>
+        </div>
+
+        <!-- Cuadrícula de 3 Packs de Monetización -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+          
+          <!-- PACK 1: Inicial -->
+          <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 flex flex-col justify-between hover:border-slate-600 transition shadow-sm">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Ocasional</span>
+                <span class="text-[11px] text-slate-400 font-medium">1 Crédito</span>
+              </div>
+              <h3 class="text-lg font-extrabold text-white">Pack Inicial</h3>
+              <p class="text-xs text-slate-400 mt-0.5">Para tasar una propiedad específica.</p>
+
+              <div class="my-4 pb-4 border-b border-slate-700/60">
+                <div class="text-2xl sm:text-3xl font-black text-white font-mono-numbers">$ 20.000 <span class="text-xs font-normal text-slate-400 font-sans">CLP</span></div>
+                <span class="text-[11px] text-slate-400">$20.000 por informe</span>
+              </div>
+
+              <ul class="text-xs text-slate-300 space-y-2 mb-6">
+                <li class="flex items-center gap-2">
+                  <span class="text-emerald-400 font-bold">✓</span>
+                  <span><strong>1 Informe</strong> con IA DeepSeek</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="text-emerald-400 font-bold">✓</span>
+                  <span>Exportación en <strong>PDF y Excel</strong></span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="text-emerald-400 font-bold">✓</span>
+                  <span>Factores de ajuste de mercado</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="text-emerald-400 font-bold">✓</span>
+                  <span>Almacenamiento en tu cuenta</span>
+                </li>
+              </ul>
+            </div>
+
+            <button type="button" class="btnComprarWhatsapp w-full bg-slate-700 hover:bg-emerald-600 text-white font-bold py-3 px-4 rounded-xl transition duration-150 flex items-center justify-center gap-2 text-xs shadow-md cursor-pointer"
+              data-pack="Pack Inicial (1 informe)"
+              data-precio="$20.000 CLP">
+              <svg class="w-4 h-4 fill-emerald-400" viewBox="0 0 24 24">
+                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.173.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.043.073.043.419-.101.824z"/>
+              </svg>
+              <span>Comprar vía WhatsApp</span>
+            </button>
+          </div>
+
+          <!-- PACK 2: Profesional (RECOMENDADO / MÁS POPULAR) -->
+          <div class="bg-slate-800 border-2 border-emerald-500 rounded-2xl p-5 sm:p-6 flex flex-col justify-between relative shadow-xl shadow-emerald-500/15 hover:border-emerald-400 transition transform md:-translate-y-1.5">
+            <!-- Etiqueta Flotante Más Popular -->
+            <span class="bg-emerald-500 text-slate-950 text-[10px] font-black uppercase tracking-wider px-3.5 py-1 rounded-full absolute -top-3.5 left-1/2 -translate-x-1/2 shadow-md whitespace-nowrap">
+              ★ Más Popular • Recomendado
+            </span>
+
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Profesionales</span>
+                <span class="text-[11px] font-bold text-emerald-300 bg-emerald-950 px-2 py-0.5 rounded-full border border-emerald-800">
+                  3 Créditos
+                </span>
+              </div>
+              <h3 class="text-lg font-extrabold text-white">Pack Profesional</h3>
+              <p class="text-xs text-slate-400 mt-0.5">El más elegido por agentes y propietarios.</p>
+
+              <div class="my-4 pb-4 border-b border-slate-700/60">
+                <div class="text-3xl sm:text-4xl font-black text-white font-mono-numbers">$ 45.000 <span class="text-xs font-normal text-slate-400 font-sans">CLP</span></div>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="text-xs text-emerald-400 font-bold">$15.000 por informe</span>
+                  <span class="text-[10px] text-emerald-300 bg-emerald-950/90 border border-emerald-800/80 px-2 py-0.2 rounded-md font-semibold">
+                    Ahorras $15.000
+                  </span>
+                </div>
+              </div>
+
+              <ul class="text-xs text-slate-200 space-y-2 mb-6">
+                <li class="flex items-center gap-2">
+                  <span class="text-emerald-400 font-bold">✓</span>
+                  <span><strong>3 Informes</strong> con IA DeepSeek</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="text-emerald-400 font-bold">✓</span>
+                  <span>Exportación ilimitada <strong>PDF y Excel</strong></span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="text-emerald-400 font-bold">✓</span>
+                  <span>Factores de ajuste y análisis completo</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="text-emerald-400 font-bold">✓</span>
+                  <span>Atención prioritaria</span>
+                </li>
+              </ul>
+            </div>
+
+            <button type="button" class="btnComprarWhatsapp w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3.5 px-4 rounded-xl shadow-lg shadow-emerald-500/30 transition duration-150 flex items-center justify-center gap-2 text-xs cursor-pointer"
+              data-pack="Pack Profesional (3 informes)"
+              data-precio="$45.000 CLP">
+              <svg class="w-4 h-4 fill-slate-950" viewBox="0 0 24 24">
+                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.173.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.043.073.043.419-.101.824z"/>
+              </svg>
+              <span>Comprar vía WhatsApp</span>
+            </button>
+          </div>
+
+          <!-- PACK 3: Corredor -->
+          <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 flex flex-col justify-between hover:border-slate-600 transition shadow-sm">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Corredoras</span>
+                <span class="text-[11px] text-slate-400 font-medium">5 Créditos</span>
+              </div>
+              <h3 class="text-lg font-extrabold text-white">Pack Corredor</h3>
+              <p class="text-xs text-slate-400 mt-0.5">Para oficinas y corredores con alto flujo.</p>
+
+              <div class="my-4 pb-4 border-b border-slate-700/60">
+                <div class="text-2xl sm:text-3xl font-black text-white font-mono-numbers">$ 70.000 <span class="text-xs font-normal text-slate-400 font-sans">CLP</span></div>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="text-xs text-blue-300 font-bold">$14.000 por informe</span>
+                  <span class="text-[10px] text-blue-300 bg-blue-950/90 border border-blue-800/80 px-2 py-0.2 rounded-md font-semibold">
+                    Ahorras $30.000
+                  </span>
+                </div>
+              </div>
+
+              <ul class="text-xs text-slate-300 space-y-2 mb-6">
+                <li class="flex items-center gap-2">
+                  <span class="text-emerald-400 font-bold">✓</span>
+                  <span><strong>5 Informes</strong> con IA DeepSeek</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="text-emerald-400 font-bold">✓</span>
+                  <span>Exportación completa <strong>PDF y Excel</strong></span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="text-emerald-400 font-bold">✓</span>
+                  <span>Factores de ajuste por comuna y tipología</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="text-emerald-400 font-bold">✓</span>
+                  <span>Soporte prioritario para corredoras</span>
+                </li>
+              </ul>
+            </div>
+
+            <button type="button" class="btnComprarWhatsapp w-full bg-slate-700 hover:bg-emerald-600 text-white font-bold py-3 px-4 rounded-xl transition duration-150 flex items-center justify-center gap-2 text-xs shadow-md cursor-pointer"
+              data-pack="Pack Corredor (5 informes)"
+              data-precio="$70.000 CLP">
+              <svg class="w-4 h-4 fill-emerald-400" viewBox="0 0 24 24">
+                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.173.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.043.073.043.419-.101.824z"/>
+              </svg>
+              <span>Comprar vía WhatsApp</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Pie del Paso 1 con Instrucciones y Botón para Continuar Navegando -->
+        <div class="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
+          <div class="flex items-center gap-2 text-center sm:text-left">
+            <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            </svg>
+            <span>Medios de pago: Transferencia electrónica directa y comprobante vía WhatsApp. Activación al instante.</span>
+          </div>
+          <button id="btnCerrarModalRecargaPie" type="button" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold transition text-center cursor-pointer">
+            Continuar viendo la app
+          </button>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- PASO 2: DATOS DE TRANSFERENCIA Y AVISO WHATSAPP -->
+      <!-- ========================================== -->
+      <div id="vistaDetallePago" class="hidden flex-1 flex flex-col min-h-0 overflow-hidden">
+        <!-- Cabecera Fija de Paso 2 -->
+        <div class="px-4 sm:px-6 pt-4 sm:pt-5 pb-3 border-b border-slate-800 shrink-0">
+          <div class="flex items-center justify-between flex-wrap gap-2.5 pr-10">
+            <button id="btnVolverAPacks" type="button" class="text-xs text-slate-300 hover:text-white flex items-center gap-1.5 transition px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 font-semibold cursor-pointer shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+              </svg>
+              <span>Elegir otro pack</span>
+            </button>
+
+            <!-- Acciones y Estado en Cabecera -->
+            <div class="flex items-center gap-2 sm:gap-2.5 flex-wrap">
+              <!-- Botón de Contacto WhatsApp (Consultas Generales) -->
+              <a id="btnContactarWhatsappHeader" href="https://wa.me/56988160607" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 hover:border-emerald-500/60 font-bold text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm cursor-pointer group" title="Consultar dudas generales por WhatsApp (+56 9 8816 0607)">
+                <span class="text-sm group-hover:scale-110 transition-transform">💬</span>
+                <span class="hidden md:inline">Contactar por WhatsApp</span>
+                <span class="md:hidden">WhatsApp</span>
+              </a>
+
+              <!-- Botón de Ayuda / Guía Rápida -->
+              <button id="btnAbrirGuiaUsuario" type="button" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 hover:border-emerald-500/60 font-bold text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm cursor-pointer group" title="Ver guía rápida del proceso de compra y activación">
+                <span class="text-sm group-hover:scale-110 transition-transform">❓</span>
+                <span class="hidden sm:inline">Guía rápida</span>
+                <span class="sm:hidden">Guía</span>
+              </button>
+
+              <!-- Badge Paso 2 -->
+              <span class="text-[11px] font-bold text-emerald-400 bg-emerald-950/90 border border-emerald-800 px-3 py-1.5 rounded-xl uppercase tracking-wider shrink-0">
+                Paso 2: Realizar Transferencia
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cuerpo con Desplazamiento (Scroll): Datos de Pago -->
+        <div class="flex-1 min-h-0 overflow-y-auto px-4 sm:px-6 py-4 space-y-4">
+          <!-- Resumen del Pack Seleccionado -->
+          <div class="bg-gradient-to-r from-emerald-950/80 to-slate-900 border border-emerald-500/40 rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-md">
+            <div>
+              <span class="text-[10px] text-emerald-400 uppercase tracking-wider font-extrabold block mb-0.5">Has seleccionado</span>
+              <h3 id="pagoPackNombre" class="text-base sm:text-lg font-black text-white">Pack Profesional (3 informes)</h3>
+              <p class="text-xs text-slate-400">Activación directa en tu cuenta tras confirmar comprobante.</p>
+            </div>
+            <div class="text-left sm:text-right shrink-0">
+              <span class="text-[11px] text-slate-400 block font-medium">Monto a transferir:</span>
+              <div id="pagoPackPrecio" class="text-2xl sm:text-3xl font-black text-emerald-400 font-mono-numbers">$ 45.000 <span class="text-xs font-normal text-slate-400 font-sans">CLP</span></div>
+            </div>
+          </div>
+
+          <!-- Recuadro Elegante de Datos Bancarios -->
+          <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-3.5 sm:p-5 shadow-lg">
+            <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-base border border-emerald-500/30">
+                  🏦
+                </div>
+                <div>
+                  <h4 class="text-sm font-extrabold text-white">Datos para transferencia bancaria:</h4>
+                  <p class="text-[11px] text-slate-400">BancoEstado • Cuenta RUT</p>
+                </div>
+              </div>
+              <!-- Botón Copiar Todos los Datos -->
+              <button id="btnCopiarTodosDatos" type="button" class="text-xs font-bold text-emerald-300 hover:text-white bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/80 px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 shadow-sm cursor-pointer" title="Copiar todos los datos de transferencia al portapapeles">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+                <span id="btnCopiarTodosTexto">Copiar datos</span>
+              </button>
+            </div>
+
+            <!-- Filas de Datos -->
+            <div class="space-y-2 text-xs">
+              <div class="flex items-center justify-between p-2 rounded-xl bg-slate-900 border border-slate-800/90">
+                <span class="text-slate-400 font-medium">Nombre:</span>
+                <span class="font-bold text-white text-sm">Carlos Chávez F.</span>
+              </div>
+
+              <div class="flex items-center justify-between p-2 rounded-xl bg-slate-900 border border-slate-800/90">
+                <span class="text-slate-400 font-medium">Banco:</span>
+                <span class="font-bold text-white text-sm">Cuenta RUT</span>
+              </div>
+
+              <div class="flex items-center justify-between p-2 rounded-xl bg-slate-900 border border-slate-800/90">
+                <span class="text-slate-400 font-medium">Número de Cuenta:</span>
+                <div class="flex items-center gap-2">
+                  <span class="font-mono font-bold text-emerald-400 text-sm select-all">9345141</span>
+                  <button type="button" class="btnCopiarDato text-[11px] text-slate-400 hover:text-white px-2.5 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg transition font-medium" data-valor="9345141">Copiar</button>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between p-2 rounded-xl bg-slate-900 border border-slate-800/90">
+                <span class="text-slate-400 font-medium">RUT:</span>
+                <div class="flex items-center gap-2">
+                  <span class="font-mono font-bold text-white text-sm select-all">9345141-4</span>
+                  <button type="button" class="btnCopiarDato text-[11px] text-slate-400 hover:text-white px-2.5 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg transition font-medium" data-valor="9345141-4">Copiar</button>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between p-2 rounded-xl bg-slate-900 border border-slate-800/90">
+                <span class="text-slate-400 font-medium">Correo:</span>
+                <div class="flex items-center gap-2">
+                  <span class="font-mono font-bold text-white text-xs sm:text-sm select-all">informatica.full@gmail.com</span>
+                  <button type="button" class="btnCopiarDato text-[11px] text-slate-400 hover:text-white px-2.5 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg transition font-medium" data-valor="informatica.full@gmail.com">Copiar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Instrucción Requerida -->
+          <div class="p-3 rounded-xl bg-blue-950/50 border border-blue-800/80 text-xs text-blue-200 text-center leading-relaxed">
+            <p>
+              Envía tu comprobante a <strong class="text-white underline">informatica.full@gmail.com</strong> o avísanos directamente por WhatsApp con el botón de abajo.
+            </p>
+          </div>
+        </div>
+
+        <!-- Pie Fijo (Footer): Botón de WhatsApp Siempre Visible -->
+        <div class="px-4 sm:px-6 py-3.5 bg-slate-950/95 border-t border-slate-800 shrink-0 shadow-2xl">
+          <button id="btnAvisarWhatsappFinal" type="button" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3.5 px-5 rounded-2xl shadow-xl shadow-emerald-500/25 transition duration-150 flex items-center justify-center gap-3 text-sm sm:text-base cursor-pointer transform active:scale-[0.99] group">
+            <!-- Logo Verde WhatsApp sobre Círculo Blanco -->
+            <span class="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+              <svg class="w-4 h-4 fill-[#25D366]" viewBox="0 0 24 24">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+              </svg>
+            </span>
+            <span>Ya realicé la transferencia, avisar por WhatsApp</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 5. MODAL: INFORME COMPLETO DE TASACIÓN (RESPONSIVE MÓVIL Y DESKTOP) -->
+  <!-- ========================================== -->
+  <div id="modalInformeCompleto" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-0 sm:p-4">
+    <div id="modalInformeCard" class="bg-slate-900 text-white w-full h-full sm:h-auto sm:max-h-[92vh] sm:max-w-4xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-fade-in border-0 sm:border border-slate-700/80 transition-all duration-200">
+      
+      <!-- Cabecera del Modal de Informe -->
+      <div class="px-4 py-3 sm:px-6 sm:py-4 bg-slate-950 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shrink-0">
+        
+        <!-- Fila Superior: Badge, Fecha, Título y Botón Cerrar Móvil -->
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-950 border border-emerald-800 text-emerald-400 shrink-0">
+                Informe Técnico Oficial
+              </span>
+              <span class="text-[11px] sm:text-xs text-slate-400 whitespace-nowrap" id="modalFechaEmision">-</span>
+            </div>
+            <h2 class="text-base sm:text-xl font-extrabold text-white mt-1 leading-snug" id="modalTituloComuna">
+              Tasación en Las Condes
+            </h2>
+          </div>
+
+          <!-- Botón de Cerrar para Móvil -->
+          <button id="btnCerrarModalInforme" type="button" title="Cerrar Informe" class="sm:hidden text-slate-400 hover:text-white p-1 rounded-lg shrink-0">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Fila de Acciones: Botones PDF / Excel, Maximizar y Cerrar Desktop -->
+        <div class="flex items-center justify-between sm:justify-end gap-2 pt-2 sm:pt-0 border-t border-slate-800/80 sm:border-0">
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <button id="btnModalPdf" type="button" class="flex-1 sm:flex-none text-xs font-semibold px-3 py-1.5 rounded-lg bg-red-600/90 hover:bg-red-500 text-white transition flex items-center justify-center gap-1.5 shadow-sm">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+              </svg>
+              PDF
+            </button>
+            <button id="btnModalExcel" type="button" class="flex-1 sm:flex-none text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white transition flex items-center justify-center gap-1.5 shadow-sm">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+              Excel
+            </button>
+            <!-- Botón Maximizar / Restaurar Pantalla Completa -->
+            <button id="btnMaximizarModalInforme" type="button" title="Maximizar a Pantalla Completa" class="flex-1 sm:flex-none text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-600/90 hover:border-slate-400 transition flex items-center justify-center gap-1.5 shadow-sm">
+              <span id="btnMaximizarIcono" class="flex items-center">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+                </svg>
+              </span>
+              <span id="btnMaximizarTexto">Maximizar</span>
+            </button>
+          </div>
+
+          <!-- Botón de Cerrar para Desktop -->
+          <button id="btnCerrarModalInformeDesktop" type="button" title="Cerrar Informe" class="hidden sm:block text-slate-400 hover:text-white transition p-1.5 ml-2 rounded-lg hover:bg-slate-800">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Cuerpo del Informe con Scroll Adaptable -->
+      <div id="modalInformeBody" class="p-4 sm:p-6 overflow-y-auto space-y-5 sm:space-y-6 flex-1">
+
+        <!-- Toggle de Moneda + Indicadores del Día -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-800/60 border border-slate-700/70 rounded-xl px-4 py-3">
+          <!-- Botones Toggle -->
+          <div class="flex items-center gap-1.5">
+            <span class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider mr-1">Ver en:</span>
+            <button id="btnMonedaClp" data-moneda="CLP"
+              class="moneda-btn px-3 py-1 rounded-lg text-xs font-bold transition border border-transparent bg-blue-600 text-white shadow-sm">
+              CLP $
+            </button>
+            <button id="btnMonedaUf" data-moneda="UF"
+              class="moneda-btn px-3 py-1 rounded-lg text-xs font-bold transition border border-slate-600 text-slate-300 hover:bg-slate-700">
+              UF
+            </button>
+            <button id="btnMonedaUsd" data-moneda="USD"
+              class="moneda-btn px-3 py-1 rounded-lg text-xs font-bold transition border border-slate-600 text-slate-300 hover:bg-slate-700">
+              USD $
+            </button>
+          </div>
+          <!-- Indicadores del Día -->
+          <div id="indicadoresDelDia" class="flex flex-wrap items-center gap-3 text-[11px] text-slate-400">
+            <span class="flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-400 inline-block"></span>
+              <span>UF hoy: <strong id="indicadorUfVal" class="text-blue-300">cargando…</strong></span>
+            </span>
+            <span class="flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span>
+              <span>USD hoy: <strong id="indicadorUsdVal" class="text-green-300">cargando…</strong></span>
+            </span>
+            <span id="indicadorFecha" class="text-slate-500 italic"></span>
+          </div>
+        </div>
+        
+        <!-- Tarjeta del Valor de Referencia (Azul Profundo) -->
+        <div class="bg-gradient-to-br from-blue-900 to-indigo-950 border border-blue-500/40 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-white shadow-inner">
+          <span class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-blue-200 block" id="resValorReferenciaLabel">
+            Valor Comercial de Referencia (Mercado Inmobiliario Chileno)
+          </span>
+          <div class="text-2xl sm:text-4xl font-extrabold text-white mt-1 break-words font-mono-numbers" id="resValorReferencia">
+            $ 0 CLP
+          </div>
+          <div class="mt-3 pt-3 border-t border-blue-800/60 grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 text-xs">
+            <div>
+              <span class="text-blue-300 block text-[11px]">Precio Unitario Promedio Ajustado:</span>
+              <span class="text-sm font-bold text-white font-mono-numbers" id="resPrecioUnitario">$ 0 / m²</span>
+            </div>
+            <div>
+              <span class="text-blue-300 block text-[11px]">Rango de Referencia Estimado:</span>
+              <span class="text-sm font-bold text-white font-mono-numbers" id="resRangoReferencia">$ 0 - $ 0 CLP</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Matriz de Factores de Ajuste (Vistas Adaptativas para Móvil y Desktop) -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-xs sm:text-sm font-bold text-slate-200 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              Matriz de Comparables y Factores de Ajuste
+            </h3>
+            <span class="text-[10px] sm:text-[11px] text-slate-400 font-medium">Método Comparativo</span>
+          </div>
+          
+          <!-- Vista A: Móvil / Celular (Tarjetas Claras y Espaciadas) -->
+          <div id="listaFactoresCardsMobile" class="block md:hidden space-y-3">
+            <!-- Renderizado dinámico en tarjetas para móviles -->
+          </div>
+
+          <!-- Vista B: Tablet / Desktop (Tabla Completa con soporte de scroll horizontal suave) -->
+          <div class="hidden md:block overflow-x-auto rounded-xl border border-slate-700/80">
+            <table class="w-full text-left text-xs min-w-[620px]">
+              <thead class="bg-slate-800 text-slate-300 font-semibold uppercase text-[10px] tracking-wider border-b border-slate-700">
+                <tr>
+                  <th scope="col" class="py-3 px-3.5">Comparable / Factor</th>
+                  <th scope="col" class="py-3 px-3 text-right">P. Unit. Orig.</th>
+                  <th scope="col" class="py-3 px-3 text-right">Factor Ajuste</th>
+                  <th scope="col" class="py-3 px-3.5 text-right">P. Unit. Ajustado</th>
+                  <th scope="col" class="py-3 px-3.5">Justificación Técnica</th>
+                </tr>
+              </thead>
+              <tbody id="tablaFactoresBody" class="divide-y divide-slate-800/70 text-slate-300">
+                <!-- Filas renderizadas dinámicamente para desktop -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Respaldo de Metodología y Fuentes en el Informe -->
+        <div class="bg-slate-800/80 rounded-xl p-4 sm:p-5 border border-slate-700/60 text-slate-300">
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center gap-2">
+            <svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+            Metodología y Fuentes de Información
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-300 mt-2">
+            <div class="bg-slate-900/60 p-3 rounded-lg border border-slate-700/50">
+              <span class="font-bold text-blue-300 block mb-1">Metodología de Cálculo (NCh 2613):</span>
+              <p class="text-[11px] text-slate-300 leading-relaxed">
+                Método Comparativo de Mercado estándar. Procesamiento matemático híbrido ponderando superficie, distancia y plusvalía del entorno, complementado con dictamen de IA.
+              </p>
+            </div>
+            <div class="bg-slate-900/60 p-3 rounded-lg border border-slate-700/50">
+              <span class="font-bold text-emerald-300 block mb-1">Fuentes de Información:</span>
+              <p class="text-[11px] text-slate-300 leading-relaxed">
+                Datos ingresados por el evaluador o corredor. Criterios de homologación técnicos del mercado chileno. Valores referenciales sin carácter legal ni fiscal.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conclusión Técnica del Tasador IA -->
+        <div class="bg-slate-800/90 rounded-xl p-4 sm:p-5 border border-slate-700/60">
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center gap-2">
+            <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Conclusión Técnica del Informe
+          </h4>
+          <p id="resConclusion" class="text-xs sm:text-sm text-slate-200 leading-relaxed">
+            -
+          </p>
+        </div>
+
+        <!-- Caja de Advertencias -->
+        <div id="cajaAdvertencias" class="bg-amber-100 border border-amber-300 rounded-xl p-4 sm:p-5 text-amber-900 shadow-sm">
+          <div class="flex items-center gap-2 mb-2 font-bold text-xs sm:text-sm text-amber-950">
+            <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <span>Advertencias y Consideraciones Técnicas:</span>
+          </div>
+          <ul id="listaAdvertencias" class="text-xs space-y-1.5 text-amber-900 list-disc list-inside">
+            <!-- Renderizado dinámico de advertencias -->
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Pie del Modal de Informe -->
+      <div class="px-4 py-3 sm:px-6 sm:py-3.5 bg-slate-950 border-t border-slate-800 flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-400 shrink-0">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+          <span class="text-center sm:text-left text-[11px] text-slate-500">Tasador IA Chile • Valuación referencial conforme a método comparativo</span>
+          <span id="pieTasasCambio" class="text-center sm:text-left text-[11px] text-slate-600 italic hidden">
+            Tipos de cambio referenciales obtenidos de mindicador.cl
+          </span>
+        </div>
+        <button id="btnCerrarModalInformePie" type="button" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold transition text-center shadow-sm">
+          Cerrar Informe
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 6. MODAL: HISTORIAL DE TASACIONES (SQLITE) -->
+  <!-- ========================================== -->
+  <div id="modalHistorial" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full h-full sm:h-auto sm:max-h-[85vh] sm:max-w-3xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-fade-in border-0 sm:border border-slate-200">
+      
+      <!-- Cabecera del Modal -->
+      <div class="px-4 py-3 sm:px-6 sm:py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2.5">
+          <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <h3 class="text-sm sm:text-base font-bold">Historial de Tasaciones (SQLite)</h3>
+        </div>
+        <button id="btnCerrarHistorial" type="button" class="text-slate-400 hover:text-white transition p-1.5 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Contenido / Lista de Tasaciones -->
+      <div class="p-4 sm:p-6 overflow-y-auto flex-1">
+        <div id="listaHistorialVacia" class="text-center py-10 text-slate-400 hidden">
+          <p class="text-sm">No tienes tasaciones registradas aún en tu cuenta.</p>
+        </div>
+        
+        <div id="listaHistorial" class="space-y-3">
+          <!-- Items renderizados vía JS -->
+        </div>
+      </div>
+
+      <!-- Pie del Modal -->
+      <div class="px-4 py-3 sm:px-6 sm:py-3 bg-slate-50 border-t border-slate-200 flex justify-between items-center text-xs text-slate-500 shrink-0">
+        <span id="txtTotalHistorial">Cargando registros...</span>
+        <button id="btnRefrescarHistorial" type="button" class="font-semibold text-slate-700 hover:text-emerald-600 transition flex items-center gap-1">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          Actualizar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 7. MODAL: GUÍA Y AYUDA INTERACTIVA (COMPARABLES) -->
+  <!-- ========================================== -->
+  <div id="modalAyudaComparables" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-slate-900 border border-slate-700/80 text-white w-full max-w-lg rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-fade-in max-h-[90vh]">
+      
+      <!-- Cabecera del Modal -->
+      <div class="px-5 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/40 flex items-center justify-center font-extrabold text-sm shadow-inner">
+            ?
+          </div>
+          <div>
+            <h3 class="text-sm sm:text-base font-bold text-white">Guía: Comparables de Mercado</h3>
+            <p class="text-[11px] text-slate-400">Conceptos clave explicados de forma sencilla</p>
+          </div>
+        </div>
+        <button id="btnCerrarAyuda" type="button" title="Cerrar guía" class="text-slate-400 hover:text-white transition p-1.5 rounded-lg hover:bg-slate-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Contenido Explicativo con Scroll -->
+      <div class="p-5 sm:p-6 overflow-y-auto space-y-3.5 text-xs text-slate-300 leading-relaxed flex-1">
+        
+        <!-- Bloque Principal: ¿Qué es un comparable? -->
+        <div class="bg-blue-950/50 border border-blue-600/40 rounded-xl p-3.5 sm:p-4 shadow-inner">
+          <h4 class="text-xs sm:text-sm font-bold text-blue-200 flex items-center gap-2 mb-1.5">
+            <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+            ¿Qué es un Comparable?
+          </h4>
+          <p class="text-blue-100/90 text-xs sm:text-[13px] leading-relaxed">
+            Es una propiedad parecida a la que quieres tasar (mismo barrio, superficie similar) de la cual ya conoces el precio de venta. La app usa estos precios como referencia para calcular el valor de tu propiedad.
+          </p>
+        </div>
+
+        <!-- Campos Desglosados -->
+        <div class="space-y-2.5 pt-1">
+          
+          <!-- 1. Superficie -->
+          <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-3 sm:p-3.5 flex items-start gap-3">
+            <div class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+              m²
+            </div>
+            <div>
+              <span class="font-bold text-white block mb-0.5 text-xs">Superficie (m²):</span>
+              <p class="text-slate-300 text-[11px] sm:text-xs">
+                Los metros cuadrados del comparable.
+              </p>
+            </div>
+          </div>
+
+          <!-- 2. Precio CLP -->
+          <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-3 sm:p-3.5 flex items-start gap-3">
+            <div class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+              $
+            </div>
+            <div>
+              <span class="font-bold text-white block mb-0.5 text-xs">Precio CLP:</span>
+              <p class="text-slate-300 text-[11px] sm:text-xs">
+                El precio de venta de esa propiedad de referencia.
+              </p>
+            </div>
+          </div>
+
+          <!-- 3. Distancia -->
+          <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-3 sm:p-3.5 flex items-start gap-3">
+            <div class="w-6 h-6 rounded-lg bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+              📍
+            </div>
+            <div>
+              <span class="font-bold text-white block mb-0.5 text-xs">Distancia (km):</span>
+              <p class="text-slate-300 text-[11px] sm:text-xs">
+                Qué tan lejos está el comparable de tu propiedad. A mayor distancia, menor precisión.
+              </p>
+            </div>
+          </div>
+
+          <!-- 4. Entorno -->
+          <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-3 sm:p-3.5 flex items-start gap-3">
+            <div class="w-6 h-6 rounded-lg bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+              🏙️
+            </div>
+            <div>
+              <span class="font-bold text-white block mb-0.5 text-xs">Entorno del Comparable:</span>
+              <p class="text-slate-300 text-[11px] sm:text-xs">
+                Indica si el comparable está en una zona de mejor, peor o igual plusvalía que tu propiedad. Esto ajusta el valor final (si es mejor zona, sube el valor; si es peor, baja).
+              </p>
+            </div>
+          </div>
+
+          <!-- 5. Diferencia / Nota -->
+          <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-3 sm:p-3.5 flex items-start gap-3">
+            <div class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+              📝
+            </div>
+            <div>
+              <span class="font-bold text-white block mb-0.5 text-xs">Diferencia / Nota:</span>
+              <p class="text-slate-300 text-[11px] sm:text-xs">
+                Cualquier detalle adicional que la IA deba considerar, como <em>"sin estacionamiento"</em> o <em>"remodelado"</em>.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Pie del Modal -->
+      <div class="px-5 py-3.5 bg-slate-950 border-t border-slate-800 flex justify-end shrink-0">
+        <button id="btnEntendidoAyuda" type="button" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition shadow-lg shadow-blue-600/30">
+          Entendido
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 8. MODAL: ONBOARDING / SELECCIÓN DE ROL PROFESIONAL -->
+  <!-- ========================================== -->
+  <div id="modalOnboardingRol" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-white border border-slate-200 text-slate-800 w-full max-w-lg rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-fade-in">
+      
+      <!-- Cabecera -->
+      <div class="px-6 pt-6 pb-4 text-center relative border-b border-slate-100 bg-linear-to-b from-indigo-50/60 to-white">
+        <button id="btnCerrarModalRol" type="button" class="hidden absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition p-1.5 rounded-xl hover:bg-slate-100" title="Cerrar">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+        <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center mx-auto mb-3 shadow-md shadow-indigo-600/30 text-2xl">
+          ✨
+        </div>
+        <h3 id="tituloModalRol" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+          Jerarquía de Perfiles Profesionales
+        </h3>
+        <p id="subtituloModalRol" class="text-xs sm:text-sm text-slate-600 font-medium mt-1">
+          Selecciona tu nivel para personalizar tus tasaciones, herramientas e informes
+        </p>
+      </div>
+
+      <!-- Alerta elegante de restricción de nivel -->
+      <div id="alertaRolModal" class="hidden mx-5 sm:mx-6 mt-4 p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-medium flex items-start gap-2.5 animate-fade-in shadow-xs">
+        <span class="text-base shrink-0">🔒</span>
+        <div class="flex-1 min-w-0">
+          <p class="font-bold text-amber-950">Acceso Restringido</p>
+          <p id="alertaRolTexto" class="mt-0.5 text-amber-800 leading-relaxed">
+            🔒 El rol de Tasador requiere validación. Contacta a <a href="mailto:informatica.full@gmail.com" class="font-bold underline text-indigo-700">informatica.full@gmail.com</a> para solicitar el acceso PRO.
+          </p>
+        </div>
+      </div>
+
+      <!-- Opciones / Tarjetas de Niveles -->
+      <div class="p-5 sm:p-6 space-y-3">
+        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
+          Niveles de acceso disponibles:
+        </p>
+
+        <!-- Tarjeta 1: Nivel 1 - Particular -->
+        <button type="button" data-rol="Particular" class="btnOpcionRol w-full text-left p-4 rounded-2xl border-2 border-slate-200 hover:border-emerald-600 hover:bg-emerald-50/40 transition flex items-start gap-3.5 group cursor-pointer focus:outline-none focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100">
+          <div class="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-xl shrink-0 group-hover:scale-105 transition shadow-xs">
+            🏠
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <h4 class="text-sm font-bold text-slate-900 group-hover:text-emerald-900 transition">Nivel 1: Particular</h4>
+              <span class="text-[10px] font-semibold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">Motor Estándar</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+              Ideal para dueños que quieren conocer el valor de su propiedad. Usa el motor estándar.
+            </p>
+          </div>
+        </button>
+
+        <!-- Tarjeta 2: Nivel 2 - Corredor de Propiedades -->
+        <button type="button" data-rol="Corredor de Propiedades" class="btnOpcionRol w-full text-left p-4 rounded-2xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/40 transition flex items-start gap-3.5 group cursor-pointer focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-100">
+          <div class="w-11 h-11 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center text-xl shrink-0 group-hover:scale-105 transition shadow-xs">
+            💼
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <h4 class="text-sm font-bold text-slate-900 group-hover:text-blue-900 transition">Nivel 2: Corredor de Propiedades</h4>
+              <span class="text-[10px] font-semibold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">Comercial</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+              Para profesionales inmobiliarios. Incluye historial y exportación a PDF/Excel.
+            </p>
+          </div>
+        </button>
+
+        <!-- Tarjeta 3: Nivel 3 - Tasador Certificado (PRO) -->
+        <button type="button" id="btnRolTasador" data-rol="Tasador Certificado" class="btnOpcionRol w-full text-left p-4 rounded-2xl border-2 border-slate-200 hover:border-purple-600 hover:bg-purple-50/40 transition flex items-start gap-3.5 group cursor-pointer focus:outline-none focus:border-purple-600 focus:ring-4 focus:ring-purple-100 relative">
+          <div class="w-11 h-11 rounded-xl bg-purple-100 text-purple-800 flex items-center justify-center text-xl shrink-0 group-hover:scale-105 transition shadow-xs">
+            📊
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <h4 class="text-sm font-bold text-slate-900 group-hover:text-purple-900 transition flex items-center gap-1.5">
+                <span>Nivel 3: Tasador Certificado</span>
+                <span id="iconoCandadoTasador" class="hidden text-xs">🔒</span>
+              </h4>
+              <span id="badgeNivelTasador" class="text-[10px] font-semibold uppercase tracking-wider text-purple-700 bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-200">PRO</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+              Acceso exclusivo al Motor de Tasación PRO (variables editables). Requiere validación del administrador.
+            </p>
+          </div>
+        </button>
+
+      </div>
+
+      <!-- Pie informativo / Estado -->
+      <div id="rolGuardandoSpinner" class="hidden px-6 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-center gap-2 text-xs font-semibold text-indigo-700">
+        <svg class="animate-spin w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+        <span>Guardando tu preferencia...</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: ROL BLOQUEADO / ACCESO RESTRINGIDO PRO -->
+  <!-- ========================================== -->
+  <div id="modalRolBloqueado" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-8 max-w-md w-full text-center text-white shadow-2xl animate-fade-in relative">
+      <!-- Icono de Candado Grande en ámbar -->
+      <div class="w-16 h-16 rounded-3xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg shadow-amber-500/10">
+        🔒
+      </div>
+      
+      <!-- Título -->
+      <h3 class="text-xl sm:text-2xl font-black text-white tracking-tight mb-2">
+        Acceso Restringido
+      </h3>
+      
+      <!-- Badge de Nivel -->
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-950/80 border border-purple-700/60 text-purple-300 text-xs font-semibold mb-4">
+        <span>Nivel 3: Tasador Certificado [PRO]</span>
+      </div>
+
+      <!-- Texto descriptivo -->
+      <p class="text-sm text-slate-300 leading-relaxed mb-6">
+        El rol de <strong class="text-white">Tasador Certificado</strong> requiere validación del administrador. Contacta a <a href="mailto:informatica.full@gmail.com" class="text-amber-400 font-bold underline">informatica.full@gmail.com</a> para solicitar el acceso PRO.
+      </p>
+
+      <!-- Caja de contacto con correo del admin -->
+      <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 mb-6 text-xs text-slate-400 flex items-center justify-between gap-3">
+        <div class="text-left min-w-0">
+          <span class="block text-[10px] uppercase font-bold text-slate-500 tracking-wider">Administrador:</span>
+          <a href="mailto:informatica.full@gmail.com" class="text-indigo-400 hover:text-indigo-300 font-mono font-medium underline truncate block">informatica.full@gmail.com</a>
+        </div>
+        <a href="mailto:informatica.full@gmail.com?subject=Solicitud%20de%20Acceso%20PRO%20-%20Tasador%20IA" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs transition shrink-0 flex items-center gap-1">
+          <span>Enviar Correo</span>
+          <span>✉️</span>
+        </a>
+      </div>
+
+      <!-- Botón Entendido en verde esmeralda -->
+      <button id="btnCerrarRolBloqueado" type="button" class="w-full py-3.5 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-lg shadow-emerald-600/30 transition flex items-center justify-center gap-2 cursor-pointer">
+        <span>✓ Entendido</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 9. MODAL: CONFIGURACIÓN AVANZADA DEL MOTOR (TASADOR CERTIFICADO / ADMIN) -->
+  <!-- ========================================== -->
+  <div id="modalConfigMotor" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-white border border-slate-200 text-slate-800 w-full max-w-lg rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-fade-in max-h-[92vh]">
+      
+      <!-- Cabecera -->
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center font-bold text-lg shadow-inner">
+            ⚙️
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-sm sm:text-base font-bold text-white">Configuración del Motor de Tasación</h3>
+              <span class="text-[9px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full font-mono">Tasador PRO</span>
+            </div>
+            <p class="text-[11px] text-slate-400">Ajusta las tolerancias y porcentajes de homologación de mercado</p>
+          </div>
+        </div>
+        <button id="btnCerrarConfigMotor" type="button" class="text-slate-400 hover:text-white transition p-1.5 rounded-lg hover:bg-slate-800" title="Cerrar ventana">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Formulario de Configuración -->
+      <form id="formConfigMotor" class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs text-slate-700 flex-1">
+        
+        <!-- Banner Explicativo -->
+        <div class="p-3 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-2.5 text-amber-900 text-xs">
+          <svg class="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span>
+            Estos parámetros modifican en tiempo real los coeficientes matemáticos aplicados por el motor de cálculo y el informe final.
+          </span>
+        </div>
+
+        <!-- 1. Margen de Error del Rango (%) -->
+        <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+          <div class="flex items-center justify-between mb-1">
+            <label for="cfgMargenError" class="font-bold text-slate-900 text-xs sm:text-[13px] flex items-center gap-1.5">
+              <span>📊 Margen de Error del Rango (± %)</span>
+            </label>
+            <span class="text-[10px] font-semibold text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200">Default: 8%</span>
+          </div>
+          <p class="text-[11px] text-slate-500 mb-2 leading-relaxed">
+            Determina la amplitud del intervalo comercial (mínimo y máximo). Por ejemplo, 8% calcula Valor ± 8%; si cambias a 15%, el rango será Valor ± 15%.
+          </p>
+          <div class="flex items-center gap-2">
+            <input type="number" id="cfgMargenError" min="1" max="40" step="0.5" value="8" required class="w-full px-3 py-2 text-sm font-bold bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <span class="font-bold text-slate-600 text-sm shrink-0">%</span>
+          </div>
+        </div>
+
+        <!-- 2. Factor Mayor Plusvalía (%) -->
+        <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+          <div class="flex items-center justify-between mb-1">
+            <label for="cfgMayorPlusvalia" class="font-bold text-slate-900 text-xs sm:text-[13px] flex items-center gap-1.5">
+              <span>📈 Factor por Mayor Plusvalía (+ %)</span>
+            </label>
+            <span class="text-[10px] font-semibold text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200">Default: +3%</span>
+          </div>
+          <p class="text-[11px] text-slate-500 mb-2 leading-relaxed">
+            Ajuste porcentual aplicado a comparables ubicados en zonas con mejor cotización o mayor plusvalía relativa.
+          </p>
+          <div class="flex items-center gap-2">
+            <input type="number" id="cfgMayorPlusvalia" min="0" max="30" step="0.5" value="3" required class="w-full px-3 py-2 text-sm font-bold bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <span class="font-bold text-slate-600 text-sm shrink-0">%</span>
+          </div>
+        </div>
+
+        <!-- 3. Factor Menor Plusvalía (%) -->
+        <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+          <div class="flex items-center justify-between mb-1">
+            <label for="cfgMenorPlusvalia" class="font-bold text-slate-900 text-xs sm:text-[13px] flex items-center gap-1.5">
+              <span>📉 Factor por Menor Plusvalía (- %)</span>
+            </label>
+            <span class="text-[10px] font-semibold text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200">Default: -3%</span>
+          </div>
+          <p class="text-[11px] text-slate-500 mb-2 leading-relaxed">
+            Castigo porcentual aplicado cuando el comparable está situado en una zona con menor cotización o demanda.
+          </p>
+          <div class="flex items-center gap-2">
+            <input type="number" id="cfgMenorPlusvalia" min="-30" max="0" step="0.5" value="-3" required class="w-full px-3 py-2 text-sm font-bold bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <span class="font-bold text-slate-600 text-sm shrink-0">%</span>
+          </div>
+        </div>
+
+        <!-- 4. Factor Acceso Difícil (%) -->
+        <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+          <div class="flex items-center justify-between mb-1">
+            <label for="cfgAccesoDificil" class="font-bold text-slate-900 text-xs sm:text-[13px] flex items-center gap-1.5">
+              <span>🚧 Factor por Acceso Difícil / Periférico (- %)</span>
+            </label>
+            <span class="text-[10px] font-semibold text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200">Default: -5%</span>
+          </div>
+          <p class="text-[11px] text-slate-500 mb-2 leading-relaxed">
+            Descuento aplicado a comparables con conectividad vial deficiente o emplazamiento periférico.
+          </p>
+          <div class="flex items-center gap-2">
+            <input type="number" id="cfgAccesoDificil" min="-35" max="0" step="0.5" value="-5" required class="w-full px-3 py-2 text-sm font-bold bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <span class="font-bold text-slate-600 text-sm shrink-0">%</span>
+          </div>
+        </div>
+
+        <div id="msgExitoConfigMotor" class="hidden p-2.5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-center font-bold text-xs">
+          ✓ Configuración guardada correctamente.
+        </div>
+
+      </form>
+
+      <!-- Pie del Modal -->
+      <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-3 shrink-0">
+        <button id="btnResetConfigMotor" type="button" class="text-xs font-semibold text-slate-600 hover:text-slate-900 transition flex items-center gap-1 cursor-pointer">
+          <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          Restaurar default
+        </button>
+        <div class="flex items-center gap-2">
+          <button id="btnCancelarConfigMotor" type="button" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200 transition cursor-pointer">
+            Cancelar
+          </button>
+          <button id="btnGuardarConfigMotor" type="button" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition shadow-md shadow-indigo-600/30 cursor-pointer">
+            Guardar Configuración
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 10. MODAL: CONFIRMAR BORRADO DE ROL (ADMIN) -->
+  <!-- ========================================== -->
+  <div id="modalConfirmarResetRol" class="fixed inset-0 z-[60] bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-3 sm:p-4" style="z-index: 60;">
+    <div class="bg-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-8 max-w-md w-full text-center text-white shadow-2xl animate-fade-in relative">
+      <!-- Icono de Advertencia / Reset -->
+      <div class="w-16 h-16 rounded-3xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg shadow-amber-500/10">
+        ⚠️
+      </div>
+      
+      <!-- Título -->
+      <h3 class="text-xl sm:text-2xl font-black text-white tracking-tight mb-2">
+        Confirmar Acción
+      </h3>
+      
+      <!-- Texto -->
+      <p class="text-sm text-slate-300 leading-relaxed mb-6">
+        ¿Estás seguro de que quieres borrar el rol de <strong id="confirmResetRolEmail" class="text-amber-300 font-bold break-all"></strong>? Esto forzará al usuario a elegir un rol nuevo la próxima vez que inicie sesión.
+      </p>
+
+      <!-- Botones de Acción -->
+      <div class="grid grid-cols-2 gap-3">
+        <button id="btnCancelarResetRolModal" type="button" class="w-full py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 font-bold text-sm transition cursor-pointer">
+          Cancelar
+        </button>
+        <button id="btnConfirmarResetRolModal" type="button" class="w-full py-3 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow-lg shadow-rose-600/30 transition flex items-center justify-center gap-2 cursor-pointer">
+          <span id="txtBtnConfirmarResetRol">Sí, borrar rol</span>
+          <span id="spinnerBtnConfirmarResetRol" class="hidden">⏳</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 11. MODAL: CONFIRMAR ELIMINAR USUARIO (ADMIN) -->
+  <!-- ========================================== -->
+  <div id="modalConfirmarEliminarUsuario" class="fixed inset-0 z-[60] bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-3 sm:p-4" style="z-index: 60;">
+    <div class="bg-slate-900 border border-rose-500/40 rounded-3xl p-6 sm:p-8 max-w-md w-full text-center text-white shadow-2xl animate-fade-in relative">
+      <!-- Icono de Advertencia de Eliminación -->
+      <div class="w-16 h-16 rounded-3xl bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg shadow-rose-500/10">
+        🗑️
+      </div>
+      
+      <!-- Título -->
+      <h3 class="text-xl sm:text-2xl font-black text-white tracking-tight mb-2">
+        Eliminar Usuario
+      </h3>
+      
+      <!-- Texto -->
+      <p class="text-sm text-slate-300 leading-relaxed mb-6">
+        ⚠️ ¿Estás seguro de que quieres eliminar permanentemente la cuenta de <strong id="confirmEliminarUsuarioEmail" class="text-rose-300 font-bold break-all"></strong>? Esta acción no se puede deshacer y borrará todo su historial.
+      </p>
+
+      <!-- Botones de Acción -->
+      <div class="grid grid-cols-2 gap-3">
+        <button id="btnCancelarEliminarUsuarioModal" type="button" class="w-full py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 font-bold text-sm transition cursor-pointer">
+          Cancelar
+        </button>
+        <button id="btnConfirmarEliminarUsuarioModal" type="button" class="w-full py-3 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow-lg shadow-rose-600/30 transition flex items-center justify-center gap-2 cursor-pointer">
+          <span id="txtBtnConfirmarEliminarUsuario">Sí, eliminar cuenta</span>
+          <span id="spinnerBtnConfirmarEliminarUsuario" class="hidden">⏳</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 12. MODAL: CAMBIAR ROL DE USUARIO (ADMIN) -->
+  <!-- ========================================== -->
+  <div id="modalAdminCambiarRol" class="fixed inset-0 z-[60] bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-3 sm:p-4" style="z-index: 60;">
+    <div class="bg-slate-900 border border-purple-500/40 rounded-3xl p-5 sm:p-7 max-w-lg w-full text-white shadow-2xl animate-fade-in relative">
+      
+      <!-- Encabezado del modal -->
+      <div class="flex items-center justify-between pb-3.5 border-b border-slate-800 mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center text-xl shrink-0">
+            ✏️
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-white tracking-tight">Cambiar Rol Profesional</h3>
+            <p class="text-[11px] sm:text-xs text-slate-400">Asigna un nuevo nivel de acceso a este usuario</p>
+          </div>
+        </div>
+        <button id="btnCerrarModalCambiarRolX" type="button" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition cursor-pointer">
+          ✕
+        </button>
+      </div>
+
+      <!-- Usuario seleccionado -->
+      <div class="mb-4 p-3 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-between gap-2">
+        <div class="min-w-0">
+          <span class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold block">Usuario:</span>
+          <span id="adminCambiarRolEmail" class="text-xs sm:text-sm font-bold text-purple-300 break-all font-mono">cliente@correo.cl</span>
+        </div>
+        <div id="adminCambiarRolBadgeActual" class="shrink-0 text-xs">
+          <!-- Rol actual en badge -->
+        </div>
+      </div>
+
+      <!-- Opciones de Rol -->
+      <p class="text-xs font-semibold text-slate-300 mb-2.5">Selecciona el nuevo rol:</p>
+      <div class="space-y-2.5 mb-5">
+        
+        <!-- Opción 1: Particular -->
+        <button type="button" data-rol="Particular" class="btnAdminOpcionRol w-full p-3 sm:p-3.5 rounded-2xl bg-slate-950/70 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/60 transition flex items-center justify-between text-left group cursor-pointer">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl shrink-0">🏠</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs sm:text-sm font-bold text-white group-hover:text-emerald-300 transition">Nivel 1: Particular</span>
+                <span class="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-semibold">Estándar</span>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-0.5">Informes en pantalla y exportación de PDF</p>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-slate-500 group-hover:text-emerald-400 transition">Asignar →</span>
+        </button>
+
+        <!-- Opción 2: Corredor de Propiedades -->
+        <button type="button" data-rol="Corredor de Propiedades" class="btnAdminOpcionRol w-full p-3 sm:p-3.5 rounded-2xl bg-slate-950/70 hover:bg-slate-800 border border-slate-800 hover:border-blue-500/60 transition flex items-center justify-between text-left group cursor-pointer">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl shrink-0">💼</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs sm:text-sm font-bold text-white group-hover:text-blue-300 transition">Nivel 2: Corredor de Propiedades</span>
+                <span class="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800 font-semibold">Profesional</span>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-0.5">Descarga Excel, sugerencias con IA e historial</p>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-slate-500 group-hover:text-blue-400 transition">Asignar →</span>
+        </button>
+
+        <!-- Opción 3: Tasador Certificado -->
+        <button type="button" data-rol="Tasador Certificado" class="btnAdminOpcionRol w-full p-3 sm:p-3.5 rounded-2xl bg-slate-950/70 hover:bg-slate-800 border border-purple-500/30 hover:border-purple-400 transition flex items-center justify-between text-left group cursor-pointer">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl shrink-0">📊</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs sm:text-sm font-bold text-white group-hover:text-purple-300 transition">Nivel 3: Tasador Certificado</span>
+                <span class="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 font-semibold">PRO</span>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-0.5">Acceso exclusivo a motor PRO con variables editables</p>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-slate-500 group-hover:text-purple-400 transition">Asignar →</span>
+        </button>
+
+      </div>
+
+      <!-- Pie del modal -->
+      <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+        <span id="spinnerCambiarRol" class="hidden text-xs text-purple-300 flex items-center gap-1.5">
+          <svg class="animate-spin h-3.5 w-3.5 text-purple-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+          </svg>
+          Actualizando rol...
+        </span>
+        <button id="btnCancelarCambiarRolModal" type="button" class="ml-auto py-2 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 font-bold text-xs transition cursor-pointer">
+          Cancelar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 13. MODAL: MANUAL DE OPERACIONES DEL ADMINISTRADOR -->
+  <!-- ========================================== -->
+  <div id="modalManualAdmin" class="fixed inset-0 z-[60] bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-3 sm:p-4" style="z-index: 60;">
+    <div id="manualAdminPrintableArea" class="bg-slate-900 border border-purple-500/40 rounded-3xl p-5 sm:p-7 max-w-3xl w-full text-white shadow-2xl animate-fade-in relative max-h-[92vh] flex flex-col">
+      
+      <!-- Encabezado del Modal -->
+      <div class="flex items-center justify-between pb-3.5 border-b border-slate-800 mb-4 shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center text-xl shrink-0">
+            📖
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-base sm:text-lg font-bold text-white tracking-tight">Manual de Operaciones</h3>
+              <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-purple-950 text-purple-300 border border-purple-800">
+                Flujo Comercial
+              </span>
+            </div>
+            <p class="text-[11px] sm:text-xs text-slate-400">Guía paso a paso para procesar compras, asignar créditos y gestionar roles</p>
+          </div>
+        </div>
+
+        <!-- Botones de Acción Superior (Descargar en PDF y Cerrar) -->
+        <div class="flex items-center gap-2 no-print">
+          <button id="btnDescargarManualPdf" type="button" class="px-3 py-1.5 rounded-xl bg-purple-950/90 hover:bg-purple-900 text-purple-200 hover:text-white border border-purple-700/80 font-bold text-xs transition flex items-center gap-1.5 cursor-pointer shadow-sm" title="Descargar Manual en PDF">
+            <span>📥</span>
+            <span class="hidden sm:inline">Descargar Manual en PDF</span>
+            <span class="sm:hidden">Descargar PDF</span>
+          </button>
+          <button id="btnCerrarManualAdminX" type="button" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition cursor-pointer">
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <!-- Contenido Scrollable del Manual (5 Fases + Consejos Pro) -->
+      <div class="overflow-y-auto flex-1 pr-1.5 space-y-3.5 text-xs sm:text-sm">
+        
+        <!-- FASE 1 -->
+        <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-950 border border-slate-800/90 shadow-sm">
+          <div class="flex items-center gap-2.5 mb-2">
+            <span class="w-6 h-6 rounded-lg bg-purple-950 text-purple-300 flex items-center justify-center text-xs font-mono font-bold border border-purple-700/60 shrink-0">1</span>
+            <span class="text-base shrink-0">🛒</span>
+            <h4 class="font-bold text-white text-sm sm:text-base">FASE 1: El Cliente Compra</h4>
+          </div>
+          <ul class="space-y-1.5 text-slate-300 text-xs sm:text-[13px] ml-9 list-disc list-outside">
+            <li>El cliente se queda sin créditos al intentar realizar una tasación.</li>
+            <li>La aplicación le despliega automáticamente el modal con los <strong>Packs Comerciales</strong> y tus <strong>datos bancarios</strong> para transferencia directa.</li>
+            <li>El cliente selecciona su pack y hace clic en <strong>"Comprar vía WhatsApp"</strong>.</li>
+          </ul>
+        </div>
+
+        <!-- FASE 2 -->
+        <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-950 border border-slate-800/90 shadow-sm">
+          <div class="flex items-center gap-2.5 mb-2">
+            <span class="w-6 h-6 rounded-lg bg-purple-950 text-purple-300 flex items-center justify-center text-xs font-mono font-bold border border-purple-700/60 shrink-0">2</span>
+            <span class="text-base shrink-0">📲</span>
+            <h4 class="font-bold text-white text-sm sm:text-base">FASE 2: Tú Recibes la Notificación</h4>
+          </div>
+          <ul class="space-y-1.5 text-slate-300 text-xs sm:text-[13px] ml-9 list-disc list-outside">
+            <li>Te llega un mensaje a tu WhatsApp con el pack solicitado y los datos de contacto del cliente.</li>
+            <li>El cliente te envía o adjunta su <strong>comprobante de transferencia bancaria</strong>.</li>
+            <li>Verificas los datos clave: número de operación, monto transferido y correo del cliente.</li>
+          </ul>
+        </div>
+
+        <!-- FASE 3 -->
+        <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-950 border border-slate-800/90 shadow-sm">
+          <div class="flex items-center gap-2.5 mb-2">
+            <span class="w-6 h-6 rounded-lg bg-purple-950 text-purple-300 flex items-center justify-center text-xs font-mono font-bold border border-purple-700/60 shrink-0">3</span>
+            <span class="text-base shrink-0">🏦</span>
+            <h4 class="font-bold text-white text-sm sm:text-base">FASE 3: Confirmación de Pago</h4>
+          </div>
+          <ul class="space-y-1.5 text-slate-300 text-xs sm:text-[13px] ml-9 list-disc list-outside">
+            <li>Ingresas a tu aplicación bancaria (Banco Estado / Santander / Banco de Chile).</li>
+            <li>Confirmas que el abono se encuentre efectivamente <strong>disponible en tu saldo</strong>.</li>
+            <li>Compruebas que coincida con el valor exacto del pack ($20.000, $45.000 o $70.000 CLP).</li>
+          </ul>
+        </div>
+
+        <!-- FASE 4 -->
+        <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-950 border border-purple-500/30 shadow-sm">
+          <div class="flex items-center gap-2.5 mb-2">
+            <span class="w-6 h-6 rounded-lg bg-emerald-950 text-emerald-300 flex items-center justify-center text-xs font-mono font-bold border border-emerald-700/60 shrink-0">4</span>
+            <span class="text-base shrink-0">⚙️</span>
+            <h4 class="font-bold text-white text-sm sm:text-base">FASE 4: Actualización en el Panel</h4>
+          </div>
+          <ul class="space-y-1.5 text-slate-300 text-xs sm:text-[13px] ml-9 list-disc list-outside">
+            <li>Ingresas al <strong>Panel Admin</strong> (<code class="bg-slate-900 px-1 py-0.5 rounded text-purple-300 font-mono">/admin</code>).</li>
+            <li>En la barra de búsqueda izquierda, localizas al cliente ingresando su <strong>correo electrónico</strong>.</li>
+            <li>Si el usuario necesita ser <strong>Tasador Certificado (Nivel 3 PRO)</strong>, haz clic en el botón <strong>"✏️ Editar Rol"</strong> y selecciona ese nivel.</li>
+            <li>En el formulario derecho ("Gestión de Créditos"), selecciona la acción <strong>"+ Sumar"</strong>.</li>
+            <li>Elige el <strong>Pack Adquirido</strong> en el menú desplegable (esto registrará su plan comprado y autocompletará los créditos).</li>
+            <li>Haz clic en el botón verde <strong>"Sumar Créditos al Usuario"</strong>.</li>
+          </ul>
+        </div>
+
+        <!-- FASE 5 -->
+        <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-950 border border-slate-800/90 shadow-sm">
+          <div class="flex items-center gap-2.5 mb-2">
+            <span class="w-6 h-6 rounded-lg bg-purple-950 text-purple-300 flex items-center justify-center text-xs font-mono font-bold border border-purple-700/60 shrink-0">5</span>
+            <span class="text-base shrink-0">💬</span>
+            <h4 class="font-bold text-white text-sm sm:text-base">FASE 5: Aviso al Cliente</h4>
+          </div>
+          <ul class="space-y-1.5 text-slate-300 text-xs sm:text-[13px] ml-9 list-disc list-outside">
+            <li>Le respondes al cliente por WhatsApp con un mensaje cálido:
+              <div class="mt-1.5 p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-emerald-300 font-mono text-xs">
+                "¡Hola! Tu transferencia ha sido confirmada con éxito. Ya tienes tus créditos cargados en la plataforma para realizar tus tasaciones. ¡Muchas gracias por tu compra!"
+              </div>
+            </li>
+            <li>El cliente actualiza su pantalla y sus créditos aparecen reflejados de inmediato.</li>
+          </ul>
+        </div>
+
+        <!-- SECCIÓN: CONSEJOS PRO -->
+        <div class="p-4 rounded-2xl bg-amber-950/30 border border-amber-600/40 text-amber-200 shadow-sm">
+          <div class="flex items-center gap-2 mb-2 font-bold text-amber-300 text-xs sm:text-sm">
+            <span class="text-lg">💡</span>
+            <span>Consejos Pro para el Administrador</span>
+          </div>
+          <div class="space-y-1.5 text-amber-200/90 text-xs leading-relaxed">
+            <p>
+              • <strong>Siempre usa "+ Sumar"</strong>: De esta manera los créditos comprados se añaden acumulativamente al saldo actual del cliente sin sobrescribir tasaciones previas.
+            </p>
+            <p>
+              • <strong>El Rol define permisos, no créditos</strong>: El <em>Rol Profesional</em> (Particular, Corredor, Tasador) habilita funciones como descarga en Excel, sugerencias con IA o acceso al Motor PRO. Los <em>Créditos</em> determinan la cantidad de tasaciones que el usuario puede ejecutar.
+            </p>
+            <p>
+              • <strong>Notificaciones por Email</strong>: Si configuras las credenciales SMTP en el archivo <code class="bg-amber-950 px-1 py-0.5 rounded border border-amber-800 font-mono text-[11px]">.env</code>, el sistema enviará automáticamente un comprobante por correo tanto al cliente como a ti al recargar créditos.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Pie del Modal -->
+      <div class="pt-3.5 border-t border-slate-800 flex items-center justify-between gap-3 shrink-0 no-print">
+        <button id="btnDescargarManualPdfPie" type="button" class="py-2.5 px-4 rounded-xl bg-purple-950/90 hover:bg-purple-900 text-purple-200 hover:text-white border border-purple-700/80 font-bold text-xs transition flex items-center gap-2 cursor-pointer shadow-sm">
+          <span>📥</span>
+          <span>Descargar Manual en PDF</span>
+        </button>
+        <button id="btnCerrarManualAdminPie" type="button" class="py-2.5 px-5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-lg shadow-purple-600/30 transition cursor-pointer">
+          Entendido, Cerrar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 14. MODAL: MANUAL DEL USUARIO / GUÍA RÁPIDA DE COMPRA -->
+  <!-- ========================================== -->
+  <div id="modalGuiaUsuario" class="fixed inset-0 z-[60] bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-3 sm:p-5" style="z-index: 60;">
+    <div class="bg-slate-900 border border-emerald-500/40 rounded-3xl p-5 sm:p-7 max-w-xl w-full text-white shadow-2xl animate-fade-in relative max-h-[92vh] flex flex-col">
+      
+      <!-- Encabezado del Modal -->
+      <div class="flex items-center justify-between pb-3.5 border-b border-slate-800 mb-4 shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-xl shrink-0">
+            ❓
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-white tracking-tight">¿Cómo funciona el proceso?</h3>
+            <p class="text-[11px] sm:text-xs text-slate-400">Guía rápida de compra y activación de créditos</p>
+          </div>
+        </div>
+        <button id="btnCerrarGuiaUsuarioX" type="button" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition cursor-pointer">
+          ✕
+        </button>
+      </div>
+
+      <!-- Contenido Scrollable Paso a Paso -->
+      <div class="overflow-y-auto flex-1 pr-1.5 space-y-3 text-xs sm:text-sm">
+        
+        <!-- Paso 1 -->
+        <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 flex items-start gap-3">
+          <span class="w-6 h-6 rounded-lg bg-emerald-950 text-emerald-300 flex items-center justify-center text-xs font-mono font-bold border border-emerald-700/60 shrink-0 mt-0.5">1</span>
+          <div>
+            <h4 class="font-bold text-white text-sm">Paso 1: Elige tu Pack</h4>
+            <p class="text-slate-300 mt-1 leading-relaxed">
+              Selecciona el pack que necesitas (<strong>Inicial</strong>, <strong>Profesional</strong> o <strong>Corredor</strong>).
+            </p>
+          </div>
+        </div>
+
+        <!-- Paso 2 -->
+        <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 flex items-start gap-3">
+          <span class="w-6 h-6 rounded-lg bg-emerald-950 text-emerald-300 flex items-center justify-center text-xs font-mono font-bold border border-emerald-700/60 shrink-0 mt-0.5">2</span>
+          <div>
+            <h4 class="font-bold text-white text-sm">Paso 2: Transfiere</h4>
+            <p class="text-slate-300 mt-1 leading-relaxed">
+              Realiza la transferencia a la cuenta bancaria que aparece en pantalla.
+            </p>
+          </div>
+        </div>
+
+        <!-- Paso 3 -->
+        <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 flex items-start gap-3">
+          <span class="w-6 h-6 rounded-lg bg-emerald-950 text-emerald-300 flex items-center justify-center text-xs font-mono font-bold border border-emerald-700/60 shrink-0 mt-0.5">3</span>
+          <div>
+            <h4 class="font-bold text-white text-sm">Paso 3: Envía tu Comprobante</h4>
+            <p class="text-slate-300 mt-1 leading-relaxed">
+              Envía la foto de tu comprobante a <strong class="text-emerald-300 font-mono">informatica.full@gmail.com</strong> o avísanos por WhatsApp.
+            </p>
+          </div>
+        </div>
+
+        <!-- Paso 4 -->
+        <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 flex items-start gap-3">
+          <span class="w-6 h-6 rounded-lg bg-emerald-950 text-emerald-300 flex items-center justify-center text-xs font-mono font-bold border border-emerald-700/60 shrink-0 mt-0.5">4</span>
+          <div>
+            <h4 class="font-bold text-white text-sm">Paso 4: Activación</h4>
+            <p class="text-slate-300 mt-1 leading-relaxed">
+              Nosotros verificaremos tu pago y activaremos los créditos en tu cuenta. Esto puede tardar unos minutos (o hasta 1 hora hábil).
+            </p>
+          </div>
+        </div>
+
+        <!-- Paso 5 -->
+        <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 flex items-start gap-3">
+          <span class="w-6 h-6 rounded-lg bg-emerald-950 text-emerald-300 flex items-center justify-center text-xs font-mono font-bold border border-emerald-700/60 shrink-0 mt-0.5">5</span>
+          <div>
+            <h4 class="font-bold text-white text-sm">Paso 5: ¡A Tasar!</h4>
+            <p class="text-slate-300 mt-1 leading-relaxed">
+              Una vez activados tus créditos, podrás generar tus informes de tasación y descargarlos en PDF (y Excel si tienes el plan correspondiente).
+            </p>
+          </div>
+        </div>
+
+        <!-- Nota Importante -->
+        <div class="p-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-500/40 text-emerald-200 flex items-center gap-2.5">
+          <span class="text-xl shrink-0">💬</span>
+          <p class="text-xs leading-relaxed">
+            <strong class="text-emerald-100">Nota Importante:</strong> Si tienes dudas en cualquier momento, <a href="https://wa.me/56988160607" target="_blank" rel="noopener noreferrer" class="underline font-bold text-white hover:text-emerald-300">contáctanos directamente por WhatsApp (+56 9 8816 0607)</a>. ¡Estamos para ayudarte!
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Pie del Modal: Botón Entendido -->
+      <div class="pt-3.5 border-t border-slate-800 flex items-center justify-end shrink-0">
+        <button id="btnCerrarGuiaUsuarioPie" type="button" class="w-full sm:w-auto py-2.5 px-6 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs sm:text-sm shadow-lg shadow-emerald-500/20 transition cursor-pointer text-center">
+          Entendido
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Script Principal del Frontend -->
+  <script src="/js/app.js"></script>
+</body>
+</html>

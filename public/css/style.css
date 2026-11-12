@@ -1,0 +1,305 @@
+/* Estilos adicionales personalizados para Tasador Inmobiliario IA */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-mono-numbers {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Animaciones sutiles */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Estilos de scrollbar personalizados */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+@media (max-width: 640px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+}
+
+/* Transiciones suaves */
+button, input, select {
+  transition: all 0.2s ease-in-out;
+}
+
+/* ========================================================
+   MODAL DE INFORME: MODO MAXIMIZADO / PANTALLA COMPLETA
+   ======================================================== */
+#modalInformeCompleto.modal-informe-maximized {
+  padding: 0 !important;
+  z-index: 9999 !important;
+  background-color: #020617 !important;
+}
+
+#modalInformeCompleto.modal-informe-maximized #modalInformeCard {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  border-radius: 0 !important;
+  border: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Ajuste del cuerpo en modo maximizado */
+#modalInformeCompleto.modal-informe-maximized #modalInformeBody {
+  padding: 1.75rem 2.5rem !important;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ========================================================
+   ACCESIBILIDAD VISUAL Y TIPOGRÁFICA EN MODO MAXIMIZADO
+   ======================================================== */
+#modalInformeCompleto.modal-informe-maximized #modalTituloComuna {
+  font-size: 1.5rem !important;
+}
+
+#modalInformeCompleto.modal-informe-maximized #resValorReferencia {
+  font-size: 3.25rem !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.02em;
+}
+
+#modalInformeCompleto.modal-informe-maximized #resPrecioUnitario,
+#modalInformeCompleto.modal-informe-maximized #resRangoReferencia {
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+}
+
+#modalInformeCompleto.modal-informe-maximized #resConclusion {
+  font-size: 1.1rem !important;
+  line-height: 1.85 !important;
+}
+
+/* Tabla de comparables con tipografía y espaciado mejorado */
+#modalInformeCompleto.modal-informe-maximized table {
+  font-size: 0.95rem !important;
+}
+
+#modalInformeCompleto.modal-informe-maximized table th {
+  font-size: 0.85rem !important;
+  padding-top: 0.85rem !important;
+  padding-bottom: 0.85rem !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+#modalInformeCompleto.modal-informe-maximized table td {
+  padding-top: 0.85rem !important;
+  padding-bottom: 0.85rem !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+#modalInformeCompleto.modal-informe-maximized table td .font-bold {
+  font-size: 0.95rem !important;
+}
+
+#modalInformeCompleto.modal-informe-maximized table td:last-child {
+  max-width: 450px !important;
+  font-size: 0.875rem !important;
+  line-height: 1.5 !important;
+}
+
+/* Vista móvil / tarjetas en pantalla completa */
+#modalInformeCompleto.modal-informe-maximized #listaFactoresCardsMobile {
+  font-size: 1rem !important;
+}
+
+#modalInformeCompleto.modal-informe-maximized #listaAdvertencias li {
+  font-size: 0.95rem !important;
+  line-height: 1.7 !important;
+}
+
+/* Placeholders accesibles de alta legibilidad y contraste */
+input::placeholder, select::placeholder, textarea::placeholder {
+  color: #94a3b8 !important; /* slate-400 */
+  opacity: 1 !important;
+}
+
+/* ========================================================
+   ESTILOS PARA TABLA DE USUARIOS (PANEL DE ADMINISTRACIÓN)
+   ======================================================== */
+#adminUsersListContainer::-webkit-scrollbar {
+  width: 6px;
+}
+
+#adminUsersListContainer::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 8px;
+}
+
+#adminUsersListContainer::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 8px;
+}
+
+#adminUsersListContainer::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+.btnAdminResetRol {
+  box-shadow: 0 1px 2px 0 rgba(225, 29, 72, 0.2);
+}
+
+.btnAdminResetRol:hover {
+  box-shadow: 0 4px 12px 0 rgba(225, 29, 72, 0.35);
+  transform: translateY(-1px);
+}
+
+/* ========================================================
+   ESTILOS DE IMPRESIÓN / EXPORTACIÓN PDF (MANUAL DEL ADMIN)
+   ======================================================== */
+@media print {
+  @page {
+    margin: 12mm 10mm 12mm 10mm;
+    size: auto;
+  }
+
+  /* Ocultar todo excepto el modal del manual */
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  #modalManualAdmin,
+  #modalManualAdmin * {
+    visibility: visible;
+  }
+
+  #modalManualAdmin {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    min-height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    display: block !important;
+    z-index: 99999 !important;
+    overflow: visible !important;
+  }
+
+  #manualAdminPrintableArea {
+    position: static !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: none !important;
+    height: auto !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  #manualAdminPrintableArea .overflow-y-auto {
+    overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
+    padding-right: 0 !important;
+  }
+
+  /* Tarjetas de Fases: fondo blanco con borde tenue para no gastar tinta */
+  #manualAdminPrintableArea .bg-slate-900,
+  #manualAdminPrintableArea .bg-slate-950,
+  #manualAdminPrintableArea .bg-amber-950\/30 {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    margin-bottom: 12px !important;
+    padding: 12px 14px !important;
+    border-radius: 12px !important;
+  }
+
+  #manualAdminPrintableArea .text-white,
+  #manualAdminPrintableArea .text-purple-300,
+  #manualAdminPrintableArea .text-emerald-300,
+  #manualAdminPrintableArea .text-amber-300,
+  #manualAdminPrintableArea .text-amber-200 {
+    color: #0f172a !important;
+  }
+
+  #manualAdminPrintableArea .text-slate-400,
+  #manualAdminPrintableArea .text-slate-300,
+  #manualAdminPrintableArea .text-amber-200\/90 {
+    color: #334155 !important;
+  }
+
+  #manualAdminPrintableArea .bg-purple-950,
+  #manualAdminPrintableArea .bg-emerald-950 {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    border: 1px solid #94a3b8 !important;
+  }
+
+  #manualAdminPrintableArea code {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+
+
+
