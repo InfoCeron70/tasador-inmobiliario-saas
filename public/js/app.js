@@ -100,15 +100,31 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 /**
  * Consulta la configuración pública de autenticación al backend (Google Client ID)
+ * Revisa primero si el servidor inyectó las variables directamente en window.__ENV__ o data-attribute
  */
 async function cargarConfiguracionAuth() {
+  const noticeBox = document.getElementById('googleConfigNotice');
+
+  // 1. Detección inmediata desde variables inyectadas por el servidor
+  const envServer = window.__ENV__ || {};
+  const serverId = (envServer.GOOGLE_CLIENT_ID || document.body?.dataset?.googleClientId || '').trim();
+  const serverConfigurado = Boolean(envServer.GOOGLE_CONFIGURADO || (serverId && !serverId.includes('tu_google_client_id')));
+
+  if (serverConfigurado && serverId) {
+    AppState.googleClientId = serverId;
+    AppState.googleConfigurado = true;
+    if (noticeBox) noticeBox.classList.add('hidden');
+    inicializarGoogleIdentityServices();
+    return;
+  }
+
+  // 2. Consulta de respaldo vía API (/api/auth/config)
   try {
     const res = await fetch('/api/auth/config');
     const data = await res.json();
-    AppState.googleClientId = data.googleClientId || '';
+    AppState.googleClientId = (data.googleClientId || '').trim();
     AppState.googleConfigurado = Boolean(data.configurado && AppState.googleClientId);
 
-    const noticeBox = document.getElementById('googleConfigNotice');
     if (!AppState.googleConfigurado) {
       if (noticeBox) noticeBox.classList.remove('hidden');
     } else {

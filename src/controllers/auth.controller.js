@@ -265,10 +265,11 @@ async function googleAuth(req, res) {
       return res.status(400).json({ error: 'Token de Google no proporcionado (se requiere idToken o credential).' });
     }
 
-    const clientId = process.env.GOOGLE_CLIENT_ID || '';
+    const rawClientId = process.env.GOOGLE_CLIENT_ID || process.env.GOOGLE_CLIENTID || process.env.GMAIL_CLIENT_ID || '';
+    const clientId = rawClientId.trim().replace(/^["']|["']$/g, '');
     if (!clientId || clientId.includes('tu_google_client_id')) {
       return res.status(500).json({ 
-        error: 'El backend no tiene configurado GOOGLE_CLIENT_ID en el archivo .env. Por favor revisa la configuración.' 
+        error: 'El backend no tiene configurado GOOGLE_CLIENT_ID en las variables de entorno de Render (.env). Por favor revisa la configuración.' 
       });
     }
 
@@ -486,8 +487,9 @@ async function resetearRolAdmin(req, res) {
  * Retorna la configuración pública para el frontend (como GOOGLE_CLIENT_ID)
  */
 function obtenerConfigAuth(req, res) {
-  const clientId = process.env.GOOGLE_CLIENT_ID || '';
-  const configurado = Boolean(clientId && !clientId.includes('tu_google_client_id'));
+  const rawClientId = process.env.GOOGLE_CLIENT_ID || process.env.GOOGLE_CLIENTID || process.env.GMAIL_CLIENT_ID || '';
+  const clientId = rawClientId.trim().replace(/^["']|["']$/g, '');
+  const configurado = Boolean(clientId && !clientId.includes('tu_google_client_id') && clientId !== '');
   return res.json({
     googleClientId: configurado ? clientId : '',
     configurado
