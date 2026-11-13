@@ -151,10 +151,40 @@ function calcularTasacion(inmueble, comparables, configMotor = {}) {
   const sumaUnitAjustados = comparables_analisis.reduce((acc, c) => acc + c.precio_unitario_ajustado, 0);
   const precio_unitario_promedio = Math.round(sumaUnitAjustados / comparables_analisis.length);
 
-  // 1.8 Multiplicar por superficie del inmueble para obtener valor_referencia
-  const valor_referencia = Math.round(precio_unitario_promedio * supInmueble);
+  // 1.8 Ajuste por equipamiento del inmueble objetivo (Estacionamiento, Bodega, Ascensor)
+  let factorEquipamiento = 1.0;
+  const tieneEstacionamiento = String(inmueble.estacionamiento || '').toLowerCase().includes('s');
+  const tieneBodega = String(inmueble.bodega || '').toLowerCase().includes('s');
+  const tieneAscensor = String(inmueble.ascensor || '').toLowerCase().includes('s');
+  const esDepto = String(inmueble.tipo || '').toLowerCase().includes('depto') || String(inmueble.tipo || '').toLowerCase().includes('departamento');
+  const pisoNum = Number(inmueble.piso) || 1;
 
-  // 1.9 Calcular el rango de referencia dinámico (valor ± margenErrorPct%)
+  const notasEquipamiento = [];
+
+  if (tieneEstacionamiento) {
+    factorEquipamiento += 0.02; // +2% por contar con estacionamiento
+    notasEquipamiento.push('estacionamiento (+2%)');
+  }
+
+  if (tieneBodega) {
+    factorEquipamiento += 0.01; // +1% por bodega
+    notasEquipamiento.push('bodega (+1%)');
+  }
+
+  if (esDepto) {
+    if (tieneAscensor) {
+      factorEquipamiento += 0.01; // +1% ascensor en edificio
+      notasEquipamiento.push('ascensor (+1%)');
+    } else if (pisoNum >= 3) {
+      factorEquipamiento -= 0.02; // -2% piso alto sin ascensor
+      notasEquipamiento.push(`piso ${pisoNum} sin ascensor (-2%)`);
+    }
+  }
+
+  // 1.9 Multiplicar por superficie del inmueble y factor de equipamiento para obtener valor_referencia
+  const valor_referencia = Math.round(precio_unitario_promedio * supInmueble * factorEquipamiento);
+
+  // 1.10 Calcular el rango de referencia dinámico (valor ± margenErrorPct%)
   const ratioMargen = Math.max(0.01, Math.min(0.50, Math.abs(margenErrorPct) / 100));
   const rango_referencia = {
     min: Math.round(valor_referencia * (1 - ratioMargen)),
@@ -162,12 +192,19 @@ function calcularTasacion(inmueble, comparables, configMotor = {}) {
     margen_pct: margenErrorPct
   };
 
+  const advertencias = [...ADVERTENCIAS_ESTANDAR];
+  if (notasEquipamiento.length > 0) {
+    const diffPct = Math.round((factorEquipamiento - 1) * 100);
+    const signo = diffPct >= 0 ? '+' : '';
+    advertencias.unshift(`Ajuste de equipamiento del inmueble evaluado: Ponderación de ${signo}${diffPct}% por ${notasEquipamiento.join(', ')}.`);
+  }
+
   return {
     comparables_analisis,
     precio_unitario_promedio,
     valor_referencia,
     rango_referencia,
-    advertencias: [...ADVERTENCIAS_ESTANDAR],
+    advertencias,
     metodologia_y_fuentes: METODOLOGIA_Y_FUENTES
   };
 }

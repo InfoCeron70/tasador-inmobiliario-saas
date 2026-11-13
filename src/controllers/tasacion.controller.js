@@ -110,7 +110,16 @@ async function crearTasacion(req, res) {
       rango_referencia: calculos.rango_referencia,
       conclusion: redaccion.conclusion,
       advertencias: calculos.advertencias,
-      metodologia_y_fuentes: calculos.metodologia_y_fuentes
+      metodologia_y_fuentes: calculos.metodologia_y_fuentes,
+      inmueble: {
+        ...inmueble,
+        direccion: inmueble.direccion || '',
+        estacionamiento: inmueble.estacionamiento || 'No',
+        bodega: inmueble.bodega || 'No',
+        piso: inmueble.piso || null,
+        ascensor: inmueble.ascensor || null,
+        amenidades: inmueble.amenidades || ''
+      }
     };
 
     const fechaHoy = new Date().toISOString().slice(0, 10);
@@ -261,35 +270,55 @@ async function exportarPdf(req, res) {
       .text('1. ANTECEDENTES DEL INMUEBLE A VALUAR', 50, currentY + 6);
 
     currentY += 32;
-    doc.rect(40, currentY, 515, 75).fill('#F8FAFC').stroke('#E2E8F0');
 
-    doc.fillColor('#334155').fontSize(9).font('Helvetica');
-    const col1X = 55;
-    const col2X = 220;
-    const col3X = 380;
+    const esDepto = String(inmueble.tipo || '').toLowerCase().includes('depto') || String(inmueble.tipo || '').toLowerCase().includes('departamento');
+    const boxHeight = esDepto ? 96 : 82;
+    doc.rect(40, currentY, 515, boxHeight).fill('#F8FAFC').stroke('#E2E8F0');
 
-    doc.font('Helvetica-Bold').text('Tipo de Inmueble:', col1X, currentY + 12)
-      .font('Helvetica').text(inmueble.tipo || '-', col1X + 90, currentY + 12);
-    doc.font('Helvetica-Bold').text('Superficie Útil:', col1X, currentY + 30)
-      .font('Helvetica').text(`${inmueble.superficie_m2} m²`, col1X + 90, currentY + 30);
-    doc.font('Helvetica-Bold').text('Dormitorios:', col1X, currentY + 48)
-      .font('Helvetica').text(`${inmueble.dormitorios}`, col1X + 90, currentY + 48);
+    doc.fillColor('#334155').fontSize(8.5).font('Helvetica');
+    const col1X = 52;
+    const col2X = 215;
+    const col3X = 375;
 
-    doc.font('Helvetica-Bold').text('Baños:', col2X, currentY + 12)
-      .font('Helvetica').text(`${inmueble.banos}`, col2X + 65, currentY + 12);
-    doc.font('Helvetica-Bold').text('Antigüedad:', col2X, currentY + 30)
-      .font('Helvetica').text(`${inmueble.antiguedad} años`, col2X + 65, currentY + 30);
-    doc.font('Helvetica-Bold').text('Estado:', col2X, currentY + 48)
-      .font('Helvetica').text(inmueble.estado_conservacion || '-', col2X + 65, currentY + 48);
+    // Fila 1: Tipo, Superficie, Comuna
+    doc.font('Helvetica-Bold').text('Tipo:', col1X, currentY + 9)
+      .font('Helvetica').text(inmueble.tipo || '-', col1X + 35, currentY + 9);
+    doc.font('Helvetica-Bold').text('Superficie Útil:', col2X, currentY + 9)
+      .font('Helvetica').text(`${inmueble.superficie_m2} m²`, col2X + 80, currentY + 9);
+    doc.font('Helvetica-Bold').text('Comuna:', col3X, currentY + 9)
+      .font('Helvetica').text(inmueble.comuna || '-', col3X + 55, currentY + 9);
 
-    doc.font('Helvetica-Bold').text('Comuna:', col3X, currentY + 12)
-      .font('Helvetica').text(inmueble.comuna || '-', col3X + 55, currentY + 12);
+    // Fila 2: Dormitorios/Baños, Antigüedad/Estado, Estacionamiento/Bodega
+    doc.font('Helvetica-Bold').text('Dorm / Baños:', col1X, currentY + 26)
+      .font('Helvetica').text(`${inmueble.dormitorios}D / ${inmueble.banos}B`, col1X + 75, currentY + 26);
+    doc.font('Helvetica-Bold').text('Antig. / Estado:', col2X, currentY + 26)
+      .font('Helvetica').text(`${inmueble.antiguedad}a / ${inmueble.estado_conservacion || '-'}`, col2X + 80, currentY + 26);
+    doc.font('Helvetica-Bold').text('Estac. / Bodega:', col3X, currentY + 26)
+      .font('Helvetica').text(`${inmueble.estacionamiento || 'No'} / ${inmueble.bodega || 'No'}`, col3X + 85, currentY + 26);
+
+    // Fila 3: Dirección / Sector y P. Estimado
+    const dirTexto = inmueble.direccion ? inmueble.direccion : `Sector ${inmueble.comuna || '-'}`;
+    doc.font('Helvetica-Bold').text('Dirección:', col1X, currentY + 43)
+      .font('Helvetica').text(dirTexto, col1X + 55, currentY + 43, { width: 310, ellipsis: true });
     if (inmueble.precio_referencia) {
-      doc.font('Helvetica-Bold').text('P. Estimado:', col3X, currentY + 30)
-        .font('Helvetica').text(formatearCLP(inmueble.precio_referencia), col3X + 65, currentY + 30);
+      doc.font('Helvetica-Bold').text('P. Ref:', col3X, currentY + 43)
+        .font('Helvetica').text(formatearCLP(inmueble.precio_referencia), col3X + 45, currentY + 43);
     }
 
-    currentY += 90;
+    // Fila 4: Si es Departamento (Piso y Ascensor) y/o Amenidades
+    if (esDepto) {
+      doc.font('Helvetica-Bold').text('Piso / Ascensor:', col1X, currentY + 60)
+        .font('Helvetica').text(`Piso ${inmueble.piso || '-'} / Ascensor: ${inmueble.ascensor || 'No'}`, col1X + 85, currentY + 60);
+      if (inmueble.amenidades) {
+        doc.font('Helvetica-Bold').text('Amenidades:', col2X, currentY + 60)
+          .font('Helvetica').text(inmueble.amenidades, col2X + 70, currentY + 60, { width: 260, ellipsis: true });
+      }
+    } else if (inmueble.amenidades) {
+      doc.font('Helvetica-Bold').text('Amenidades:', col1X, currentY + 60)
+        .font('Helvetica').text(inmueble.amenidades, col1X + 70, currentY + 60, { width: 450, ellipsis: true });
+    }
+
+    currentY += boxHeight + 15;
 
     // Caja de Valor de Referencia (Destacada en azul marino profundo)
     doc.rect(40, currentY, 515, 80).fill('#1E3A8A');
@@ -450,12 +479,20 @@ async function exportarExcel(req, res) {
 
     const datosInmueble = [
       ['Tipo de Inmueble', inmueble.tipo || '-'],
+      ['Dirección o Sector', inmueble.direccion || 'No especificada'],
+      ['Comuna', inmueble.comuna || '-'],
       ['Superficie Útil (m²)', Number(inmueble.superficie_m2) || 0],
       ['Dormitorios', Number(inmueble.dormitorios) || 0],
       ['Baños', Number(inmueble.banos) || 0],
       ['Antigüedad (años)', Number(inmueble.antiguedad) || 0],
       ['Estado de Conservación', inmueble.estado_conservacion || '-'],
-      ['Comuna / Sector', inmueble.comuna || '-'],
+      ['Estacionamiento', inmueble.estacionamiento || 'No'],
+      ['Bodega', inmueble.bodega || 'No'],
+      ...(inmueble.tipo === 'Departamento' ? [
+        ['Piso (Departamento)', inmueble.piso ? Number(inmueble.piso) : '-'],
+        ['Ascensor en Edificio', inmueble.ascensor || 'No']
+      ] : []),
+      ['Amenidades / Áreas Comunes', inmueble.amenidades || 'Ninguna especificada'],
       ['Precio Referencial Solicitante (CLP)', Number(inmueble.precio_referencia) || 'No especificado']
     ];
 

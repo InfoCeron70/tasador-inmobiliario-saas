@@ -43,8 +43,17 @@ function generarConclusionLocal(calculos, inmueble, comparables) {
   if (tieneMayor) plusvaliaFrase = 'con ajustes al alza por sectores de mayor plusvalía';
   if (tieneMenor) plusvaliaFrase = 'con ponderaciones por variaciones en la plusvalía del entorno';
 
+  const ubicacionTexto = inmueble.direccion ? `${inmueble.direccion}, ${inmueble.comuna}` : inmueble.comuna;
+  const equipamientoTexto = [
+    `Estacionamiento: ${inmueble.estacionamiento || 'No'}`,
+    `Bodega: ${inmueble.bodega || 'No'}`,
+    inmueble.piso ? `Piso: ${inmueble.piso}` : null,
+    inmueble.ascensor ? `Ascensor: ${inmueble.ascensor}` : null,
+    inmueble.amenidades ? `Amenidades: ${inmueble.amenidades}` : null
+  ].filter(Boolean).join(', ');
+
   return {
-    conclusion: `Conforme al Método Comparativo de Mercado (NCh 2613) sobre ${countComp} inmuebles del sector ${plusvaliaFrase}, la propiedad (${inmueble.tipo || 'Inmueble'} en ${inmueble.comuna || 'la comuna'}, ${inmueble.superficie_m2 || 0} m², estado ${inmueble.estado_conservacion || 'Bueno'}) presenta un valor comercial referencial de $${valorFmt} CLP ($${unitFmt}/m²), en un rango técnico estimado de $${minFmt} a $${maxFmt} CLP.`
+    conclusion: `Conforme al Método Comparativo de Mercado (NCh 2613) sobre ${countComp} inmuebles del sector ${plusvaliaFrase}, la propiedad (${inmueble.tipo || 'Inmueble'} en ${ubicacionTexto}, ${inmueble.superficie_m2 || 0} m², estado ${inmueble.estado_conservacion || 'Bueno'}${equipamientoTexto ? '; ' + equipamientoTexto : ''}) presenta un valor comercial referencial de $${valorFmt} CLP ($${unitFmt}/m²), en un rango técnico estimado de $${minFmt} a $${maxFmt} CLP.`
   };
 }
 
@@ -79,8 +88,9 @@ async function redactarConclusionConDeepSeek(calculos, inmueble, comparables) {
   const userPrompt = `Eres un tasador experto chileno. Basado en los siguientes resultados matemáticos de valuación inmobiliaria:
 
 DATOS DEL INMUEBLE A VALUAR:
-- Inmueble: ${inmueble.tipo} ubicado en la comuna de ${inmueble.comuna}
+- Inmueble: ${inmueble.tipo} ubicado en ${inmueble.direccion ? inmueble.direccion + ', ' : ''}${inmueble.comuna}
 - Superficie: ${inmueble.superficie_m2} m² (${inmueble.dormitorios} dorm., ${inmueble.banos} baños, ${inmueble.antiguedad} años, estado: ${inmueble.estado_conservacion})
+- Equipamiento: Estacionamiento: ${inmueble.estacionamiento || 'No'}, Bodega: ${inmueble.bodega || 'No'}${inmueble.piso ? ', Piso: ' + inmueble.piso : ''}${inmueble.ascensor ? ', Ascensor: ' + inmueble.ascensor : ''}${inmueble.amenidades ? ', Amenidades: ' + inmueble.amenidades : ''}
 - Precio unitario promedio ajustado: $${unitFmt} CLP/m²
 - Valor comercial de referencia: $${valorFmt} CLP
 - Rango de referencia estimado (±8%): $${minFmt} CLP a $${maxFmt} CLP

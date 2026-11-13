@@ -467,7 +467,29 @@
                 </select>
               </div>
 
-              <!-- 8. Precio de Referencia (Opcional) -->
+              <!-- 8. Dirección o Sector (Opcional) con Botón Ver en Mapa -->
+              <div class="sm:col-span-2">
+                <label for="direccionInmueble" class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center justify-between">
+                  <span class="flex items-center">
+                    <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    Dirección o Sector (Opcional)
+                  </span>
+                  <span class="text-[10px] text-slate-400">Verificar en Google Maps</span>
+                </label>
+                <div class="flex gap-2">
+                  <input type="text" id="direccionInmueble" name="direccionInmueble" placeholder="Ej: Av. Las Condes 1234, Depto 502" class="flex-1 bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                  <button id="btnVerEnMapa" type="button" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-md cursor-pointer shrink-0 active:scale-95" title="Abrir ubicación en Google Maps">
+                    <span>📍</span>
+                    <span class="hidden sm:inline">Ver en Mapa</span>
+                    <span class="sm:hidden">Mapa</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 9. Precio de Referencia (Opcional) -->
               <div>
                 <label for="precioReferencia" class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center">
                   <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -475,7 +497,75 @@
                   </svg>
                   Precio de Referencia CLP (Opcional)
                 </label>
-                <input type="text" inputmode="numeric" id="precioReferencia" name="precioReferencia" placeholder="Ej: 160.000.000" class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                <input type="text" inputmode="numeric" id="precioReferencia" name="precioReferencia" placeholder="Ej: 185.000.000" class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+              </div>
+
+              <!-- 10. Estacionamiento -->
+              <div>
+                <label for="estacionamiento" class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center">
+                  <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8a2 2 0 012 2v10a2 2 0 01-2 2H8a2 2 0 01-2-2V9a2 2 0 012-2z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 11h3a2 2 0 010 4H9v-4z"/>
+                  </svg>
+                  Estacionamiento
+                </label>
+                <select id="estacionamiento" name="estacionamiento" class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                  <option value="Sí" selected>Sí</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+
+              <!-- 11. Bodega -->
+              <div>
+                <label for="bodega" class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center">
+                  <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                  </svg>
+                  Bodega
+                </label>
+                <select id="bodega" name="bodega" class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                  <option value="Sí" selected>Sí</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+
+              <!-- 12. Piso y Ascensor (Condicional: Solo si Departamento) -->
+              <div id="seccionPisoAscensor" class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 p-3.5 sm:p-4 rounded-2xl bg-slate-800/60 border border-slate-700/70">
+                <div>
+                  <label for="piso" class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center">
+                    <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                    Piso (Departamento)
+                  </label>
+                  <input type="number" id="piso" name="piso" min="1" max="80" placeholder="Ej: 5" value="5" class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                </div>
+                <div>
+                  <label for="ascensor" class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center">
+                    <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
+                    </svg>
+                    Ascensor en Edificio
+                  </label>
+                  <select id="ascensor" name="ascensor" class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                    <option value="Sí" selected>Sí</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- 13. Amenidades (Opcional) -->
+              <div class="sm:col-span-2">
+                <label for="amenidades" class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center justify-between">
+                  <span class="flex items-center">
+                    <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                    </svg>
+                    Amenidades / Áreas Comunes (Opcional)
+                  </span>
+                  <span class="text-[10px] text-slate-400">Piscina, quincho, gimnasio, etc.</span>
+                </label>
+                <input type="text" id="amenidades" name="amenidades" placeholder="Ej: Piscina, quincho, gimnasio, conserjería 24/7" class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
               </div>
 
             </div>
@@ -1406,6 +1496,56 @@
             <div>
               <span class="text-blue-300 block text-[11px]">Rango de Referencia Estimado:</span>
               <span class="text-sm font-bold text-white font-mono-numbers" id="resRangoReferencia">$ 0 - $ 0 CLP</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ficha Técnica del Inmueble Objetivo -->
+        <div id="modalFichaInmueble" class="bg-slate-800/90 border border-slate-700/80 rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm">
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-700/70">
+            <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+              Ficha Técnica del Inmueble Objetivo
+            </h3>
+            <button id="modalBtnVerMapaInmueble" type="button" class="text-xs font-bold text-blue-300 hover:text-white bg-blue-950/80 hover:bg-blue-900 border border-blue-700/60 px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-sm" title="Ver ubicación en Google Maps">
+              <span>📍</span>
+              <span>Ver en Maps</span>
+            </button>
+          </div>
+
+          <!-- Grilla de Atributos -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 text-xs">
+            <div class="bg-slate-900/70 p-2.5 rounded-xl border border-slate-700/50">
+              <span class="text-slate-400 text-[10px] block font-medium">Tipo / Comuna</span>
+              <span id="modalInmuebleTipoComuna" class="font-bold text-white text-xs sm:text-sm">-</span>
+            </div>
+            <div class="bg-slate-900/70 p-2.5 rounded-xl border border-slate-700/50">
+              <span class="text-slate-400 text-[10px] block font-medium">Superficie Útil</span>
+              <span id="modalInmuebleSuperficie" class="font-bold text-emerald-400 text-xs sm:text-sm font-mono-numbers">-</span>
+            </div>
+            <div class="bg-slate-900/70 p-2.5 rounded-xl border border-slate-700/50">
+              <span class="text-slate-400 text-[10px] block font-medium">Dormitorios / Baños</span>
+              <span id="modalInmuebleDormBanos" class="font-bold text-white text-xs sm:text-sm">-</span>
+            </div>
+            <div class="bg-slate-900/70 p-2.5 rounded-xl border border-slate-700/50">
+              <span class="text-slate-400 text-[10px] block font-medium">Antigüedad / Estado</span>
+              <span id="modalInmuebleAntiguedadEstado" class="font-bold text-white text-xs sm:text-sm">-</span>
+            </div>
+            <div class="bg-slate-900/70 p-2.5 rounded-xl border border-slate-700/50">
+              <span class="text-slate-400 text-[10px] block font-medium">Estacionamiento / Bodega</span>
+              <span id="modalInmuebleEstacBodega" class="font-bold text-white text-xs sm:text-sm">-</span>
+            </div>
+            <div id="modalInmuebleBoxPisoAscensor" class="bg-slate-900/70 p-2.5 rounded-xl border border-slate-700/50">
+              <span class="text-slate-400 text-[10px] block font-medium">Piso / Ascensor</span>
+              <span id="modalInmueblePisoAscensor" class="font-bold text-white text-xs sm:text-sm">-</span>
+            </div>
+            <div class="col-span-2 bg-slate-900/70 p-2.5 rounded-xl border border-slate-700/50">
+              <span class="text-slate-400 text-[10px] block font-medium">Dirección o Sector</span>
+              <span id="modalInmuebleDireccion" class="font-bold text-white text-xs sm:text-sm truncate block">-</span>
+            </div>
+            <div class="col-span-2 sm:col-span-4 bg-slate-900/70 p-2.5 rounded-xl border border-slate-700/50" id="modalInmuebleBoxAmenidades">
+              <span class="text-slate-400 text-[10px] block font-medium">Amenidades y Equipamiento</span>
+              <span id="modalInmuebleAmenidades" class="text-slate-200 text-xs">-</span>
             </div>
           </div>
         </div>

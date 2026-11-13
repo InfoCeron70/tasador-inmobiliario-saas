@@ -53,13 +53,19 @@ const desformatearMiles = (val) => {
 const EJEMPLO_DATOS = {
   inmueble: {
     tipo: 'Departamento',
+    direccion: 'Av. Las Condes 1234, Depto 502',
     superficie_m2: 85,
     dormitorios: 3,
     banos: 2,
     antiguedad: 5,
     estado_conservacion: 'Bueno',
     comuna: 'Las Condes',
-    precio_referencia: 185000000
+    precio_referencia: 185000000,
+    estacionamiento: 'Sí',
+    bodega: 'Sí',
+    piso: 5,
+    ascensor: 'Sí',
+    amenidades: 'Piscina, quincho, gimnasio'
   },
   comparables: [
     {
@@ -90,6 +96,7 @@ const EJEMPLO_DATOS = {
 document.addEventListener('DOMContentLoaded', async () => {
   inicializarComparables();
   configurarEventos();
+  actualizarVisibilidadPisoAscensor();
   await cargarConfiguracionAuth();
   await verificarEstadoSesion();
 });
@@ -1261,6 +1268,13 @@ function configurarEventos() {
 
   // Cargar Ejemplo
   document.getElementById('btnEjemplo')?.addEventListener('click', cargarDatosEjemplo);
+
+  // Cambio de Tipo de Inmueble (mostrar/ocultar Piso y Ascensor si es Departamento)
+  document.getElementById('tipoInmueble')?.addEventListener('change', actualizarVisibilidadPisoAscensor);
+
+  // Botón Ver en Google Maps (Formulario y Modal)
+  document.getElementById('btnVerEnMapa')?.addEventListener('click', abrirMapaInmueble);
+  document.getElementById('modalBtnVerMapaInmueble')?.addEventListener('click', abrirMapaInmueble);
 
   // Formateador de miles en tiempo real para Precio de Referencia (CLP)
   const inputPrecioRef = document.getElementById('precioReferencia');
@@ -2495,8 +2509,45 @@ function manejarAvisoWhatsappFinal() {
 // 5. PROCESAMIENTO DE TASACIÓN (CONSUME 1 CRÉDITO)
 // ========================================================
 
+/**
+ * Alterna la visibilidad de los campos Piso y Ascensor (solo aplican a Departamento)
+ */
+function actualizarVisibilidadPisoAscensor() {
+  const tipo = document.getElementById('tipoInmueble')?.value || 'Departamento';
+  const seccion = document.getElementById('seccionPisoAscensor');
+  if (!seccion) return;
+
+  if (tipo === 'Departamento') {
+    seccion.classList.remove('hidden');
+  } else {
+    seccion.classList.add('hidden');
+  }
+}
+
+/**
+ * Abre Google Maps con la dirección y/o comuna ingresada
+ */
+function abrirMapaInmueble() {
+  const dir = (document.getElementById('direccionInmueble')?.value || AppState.ultimoInmueble?.direccion || '').trim();
+  const com = (document.getElementById('comuna')?.value || AppState.ultimoInmueble?.comuna || '').trim();
+
+  if (!dir && !com) {
+    alert('📍 Por favor ingresa una Dirección o selecciona una Comuna para ver la ubicación en el mapa.');
+    return;
+  }
+
+  const queryParts = [];
+  if (dir) queryParts.push(dir);
+  if (com) queryParts.push(com);
+  queryParts.push('Chile');
+
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryParts.join(', '))}`;
+  window.open(mapsUrl, '_blank');
+}
+
 function cargarDatosEjemplo() {
   document.getElementById('tipoInmueble').value = EJEMPLO_DATOS.inmueble.tipo;
+  if (document.getElementById('direccionInmueble')) document.getElementById('direccionInmueble').value = EJEMPLO_DATOS.inmueble.direccion || '';
   document.getElementById('superficieM2').value = EJEMPLO_DATOS.inmueble.superficie_m2;
   document.getElementById('dormitorios').value = EJEMPLO_DATOS.inmueble.dormitorios;
   document.getElementById('banos').value = EJEMPLO_DATOS.inmueble.banos;
@@ -2504,6 +2555,13 @@ function cargarDatosEjemplo() {
   document.getElementById('estadoConservacion').value = EJEMPLO_DATOS.inmueble.estado_conservacion;
   document.getElementById('comuna').value = EJEMPLO_DATOS.inmueble.comuna;
   document.getElementById('precioReferencia').value = formatearMilesInput(EJEMPLO_DATOS.inmueble.precio_referencia);
+  if (document.getElementById('estacionamiento')) document.getElementById('estacionamiento').value = EJEMPLO_DATOS.inmueble.estacionamiento || 'Sí';
+  if (document.getElementById('bodega')) document.getElementById('bodega').value = EJEMPLO_DATOS.inmueble.bodega || 'Sí';
+  if (document.getElementById('piso')) document.getElementById('piso').value = EJEMPLO_DATOS.inmueble.piso || 5;
+  if (document.getElementById('ascensor')) document.getElementById('ascensor').value = EJEMPLO_DATOS.inmueble.ascensor || 'Sí';
+  if (document.getElementById('amenidades')) document.getElementById('amenidades').value = EJEMPLO_DATOS.inmueble.amenidades || '';
+
+  actualizarVisibilidadPisoAscensor();
 
   AppState.comparables = JSON.parse(JSON.stringify(EJEMPLO_DATOS.comparables));
   renderizarComparables();
@@ -2518,12 +2576,18 @@ async function procesarTasacion() {
   // Recolectar datos del inmueble
   const inmueble = {
     tipo: document.getElementById('tipoInmueble').value,
+    direccion: document.getElementById('direccionInmueble')?.value.trim() || '',
     superficie_m2: parseFloat(document.getElementById('superficieM2').value),
     dormitorios: parseInt(document.getElementById('dormitorios').value, 10),
     banos: parseInt(document.getElementById('banos').value, 10),
     antiguedad: parseInt(document.getElementById('antiguedad').value, 10),
     estado_conservacion: document.getElementById('estadoConservacion').value,
     comuna: document.getElementById('comuna').value.trim(),
+    estacionamiento: document.getElementById('estacionamiento')?.value || 'No',
+    bodega: document.getElementById('bodega')?.value || 'No',
+    piso: document.getElementById('piso')?.value ? parseInt(document.getElementById('piso').value, 10) : null,
+    ascensor: document.getElementById('ascensor')?.value || 'No',
+    amenidades: document.getElementById('amenidades')?.value.trim() || '',
     precio_referencia: document.getElementById('precioReferencia').value
       ? desformatearMiles(document.getElementById('precioReferencia').value)
       : null
@@ -2860,7 +2924,8 @@ function mostrarResultados(tasacion, inmueble, fecha) {
   const fechaTexto = fecha || new Date().toISOString().slice(0, 10);
 
   // 1. Llenar Tarjeta Compacta
-  document.getElementById('resCompactoTitulo').textContent = `${inmueble.comuna} (${inmueble.tipo}) • ${inmueble.superficie_m2} m²`;
+  const dirCompacto = inmueble.direccion ? `${inmueble.direccion}, ` : '';
+  document.getElementById('resCompactoTitulo').textContent = `${dirCompacto}${inmueble.comuna} (${inmueble.tipo}) • ${inmueble.superficie_m2} m²`;
   document.getElementById('resCompactoFecha').textContent = `Emisión: ${fechaTexto}`;
   document.getElementById('resCompactoValor').textContent = `${formatearMoneda(tasacion.valor_referencia)} CLP`;
   document.getElementById('resCompactoUnitario').textContent = `${formatearMoneda(tasacion.precio_unitario_promedio)} / m²`;
@@ -2868,6 +2933,40 @@ function mostrarResultados(tasacion, inmueble, fecha) {
   // 2. Llenar Modal de Informe Completo
   document.getElementById('modalTituloComuna').textContent = `Tasación en ${inmueble.comuna} (${inmueble.tipo})`;
   document.getElementById('modalFechaEmision').textContent = `Fecha de cálculo: ${fechaTexto}`;
+
+  // 2.1 Llenar Ficha Técnica del Inmueble en el Modal
+  if (document.getElementById('modalInmuebleTipoComuna')) {
+    document.getElementById('modalInmuebleTipoComuna').textContent = `${inmueble.tipo || '-'} • ${inmueble.comuna || '-'}`;
+  }
+  if (document.getElementById('modalInmuebleSuperficie')) {
+    document.getElementById('modalInmuebleSuperficie').textContent = `${inmueble.superficie_m2 || 0} m²`;
+  }
+  if (document.getElementById('modalInmuebleDormBanos')) {
+    document.getElementById('modalInmuebleDormBanos').textContent = `${inmueble.dormitorios || 0}D / ${inmueble.banos || 0}B`;
+  }
+  if (document.getElementById('modalInmuebleAntiguedadEstado')) {
+    document.getElementById('modalInmuebleAntiguedadEstado').textContent = `${inmueble.antiguedad || 0}a • ${inmueble.estado_conservacion || '-'}`;
+  }
+  if (document.getElementById('modalInmuebleEstacBodega')) {
+    document.getElementById('modalInmuebleEstacBodega').textContent = `Estac: ${inmueble.estacionamiento || 'No'} • Bod: ${inmueble.bodega || 'No'}`;
+  }
+  const boxPisoAsc = document.getElementById('modalInmuebleBoxPisoAscensor');
+  if (boxPisoAsc) {
+    if (inmueble.tipo === 'Departamento') {
+      boxPisoAsc.classList.remove('hidden');
+      if (document.getElementById('modalInmueblePisoAscensor')) {
+        document.getElementById('modalInmueblePisoAscensor').textContent = `Piso ${inmueble.piso || '-'} • Ascensor: ${inmueble.ascensor || 'No'}`;
+      }
+    } else {
+      boxPisoAsc.classList.add('hidden');
+    }
+  }
+  if (document.getElementById('modalInmuebleDireccion')) {
+    document.getElementById('modalInmuebleDireccion').textContent = inmueble.direccion ? inmueble.direccion : `Sector ${inmueble.comuna || '-'}`;
+  }
+  if (document.getElementById('modalInmuebleAmenidades')) {
+    document.getElementById('modalInmuebleAmenidades').textContent = inmueble.amenidades ? inmueble.amenidades : 'Sin amenidades especificadas';
+  }
 
   // Resetear moneda a CLP cada vez que se carga un nuevo informe
   AppState.monedaActiva = 'CLP';
@@ -3205,13 +3304,21 @@ async function cargarTasacionPorId(id) {
     const tasacion = reg.resultado_ia;
 
     document.getElementById('tipoInmueble').value = inmueble.tipo || 'Departamento';
+    if (document.getElementById('direccionInmueble')) document.getElementById('direccionInmueble').value = inmueble.direccion || '';
     document.getElementById('superficieM2').value = inmueble.superficie_m2 || '';
     document.getElementById('dormitorios').value = inmueble.dormitorios || '';
     document.getElementById('banos').value = inmueble.banos || '';
     document.getElementById('antiguedad').value = inmueble.antiguedad || 0;
     document.getElementById('estadoConservacion').value = inmueble.estado_conservacion || 'Bueno';
     document.getElementById('comuna').value = inmueble.comuna || '';
-    document.getElementById('precioReferencia').value = inmueble.precio_referencia || '';
+    document.getElementById('precioReferencia').value = inmueble.precio_referencia ? formatearMilesInput(inmueble.precio_referencia) : '';
+    if (document.getElementById('estacionamiento')) document.getElementById('estacionamiento').value = inmueble.estacionamiento || 'No';
+    if (document.getElementById('bodega')) document.getElementById('bodega').value = inmueble.bodega || 'No';
+    if (document.getElementById('piso')) document.getElementById('piso').value = inmueble.piso || '';
+    if (document.getElementById('ascensor')) document.getElementById('ascensor').value = inmueble.ascensor || 'No';
+    if (document.getElementById('amenidades')) document.getElementById('amenidades').value = inmueble.amenidades || '';
+
+    actualizarVisibilidadPisoAscensor();
 
     if (comparables.length >= AppState.minComparables) {
       AppState.comparables = comparables;
