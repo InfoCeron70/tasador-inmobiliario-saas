@@ -97,6 +97,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   inicializarComparables();
   configurarEventos();
   actualizarVisibilidadPisoAscensor();
+  const supInit = document.getElementById('superficieM2');
+  if (supInit && supInit.value) {
+    actualizarHelperSuperficie(supInit.value);
+  }
   await cargarConfiguracionAuth();
   await verificarEstadoSesion();
 });
@@ -962,6 +966,65 @@ function mostrarErrorAuth(mensaje) {
 // ========================================================
 
 /**
+ * Calcula el texto de ayuda dinámica para la distancia (km) de un comparable.
+ * Ejemplos:
+ *  0.6 -> "A 600 m (≈ 6 cuadras)"
+ *  1.5 -> "A 1.5 km (≈ 15 cuadras)"
+ *  vacío / <= 0 -> ""
+ * @param {string|number} distVal
+ * @returns {string}
+ */
+function calcularTextoDistancia(distVal) {
+  if (distVal === '' || distVal === null || distVal === undefined) return '';
+  const dist = parseFloat(distVal);
+  if (isNaN(dist) || dist <= 0) return '';
+
+  const cuadras = Math.round(dist * 10);
+  const textoCuadras = cuadras === 1 ? '≈ 1 cuadra' : `≈ ${cuadras} cuadras`;
+
+  if (dist < 1) {
+    const metros = Math.round(dist * 1000);
+    return `A ${metros} m (${textoCuadras})`;
+  } else {
+    const kmStr = Number.isInteger(dist) ? dist.toString() : parseFloat(dist.toFixed(2)).toString();
+    return `A ${kmStr} km (${textoCuadras})`;
+  }
+}
+
+/**
+ * Calcula el texto de ayuda dinámica para la superficie útil (m²) del inmueble.
+ * Ejemplos:
+ *  90 -> "≈ 9.5 x 9.5 m"
+ *  120 -> "≈ 11 x 11 m"
+ *  45 -> "≈ 6.7 x 6.7 m"
+ *  vacío / <= 0 -> ""
+ * @param {string|number} m2Val
+ * @returns {string}
+ */
+function calcularTextoSuperficie(m2Val) {
+  if (m2Val === '' || m2Val === null || m2Val === undefined) return '';
+  const m2 = parseFloat(m2Val);
+  if (isNaN(m2) || m2 <= 0) return '';
+
+  let lado = Math.sqrt(m2).toFixed(1);
+  if (lado.endsWith('.0')) {
+    lado = lado.slice(0, -2);
+  }
+  return `≈ ${lado} x ${lado} m`;
+}
+
+/**
+ * Actualiza el texto del elemento helper de superficie útil en el DOM
+ * @param {string|number} m2Val
+ */
+function actualizarHelperSuperficie(m2Val) {
+  const el = document.getElementById('helperSuperficieM2');
+  if (el) {
+    el.textContent = calcularTextoSuperficie(m2Val);
+  }
+}
+
+/**
  * Inicializa la lista de comparables con 3 tarjetas vacías
  */
 function inicializarComparables() {
@@ -1057,6 +1120,7 @@ function renderizarComparables() {
         <div>
           <label class="block text-[11px] font-medium text-slate-300 mb-1">Distancia (km) *</label>
           <input type="number" step="0.1" min="0" placeholder="Ej: 0.5" required value="${comp.distancia_km}" data-field="distancia_km" data-index="${idx}" class="inputComparable w-full bg-white text-slate-900 placeholder:text-slate-400 placeholder-slate-400 text-xs rounded-lg px-2.5 py-1.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium">
+          <p id="helperDistancia_${idx}" class="text-[11px] text-slate-400 mt-1 min-h-[16px] transition-all">${calcularTextoDistancia(comp.distancia_km)}</p>
         </div>
       </div>
 
@@ -1104,6 +1168,12 @@ function renderizarComparables() {
           }
         } else {
           AppState.comparables[idx][field] = e.target.value;
+          if (field === 'distancia_km') {
+            const helper = document.getElementById(`helperDistancia_${idx}`);
+            if (helper) {
+              helper.textContent = calcularTextoDistancia(e.target.value);
+            }
+          }
         }
       }
     };
@@ -1280,6 +1350,11 @@ function configurarEventos() {
   // Cambio de Tipo de Inmueble (mostrar/ocultar Piso y Ascensor si es Departamento)
   document.getElementById('tipoInmueble')?.addEventListener('change', actualizarVisibilidadPisoAscensor);
 
+  // Helper visual dinámico para Superficie Útil (m²)
+  document.getElementById('superficieM2')?.addEventListener('input', (e) => {
+    actualizarHelperSuperficie(e.target.value);
+  });
+
   // Botón Ver en Google Maps (Formulario y Modal)
   document.getElementById('btnVerEnMapa')?.addEventListener('click', abrirMapaInmueble);
   document.getElementById('modalBtnVerMapaInmueble')?.addEventListener('click', abrirMapaInmueble);
@@ -1293,10 +1368,28 @@ function configurarEventos() {
     });
   }
 
-  // Enviar Formulario de Tasación
-  document.getElementById('formTasacion')?.addEventListener('submit', async (e) => {
+  // Enviar Formulario de Tasación (inicia confirmación previa de consumo de crédito)
+  document.getElementById('formTasacion')?.addEventListener('submit', (e) => {
     e.preventDefault();
-    await procesarTasacion();
+    iniciarFlujoTasacion();
+  });
+
+  // Modal Confirmar Generación de Análisis (Consumo de Crédito)
+  document.getElementById('btnRevisarDatosGeneracion')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    cerrarModalConfirmarGeneracion();
+  });
+  document.getElementById('btnConfirmarGenerarAnalisis')?.addEventListener('click', async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    await ejecutarGeneracionAnalisis();
+  });
+  document.getElementById('modalConfirmarGeneracion')?.addEventListener('click', (e) => {
+    if (e.target.id === 'modalConfirmarGeneracion') {
+      e.stopPropagation();
+      cerrarModalConfirmarGeneracion();
+    }
   });
 
   // Abrir Modal de Informe Completo
@@ -1541,6 +1634,11 @@ function configurarEventos() {
       const modalReset = document.getElementById('modalConfirmarResetRol');
       if (modalReset && !modalReset.classList.contains('hidden')) {
         cerrarModalConfirmarResetRol();
+        return;
+      }
+      const modalConfirmarGen = document.getElementById('modalConfirmarGeneracion');
+      if (modalConfirmarGen && !modalConfirmarGen.classList.contains('hidden')) {
+        cerrarModalConfirmarGeneracion();
         return;
       }
       const modalConfirmarCierre = document.getElementById('modalConfirmarCerrarInforme');
@@ -2628,6 +2726,7 @@ function cargarDatosEjemplo() {
   document.getElementById('tipoInmueble').value = EJEMPLO_DATOS.inmueble.tipo;
   if (document.getElementById('direccionInmueble')) document.getElementById('direccionInmueble').value = EJEMPLO_DATOS.inmueble.direccion || '';
   document.getElementById('superficieM2').value = EJEMPLO_DATOS.inmueble.superficie_m2;
+  actualizarHelperSuperficie(EJEMPLO_DATOS.inmueble.superficie_m2);
   document.getElementById('dormitorios').value = EJEMPLO_DATOS.inmueble.dormitorios;
   document.getElementById('banos').value = EJEMPLO_DATOS.inmueble.banos;
   document.getElementById('antiguedad').value = EJEMPLO_DATOS.inmueble.antiguedad;
@@ -2645,6 +2744,232 @@ function cargarDatosEjemplo() {
   AppState.comparables = JSON.parse(JSON.stringify(EJEMPLO_DATOS.comparables));
   renderizarComparables();
   document.getElementById('avisoLegalSugerencias')?.classList.add('hidden');
+}
+
+/**
+ * Valida que los datos obligatorios del inmueble y al menos 2 comparables estén completos
+ * @returns {boolean}
+ */
+function validarDatosFormulario() {
+  const tipo = document.getElementById('tipoInmueble')?.value;
+  const supVal = document.getElementById('superficieM2')?.value;
+  const superficie = parseFloat(supVal);
+  const dormVal = document.getElementById('dormitorios')?.value;
+  const dormitorios = parseInt(dormVal, 10);
+  const banosVal = document.getElementById('banos')?.value;
+  const banos = parseInt(banosVal, 10);
+  const antigVal = document.getElementById('antiguedad')?.value;
+  const antiguedad = parseInt(antigVal, 10);
+  const estado = document.getElementById('estadoConservacion')?.value;
+  const comuna = document.getElementById('comuna')?.value?.trim();
+
+  // 1. Validar campos obligatorios del inmueble
+  if (!tipo) {
+    alert('⚠️ Por favor selecciona el Tipo de Inmueble.');
+    document.getElementById('tipoInmueble')?.focus();
+    return false;
+  }
+
+  if (!supVal || isNaN(superficie) || superficie <= 0) {
+    alert('⚠️ Por favor ingresa una Superficie Útil válida mayor a 0 m².');
+    document.getElementById('superficieM2')?.focus();
+    return false;
+  }
+
+  if (!dormVal || isNaN(dormitorios) || dormitorios < 1) {
+    alert('⚠️ Por favor indica la cantidad de Dormitorios.');
+    document.getElementById('dormitorios')?.focus();
+    return false;
+  }
+
+  if (!banosVal || isNaN(banos) || banos < 1) {
+    alert('⚠️ Por favor indica la cantidad de Baños.');
+    document.getElementById('banos')?.focus();
+    return false;
+  }
+
+  if (antigVal === '' || isNaN(antiguedad) || antiguedad < 0) {
+    alert('⚠️ Por favor indica la Antigüedad del inmueble en años (0 si es nuevo).');
+    document.getElementById('antiguedad')?.focus();
+    return false;
+  }
+
+  if (!estado) {
+    alert('⚠️ Por favor selecciona el Estado de Conservación.');
+    document.getElementById('estadoConservacion')?.focus();
+    return false;
+  }
+
+  if (!comuna) {
+    alert('⚠️ Por favor selecciona la Comuna de ubicación del inmueble.');
+    document.getElementById('comuna')?.focus();
+    return false;
+  }
+
+  // 2. Validar comparables: se requieren al menos 2 comparables con datos completos
+  const minComparablesRequeridos = AppState.minComparables || 2;
+  const comparablesValidos = obtenerComparablesValidos();
+
+  // Comprobar si hay tarjetas con datos parciales o inválidos
+  for (let i = 0; i < AppState.comparables.length; i++) {
+    const c = AppState.comparables[i];
+    const sup = parseFloat(c.superficie_m2);
+    const precio = desformatearMiles(c.precio_clp);
+    const dist = parseFloat(c.distancia_km);
+
+    const tieneAlgunDato = Boolean(c.superficie_m2 || c.precio_clp || c.distancia_km);
+    const esCompleto = !isNaN(sup) && sup > 0 && !isNaN(precio) && precio > 0 && !isNaN(dist) && dist >= 0;
+
+    if (tieneAlgunDato && !esCompleto) {
+      alert(`⚠️ El Comparable #${i + 1} tiene datos incompletos. Por favor completa Superficie, Precio y Distancia, o déjalo totalmente vacío si ya cuentas con otros comparables.`);
+      return false;
+    }
+  }
+
+  if (comparablesValidos.length < minComparablesRequeridos) {
+    alert(`⚠️ Se requieren al menos ${minComparablesRequeridos} comparables con datos válidos (Superficie, Precio y Distancia) para calcular la tasación.`);
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * Filtra y devuelve la lista de comparables válidos con datos numéricos completos
+ * @returns {Array}
+ */
+function obtenerComparablesValidos() {
+  const validos = [];
+  for (let i = 0; i < AppState.comparables.length; i++) {
+    const c = AppState.comparables[i];
+    const sup = parseFloat(c.superficie_m2);
+    const precio = desformatearMiles(c.precio_clp);
+    const dist = parseFloat(c.distancia_km);
+
+    if (!isNaN(sup) && sup > 0 && !isNaN(precio) && precio > 0 && !isNaN(dist) && dist >= 0) {
+      validos.push({
+        superficie_m2: sup,
+        precio_clp: precio,
+        distancia_km: dist,
+        entorno: c.entorno || 'Mismo barrio / Condominio',
+        diferencia_nota: c.diferencia_nota?.trim() || ''
+      });
+    }
+  }
+  return validos;
+}
+
+/**
+ * Abre el modal de confirmación antes de consumir el crédito para generar el análisis
+ */
+function abrirModalConfirmarGeneracion() {
+  const modal = document.getElementById('modalConfirmarGeneracion');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    modal.style.setProperty('z-index', '75', 'important');
+  }
+}
+
+/**
+ * Cierra el modal de confirmación de generación
+ */
+function cerrarModalConfirmarGeneracion() {
+  const modal = document.getElementById('modalConfirmarGeneracion');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+/**
+ * Inicia el flujo: valida datos mínimos y créditos, y abre el modal de confirmación
+ */
+function iniciarFlujoTasacion() {
+  // 1. Validar sesión activa
+  if (!AppState.token || !AppState.usuario) {
+    alert('Por favor inicia sesión para realizar tasaciones.');
+    return;
+  }
+
+  // 2. Validar que tenga créditos disponibles
+  const creditos = AppState.usuario.creditos || 0;
+  if (creditos <= 0) {
+    abrirModalRecarga();
+    return;
+  }
+
+  // 3. Validar campos mínimos obligatorios antes de confirmar
+  if (!validarDatosFormulario()) {
+    return;
+  }
+
+  // 4. Mostrar modal de confirmación previa
+  abrirModalConfirmarGeneracion();
+}
+
+/**
+ * Ejecuta la llamada al backend tras confirmación con feedback visual
+ */
+async function ejecutarGeneracionAnalisis() {
+  // Validar datos mínimos por seguridad antes de enviar
+  if (!validarDatosFormulario()) {
+    cerrarModalConfirmarGeneracion();
+    return;
+  }
+
+  const btnConfirmar = document.getElementById('btnConfirmarGenerarAnalisis');
+  const btnConfirmarTexto = document.getElementById('btnConfirmarGenerarTexto');
+  const btnSubmit = document.getElementById('btnGenerarAnalisis');
+  const btnSubmitText = document.getElementById('btnSubmitText');
+  const iconSubmit = document.getElementById('iconSubmit');
+
+  // Feedback visual y deshabilitar botones para evitar dobles clics
+  if (btnConfirmar) {
+    btnConfirmar.disabled = true;
+    btnConfirmar.classList.add('opacity-75', 'cursor-wait');
+  }
+  if (btnConfirmarTexto) {
+    btnConfirmarTexto.textContent = 'Generando...';
+  }
+  if (btnSubmit) {
+    btnSubmit.disabled = true;
+    btnSubmit.classList.add('opacity-75', 'cursor-wait');
+  }
+  if (btnSubmitText) {
+    btnSubmitText.textContent = 'Analizando con IA DeepSeek...';
+  }
+  if (iconSubmit) {
+    iconSubmit.classList.add('animate-spin');
+  }
+
+  // Cerrar modal de confirmación
+  cerrarModalConfirmarGeneracion();
+
+  try {
+    await procesarTasacion();
+  } catch (error) {
+    console.error('Error al ejecutar tasación:', error);
+  } finally {
+    // Restaurar botones
+    if (btnConfirmar) {
+      btnConfirmar.disabled = false;
+      btnConfirmar.classList.remove('opacity-75', 'cursor-wait');
+    }
+    if (btnConfirmarTexto) {
+      btnConfirmarTexto.textContent = '✓ Sí, generar análisis';
+    }
+    if (btnSubmit) {
+      btnSubmit.disabled = false;
+      btnSubmit.classList.remove('opacity-75', 'cursor-wait');
+    }
+    if (btnSubmitText) {
+      btnSubmitText.textContent = 'Generar Análisis (Consume 1 Crédito)';
+    }
+    if (iconSubmit) {
+      iconSubmit.classList.remove('animate-spin');
+    }
+  }
 }
 
 async function procesarTasacion() {
@@ -2673,39 +2998,12 @@ async function procesarTasacion() {
   };
 
   // Validaciones
-  if (!inmueble.tipo || isNaN(inmueble.superficie_m2) || inmueble.superficie_m2 <= 0 ||
-      isNaN(inmueble.dormitorios) || isNaN(inmueble.banos) || isNaN(inmueble.antiguedad) ||
-      !inmueble.estado_conservacion || !inmueble.comuna) {
-    alert('Por favor complete todos los campos obligatorios del inmueble a valuar.');
+  if (!validarDatosFormulario()) {
     return;
   }
 
-  // Validar comparables
-  const comparablesValidos = [];
-  for (let i = 0; i < AppState.comparables.length; i++) {
-    const c = AppState.comparables[i];
-    const sup = parseFloat(c.superficie_m2);
-    const precio = desformatearMiles(c.precio_clp);
-    const dist = parseFloat(c.distancia_km);
-
-    if (isNaN(sup) || sup <= 0 || isNaN(precio) || precio <= 0 || isNaN(dist) || dist < 0) {
-      alert(`Por favor revise los valores numéricos del Comparable #${i + 1}.`);
-      return;
-    }
-
-    comparablesValidos.push({
-      superficie_m2: sup,
-      precio_clp: precio,
-      distancia_km: dist,
-      entorno: c.entorno || 'Mismo barrio / Condominio',
-      diferencia_nota: c.diferencia_nota?.trim() || ''
-    });
-  }
-
-  if (comparablesValidos.length < AppState.minComparables || comparablesValidos.length > AppState.maxComparables) {
-    alert(`Debe ingresar entre ${AppState.minComparables} y ${AppState.maxComparables} comparables.`);
-    return;
-  }
+  // Obtener lista limpia de comparables válidos
+  const comparablesValidos = obtenerComparablesValidos();
 
   // Activar estado de carga en el botón
   btnSubmit.disabled = true;
@@ -2887,6 +3185,7 @@ function limpiarFormularioNuevaTasacion() {
 
   const supInput = document.getElementById('superficieM2');
   if (supInput) supInput.value = '';
+  actualizarHelperSuperficie('');
 
   const dormInput = document.getElementById('dormitorios');
   if (dormInput) dormInput.value = '';
@@ -3502,6 +3801,7 @@ async function cargarTasacionPorId(id) {
     document.getElementById('tipoInmueble').value = inmueble.tipo || 'Departamento';
     if (document.getElementById('direccionInmueble')) document.getElementById('direccionInmueble').value = inmueble.direccion || '';
     document.getElementById('superficieM2').value = inmueble.superficie_m2 || '';
+    actualizarHelperSuperficie(inmueble.superficie_m2 || '');
     document.getElementById('dormitorios').value = inmueble.dormitorios || '';
     document.getElementById('banos').value = inmueble.banos || '';
     document.getElementById('antiguedad').value = inmueble.antiguedad || 0;

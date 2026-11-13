@@ -93,6 +93,17 @@ button, input, select {
   width: 100%;
 }
 
+/* Modal de confirmación previa antes de generar análisis */
+#modalConfirmarGeneracion {
+  z-index: 75 !important;
+}
+
+#modalConfirmarGeneracion > div {
+  position: relative !important;
+  z-index: 76 !important;
+  pointer-events: auto !important;
+}
+
 /* Modal de confirmación de cierre: siempre sobre el informe maximizado (z-index 9999) */
 #modalConfirmarCerrarInforme {
   z-index: 10050 !important;
