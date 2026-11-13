@@ -317,6 +317,9 @@
                 <select id="tipoInmueble" name="tipoInmueble" required class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
                   <option value="Departamento" selected>Departamento</option>
                   <option value="Casa">Casa</option>
+                  <option value="Oficina">Oficina</option>
+                  <option value="Local Comercial">Local Comercial</option>
+                  <option value="Bodega Industrial">Bodega Industrial</option>
                 </select>
               </div>
 
@@ -373,6 +376,8 @@
                   Estado de Conservación *
                 </label>
                 <select id="estadoConservacion" name="estadoConservacion" required class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                  <option value="Excelente">Excelente</option>
+                  <option value="Muy Bueno">Muy Bueno</option>
                   <option value="Bueno" selected>Bueno</option>
                   <option value="Regular">Regular</option>
                   <option value="Necesita reparaciones">Necesita reparaciones</option>
@@ -529,14 +534,14 @@
                 </select>
               </div>
 
-              <!-- 12. Piso y Ascensor (Condicional: Solo si Departamento) -->
+              <!-- 12. Piso y Ascensor (Condicional: Solo si Departamento u Oficina) -->
               <div id="seccionPisoAscensor" class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 p-3.5 sm:p-4 rounded-2xl bg-slate-800/60 border border-slate-700/70">
                 <div>
                   <label for="piso" class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center">
                     <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                     </svg>
-                    Piso (Departamento)
+                    Piso (Departamento / Oficina)
                   </label>
                   <input type="number" id="piso" name="piso" min="1" max="80" placeholder="Ej: 5" value="5" class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
                 </div>
@@ -554,18 +559,47 @@
                 </div>
               </div>
 
-              <!-- 13. Amenidades (Opcional) -->
+              <!-- 13. Amenidades y Áreas Comunes (Casillas de verificación) -->
               <div class="sm:col-span-2">
-                <label for="amenidades" class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center justify-between">
+                <label class="block text-xs font-semibold text-slate-300 mb-2 flex items-center justify-between">
                   <span class="flex items-center">
                     <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
                     </svg>
                     Amenidades / Áreas Comunes (Opcional)
                   </span>
-                  <span class="text-[10px] text-slate-400">Piscina, quincho, gimnasio, etc.</span>
+                  <span class="text-[10px] text-slate-400">Marca las que correspondan</span>
                 </label>
-                <input type="text" id="amenidades" name="amenidades" placeholder="Ej: Piscina, quincho, gimnasio, conserjería 24/7" class="w-full bg-white text-slate-900 text-sm rounded-xl px-3.5 py-2.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                <div id="contenedorAmenidades" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/70">
+                  <label class="flex items-center gap-2 text-xs font-medium text-slate-200 cursor-pointer hover:text-white select-none">
+                    <input type="checkbox" name="amenidadCheck" value="Piscina" class="w-4 h-4 text-blue-600 rounded border-slate-500 focus:ring-blue-500 bg-slate-900 cursor-pointer">
+                    <span>🏊‍♂️ Piscina</span>
+                  </label>
+                  <label class="flex items-center gap-2 text-xs font-medium text-slate-200 cursor-pointer hover:text-white select-none">
+                    <input type="checkbox" name="amenidadCheck" value="Quincho / Parrilla" class="w-4 h-4 text-blue-600 rounded border-slate-500 focus:ring-blue-500 bg-slate-900 cursor-pointer">
+                    <span>🥩 Quincho / Parrilla</span>
+                  </label>
+                  <label class="flex items-center gap-2 text-xs font-medium text-slate-200 cursor-pointer hover:text-white select-none">
+                    <input type="checkbox" name="amenidadCheck" value="Gimnasio" class="w-4 h-4 text-blue-600 rounded border-slate-500 focus:ring-blue-500 bg-slate-900 cursor-pointer">
+                    <span>🏋️ Gimnasio</span>
+                  </label>
+                  <label class="flex items-center gap-2 text-xs font-medium text-slate-200 cursor-pointer hover:text-white select-none">
+                    <input type="checkbox" name="amenidadCheck" value="Lavandería" class="w-4 h-4 text-blue-600 rounded border-slate-500 focus:ring-blue-500 bg-slate-900 cursor-pointer">
+                    <span>🧺 Lavandería</span>
+                  </label>
+                  <label class="flex items-center gap-2 text-xs font-medium text-slate-200 cursor-pointer hover:text-white select-none">
+                    <input type="checkbox" name="amenidadCheck" value="Sala de Eventos / Multiuso" class="w-4 h-4 text-blue-600 rounded border-slate-500 focus:ring-blue-500 bg-slate-900 cursor-pointer">
+                    <span>🎉 Sala de Eventos</span>
+                  </label>
+                  <label class="flex items-center gap-2 text-xs font-medium text-slate-200 cursor-pointer hover:text-white select-none">
+                    <input type="checkbox" name="amenidadCheck" value="Conserjería 24/7" class="w-4 h-4 text-blue-600 rounded border-slate-500 focus:ring-blue-500 bg-slate-900 cursor-pointer">
+                    <span>👮 Conserjería 24/7</span>
+                  </label>
+                  <label class="flex items-center gap-2 text-xs font-medium text-slate-200 cursor-pointer hover:text-white select-none">
+                    <input type="checkbox" name="amenidadCheck" value="Áreas Verdes" class="w-4 h-4 text-blue-600 rounded border-slate-500 focus:ring-blue-500 bg-slate-900 cursor-pointer">
+                    <span>🌳 Áreas Verdes</span>
+                  </label>
+                </div>
               </div>
 
             </div>
@@ -1385,7 +1419,7 @@
     <div id="modalInformeCard" class="bg-slate-900 text-white w-full h-full sm:h-auto sm:max-h-[92vh] sm:max-w-4xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-fade-in border-0 sm:border border-slate-700/80 transition-all duration-200">
       
       <!-- Cabecera del Modal de Informe -->
-      <div class="px-4 py-3 sm:px-6 sm:py-4 bg-slate-950 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shrink-0">
+      <div class="px-4 py-3 sm:px-6 sm:py-4 bg-slate-950 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shrink-0 relative z-20">
         
         <!-- Fila Superior: Badge, Fecha, Título y Botón Cerrar Móvil -->
         <div class="flex items-start justify-between gap-2">
@@ -1402,7 +1436,7 @@
           </div>
 
           <!-- Botón de Cerrar para Móvil -->
-          <button id="btnCerrarModalInforme" type="button" title="Cerrar Informe" class="sm:hidden text-slate-400 hover:text-white p-1 rounded-lg shrink-0">
+          <button id="btnCerrarModalInforme" type="button" title="Cerrar Informe" class="sm:hidden text-slate-400 hover:text-white p-1 rounded-lg shrink-0 cursor-pointer relative z-30">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
@@ -1412,20 +1446,20 @@
         <!-- Fila de Acciones: Botones PDF / Excel, Maximizar y Cerrar Desktop -->
         <div class="flex items-center justify-between sm:justify-end gap-2 pt-2 sm:pt-0 border-t border-slate-800/80 sm:border-0">
           <div class="flex items-center gap-2 w-full sm:w-auto">
-            <button id="btnModalPdf" type="button" class="flex-1 sm:flex-none text-xs font-semibold px-3 py-1.5 rounded-lg bg-red-600/90 hover:bg-red-500 text-white transition flex items-center justify-center gap-1.5 shadow-sm">
+            <button id="btnModalPdf" type="button" class="flex-1 sm:flex-none text-xs font-semibold px-3 py-1.5 rounded-lg bg-red-600/90 hover:bg-red-500 text-white transition flex items-center justify-center gap-1.5 shadow-sm cursor-pointer">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
               </svg>
               PDF
             </button>
-            <button id="btnModalExcel" type="button" class="flex-1 sm:flex-none text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white transition flex items-center justify-center gap-1.5 shadow-sm">
+            <button id="btnModalExcel" type="button" class="flex-1 sm:flex-none text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white transition flex items-center justify-center gap-1.5 shadow-sm cursor-pointer">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
               </svg>
               Excel
             </button>
             <!-- Botón Maximizar / Restaurar Pantalla Completa -->
-            <button id="btnMaximizarModalInforme" type="button" title="Maximizar a Pantalla Completa" class="flex-1 sm:flex-none text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-600/90 hover:border-slate-400 transition flex items-center justify-center gap-1.5 shadow-sm">
+            <button id="btnMaximizarModalInforme" type="button" title="Maximizar a Pantalla Completa" class="flex-1 sm:flex-none text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-600/90 hover:border-slate-400 transition flex items-center justify-center gap-1.5 shadow-sm cursor-pointer">
               <span id="btnMaximizarIcono" class="flex items-center">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
@@ -1436,7 +1470,7 @@
           </div>
 
           <!-- Botón de Cerrar para Desktop -->
-          <button id="btnCerrarModalInformeDesktop" type="button" title="Cerrar Informe" class="hidden sm:block text-slate-400 hover:text-white transition p-1.5 ml-2 rounded-lg hover:bg-slate-800">
+          <button id="btnCerrarModalInformeDesktop" type="button" title="Cerrar Informe" class="hidden sm:block text-slate-400 hover:text-white transition p-1.5 ml-2 rounded-lg hover:bg-slate-800 cursor-pointer relative z-30">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
@@ -1636,19 +1670,76 @@
 
       </div>
 
-      <!-- Pie del Modal de Informe -->
-      <div class="px-4 py-3 sm:px-6 sm:py-3.5 bg-slate-950 border-t border-slate-800 flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-400 shrink-0">
-        <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-          <span class="text-center sm:text-left text-[11px] text-slate-500">Tasador IA Chile • Valuación referencial conforme a método comparativo</span>
-          <span id="pieTasasCambio" class="text-center sm:text-left text-[11px] text-slate-600 italic hidden">
+      <!-- Pie del Modal de Informe con Barra de Acciones Completa -->
+      <div class="px-4 py-3 sm:px-6 sm:py-3.5 bg-slate-950 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-400 shrink-0 relative z-20">
+        
+        <!-- Textos legales / Tasas de cambio (orden inferior en móvil, izquierda en desktop) -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-center sm:text-left order-2 sm:order-1">
+          <span class="text-[11px] text-slate-500">Tasador IA Chile • Valuación referencial conforme a método comparativo</span>
+          <span id="pieTasasCambio" class="text-[11px] text-slate-600 italic hidden">
             Tipos de cambio referenciales obtenidos de mindicador.cl
           </span>
         </div>
-        <button id="btnCerrarModalInformePie" type="button" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold transition text-center shadow-sm">
-          Cerrar Informe
-        </button>
+
+        <!-- Grupo de Botones: PDF, Excel y Volver / Nueva Tasación -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto order-1 sm:order-2">
+          <!-- Botón PDF Inferior -->
+          <button id="btnModalPdfPie" type="button" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-red-600/90 hover:bg-red-500 text-white font-bold text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer active:scale-95 relative z-30">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+            </svg>
+            <span>Descargar PDF</span>
+          </button>
+
+          <!-- Botón Excel Inferior -->
+          <button id="btnModalExcelPie" type="button" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer active:scale-95 relative z-30">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <span>Descargar Excel</span>
+          </button>
+
+          <!-- Botón Cerrar Informe / Volver a Nueva Tasación -->
+          <button id="btnCerrarModalInformePie" type="button" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-95 relative z-30" title="Cerrar el informe e iniciar una nueva tasación">
+            <span>✕</span>
+            <span>Volver / Nueva Tasación</span>
+          </button>
+        </div>
+
       </div>
 
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 5.1 MODAL: CONFIRMAR CIERRE Y NUEVA TASACIÓN -->
+  <!-- ========================================== -->
+  <div id="modalConfirmarCerrarInforme" class="fixed inset-0 z-[10050] bg-slate-950/85 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4" style="z-index: 10050;">
+    <div class="bg-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-8 max-w-md w-full text-center text-white shadow-2xl animate-fade-in relative">
+      <!-- Icono de Advertencia -->
+      <div class="w-16 h-16 rounded-3xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg shadow-amber-500/10">
+        ⚠️
+      </div>
+      
+      <!-- Título -->
+      <h3 class="text-xl sm:text-2xl font-black text-white tracking-tight mb-2">
+        ¿Cerrar el informe?
+      </h3>
+      
+      <!-- Mensaje explicativo -->
+      <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-6">
+        Si cierras el informe, perderás los datos actuales. Para generar una nueva tasación, deberás cargar los datos nuevamente y consumirás otro crédito.
+      </p>
+
+      <!-- Botones de Acción -->
+      <div class="flex flex-col-reverse sm:flex-row items-center gap-3">
+        <button id="btnCancelarCerrarInforme" type="button" class="w-full sm:w-1/2 py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-xs sm:text-sm transition cursor-pointer border border-slate-700">
+          Cancelar
+        </button>
+        <button id="btnConfirmarCerrarLimpiar" type="button" class="w-full sm:w-1/2 py-3 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 active:bg-amber-700 text-white font-bold text-xs sm:text-sm shadow-lg shadow-amber-600/30 transition cursor-pointer flex items-center justify-center gap-2">
+          <span>🗑️ Sí, cerrar y limpiar</span>
+        </button>
+      </div>
     </div>
   </div>
 

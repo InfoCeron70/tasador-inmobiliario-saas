@@ -58,14 +58,14 @@ const EJEMPLO_DATOS = {
     dormitorios: 3,
     banos: 2,
     antiguedad: 5,
-    estado_conservacion: 'Bueno',
+    estado_conservacion: 'Excelente',
     comuna: 'Las Condes',
     precio_referencia: 185000000,
     estacionamiento: 'Sí',
     bodega: 'Sí',
     piso: 5,
     ascensor: 'Sí',
-    amenidades: 'Piscina, quincho, gimnasio'
+    amenidades: 'Piscina, Quincho / Parrilla, Gimnasio'
   },
   comparables: [
     {
@@ -539,13 +539,21 @@ function actualizarPermisosSegunRol() {
     }
   }
 
-  // 3. Botón Excel en el Modal de Informe Completo (#btnModalExcel)
+  // 3. Botones Excel en el Modal de Informe Completo (#btnModalExcel y #btnModalExcelPie)
   const btnModalExcel = document.getElementById('btnModalExcel');
   if (btnModalExcel) {
     if (puedeExcel) {
       btnModalExcel.classList.remove('hidden');
     } else {
       btnModalExcel.classList.add('hidden');
+    }
+  }
+  const btnModalExcelPie = document.getElementById('btnModalExcelPie');
+  if (btnModalExcelPie) {
+    if (puedeExcel) {
+      btnModalExcelPie.classList.remove('hidden');
+    } else {
+      btnModalExcelPie.classList.add('hidden');
     }
   }
 }
@@ -1294,10 +1302,33 @@ function configurarEventos() {
   // Abrir Modal de Informe Completo
   document.getElementById('btnAbrirInformeModal')?.addEventListener('click', abrirModalInforme);
 
-  // Cerrar Modal de Informe Completo
-  document.getElementById('btnCerrarModalInforme')?.addEventListener('click', cerrarModalInforme);
-  document.getElementById('btnCerrarModalInformeDesktop')?.addEventListener('click', cerrarModalInforme);
-  document.getElementById('btnCerrarModalInformePie')?.addEventListener('click', cerrarModalInforme);
+  // Cerrar Modal de Informe Completo (con confirmación preventiva)
+  const manejarClickCierreInforme = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    solicitarCierreInforme();
+  };
+  document.getElementById('btnCerrarModalInforme')?.addEventListener('click', manejarClickCierreInforme);
+  document.getElementById('btnCerrarModalInformeDesktop')?.addEventListener('click', manejarClickCierreInforme);
+  document.getElementById('btnCerrarModalInformePie')?.addEventListener('click', manejarClickCierreInforme);
+
+  // Modal Confirmar Cierre y Limpiar Formulario (Nueva Tasación)
+  document.getElementById('btnCancelarCerrarInforme')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    cerrarModalConfirmarCerrarInforme();
+  });
+  document.getElementById('btnConfirmarCerrarLimpiar')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    confirmarCierreYLimpieza();
+  });
+  document.getElementById('modalConfirmarCerrarInforme')?.addEventListener('click', (e) => {
+    if (e.target.id === 'modalConfirmarCerrarInforme') {
+      e.stopPropagation();
+      cerrarModalConfirmarCerrarInforme();
+    }
+  });
 
   // Maximizar / Restaurar Pantalla Completa en Modal de Informe
   document.getElementById('btnMaximizarModalInforme')?.addEventListener('click', toggleMaximizarModalInforme);
@@ -1313,10 +1344,12 @@ function configurarEventos() {
   // Botones de Descargar PDF
   document.getElementById('btnCompactoPdf')?.addEventListener('click', async () => await exportarDocumento('pdf'));
   document.getElementById('btnModalPdf')?.addEventListener('click', async () => await exportarDocumento('pdf'));
+  document.getElementById('btnModalPdfPie')?.addEventListener('click', async () => await exportarDocumento('pdf'));
 
   // Botones de Descargar Excel
   document.getElementById('btnCompactoExcel')?.addEventListener('click', async () => await exportarDocumento('excel'));
   document.getElementById('btnModalExcel')?.addEventListener('click', async () => await exportarDocumento('excel'));
+  document.getElementById('btnModalExcelPie')?.addEventListener('click', async () => await exportarDocumento('excel'));
 
   // Abrir y Cerrar Modal de Historial
   document.getElementById('btnVerHistorial')?.addEventListener('click', abrirModalHistorial);
@@ -1510,8 +1543,17 @@ function configurarEventos() {
         cerrarModalConfirmarResetRol();
         return;
       }
+      const modalConfirmarCierre = document.getElementById('modalConfirmarCerrarInforme');
+      if (modalConfirmarCierre && !modalConfirmarCierre.classList.contains('hidden')) {
+        cerrarModalConfirmarCerrarInforme();
+        return;
+      }
+      const modalInforme = document.getElementById('modalInformeCompleto');
+      if (modalInforme && !modalInforme.classList.contains('hidden')) {
+        solicitarCierreInforme();
+        return;
+      }
       cerrarModalHistorial();
-      cerrarModalInforme();
       cerrarModalRecarga();
       cerrarModalAyudaComparables();
       cerrarModalConfigMotor();
@@ -1527,7 +1569,7 @@ function configurarEventos() {
   });
 
   document.getElementById('modalInformeCompleto')?.addEventListener('click', (e) => {
-    if (e.target.id === 'modalInformeCompleto') cerrarModalInforme();
+    if (e.target.id === 'modalInformeCompleto') solicitarCierreInforme();
   });
 
   document.getElementById('modalSinCreditos')?.addEventListener('click', (e) => {
@@ -2510,18 +2552,55 @@ function manejarAvisoWhatsappFinal() {
 // ========================================================
 
 /**
- * Alterna la visibilidad de los campos Piso y Ascensor (solo aplican a Departamento)
+ * Alterna la visibilidad de los campos Piso y Ascensor (aplican a Departamento y Oficina)
  */
 function actualizarVisibilidadPisoAscensor() {
   const tipo = document.getElementById('tipoInmueble')?.value || 'Departamento';
   const seccion = document.getElementById('seccionPisoAscensor');
   if (!seccion) return;
 
-  if (tipo === 'Departamento') {
+  if (tipo === 'Departamento' || tipo === 'Oficina') {
     seccion.classList.remove('hidden');
   } else {
     seccion.classList.add('hidden');
   }
+}
+
+/**
+ * Obtiene las amenidades seleccionadas en el formulario unidas por coma
+ * @returns {string} Ej: "Piscina, Quincho / Parrilla, Gimnasio"
+ */
+function obtenerAmenidadesSeleccionadas() {
+  const checkboxes = document.querySelectorAll('input[name="amenidadCheck"]:checked');
+  const seleccionadas = Array.from(checkboxes).map(cb => cb.value.trim());
+  return seleccionadas.join(', ');
+}
+
+/**
+ * Marca las casillas de amenidades según el string provisto
+ * @param {string} amenidadesStr
+ */
+function establecerAmenidadesEnFormulario(amenidadesStr) {
+  const checkboxes = document.querySelectorAll('input[name="amenidadCheck"]');
+  const amenidadesArr = (amenidadesStr || '')
+    .split(',')
+    .map(a => a.trim().toLowerCase())
+    .filter(Boolean);
+
+  checkboxes.forEach(cb => {
+    const valLower = cb.value.toLowerCase();
+    const match = amenidadesArr.some(a => {
+      return a === valLower ||
+        (valLower.includes('quincho') && a.includes('quincho')) ||
+        (valLower.includes('eventos') && (a.includes('eventos') || a.includes('multiuso'))) ||
+        (valLower.includes('conserjería') && (a.includes('conserj') || a.includes('seguridad'))) ||
+        (valLower.includes('verde') && a.includes('verde')) ||
+        (valLower.includes('piscina') && a.includes('piscina')) ||
+        (valLower.includes('gimnasio') && (a.includes('gimnasio') || a.includes('gym'))) ||
+        (valLower.includes('lavandería') && a.includes('lavand'));
+    });
+    cb.checked = match;
+  });
 }
 
 /**
@@ -2559,8 +2638,8 @@ function cargarDatosEjemplo() {
   if (document.getElementById('bodega')) document.getElementById('bodega').value = EJEMPLO_DATOS.inmueble.bodega || 'Sí';
   if (document.getElementById('piso')) document.getElementById('piso').value = EJEMPLO_DATOS.inmueble.piso || 5;
   if (document.getElementById('ascensor')) document.getElementById('ascensor').value = EJEMPLO_DATOS.inmueble.ascensor || 'Sí';
-  if (document.getElementById('amenidades')) document.getElementById('amenidades').value = EJEMPLO_DATOS.inmueble.amenidades || '';
-
+  
+  establecerAmenidadesEnFormulario(EJEMPLO_DATOS.inmueble.amenidades || 'Piscina, Quincho / Parrilla, Gimnasio');
   actualizarVisibilidadPisoAscensor();
 
   AppState.comparables = JSON.parse(JSON.stringify(EJEMPLO_DATOS.comparables));
@@ -2587,7 +2666,7 @@ async function procesarTasacion() {
     bodega: document.getElementById('bodega')?.value || 'No',
     piso: document.getElementById('piso')?.value ? parseInt(document.getElementById('piso').value, 10) : null,
     ascensor: document.getElementById('ascensor')?.value || 'No',
-    amenidades: document.getElementById('amenidades')?.value.trim() || '',
+    amenidades: obtenerAmenidadesSeleccionadas(),
     precio_referencia: document.getElementById('precioReferencia').value
       ? desformatearMiles(document.getElementById('precioReferencia').value)
       : null
@@ -2739,6 +2818,48 @@ function abrirModalInforme() {
   }
 }
 
+/**
+ * Abre el modal de confirmación antes de cerrar el informe
+ */
+function abrirModalConfirmarCerrarInforme() {
+  const modal = document.getElementById('modalConfirmarCerrarInforme');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    modal.style.setProperty('z-index', '10050', 'important');
+  }
+}
+
+/**
+ * Cierra el modal de confirmación de cierre
+ */
+function cerrarModalConfirmarCerrarInforme() {
+  const modal = document.getElementById('modalConfirmarCerrarInforme');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+/**
+ * Solicita el cierre del informe (muestra la confirmación preventiva al usuario)
+ */
+function solicitarCierreInforme() {
+  abrirModalConfirmarCerrarInforme();
+}
+
+/**
+ * Confirma el cierre del informe y limpia completamente el formulario
+ */
+function confirmarCierreYLimpieza() {
+  cerrarModalConfirmarCerrarInforme();
+  cerrarModalInforme();
+  limpiarFormularioNuevaTasacion();
+}
+
+/**
+ * Cierra directamente el modal del informe técnico
+ */
 function cerrarModalInforme() {
   const modal = document.getElementById('modalInformeCompleto');
   if (modal) {
@@ -2749,6 +2870,81 @@ function cerrarModalInforme() {
     if (AppState.modalInformeMaximizado) {
       toggleMaximizarModalInforme();
     }
+  }
+}
+
+/**
+ * Limpia todos los campos del formulario (Inmueble y Comparables)
+ * y resetea las casillas y selectores para ingresar una nueva propiedad desde cero.
+ */
+function limpiarFormularioNuevaTasacion() {
+  // 1. Resetear inputs del formulario de inmueble
+  const tipoInput = document.getElementById('tipoInmueble');
+  if (tipoInput) tipoInput.value = 'Departamento';
+
+  const dirInput = document.getElementById('direccionInmueble');
+  if (dirInput) dirInput.value = '';
+
+  const supInput = document.getElementById('superficieM2');
+  if (supInput) supInput.value = '';
+
+  const dormInput = document.getElementById('dormitorios');
+  if (dormInput) dormInput.value = '';
+
+  const banosInput = document.getElementById('banos');
+  if (banosInput) banosInput.value = '';
+
+  const antigInput = document.getElementById('antiguedad');
+  if (antigInput) antigInput.value = '';
+
+  const estadoInput = document.getElementById('estadoConservacion');
+  if (estadoInput) estadoInput.value = 'Bueno';
+
+  const comunaInput = document.getElementById('comuna');
+  if (comunaInput) comunaInput.value = '';
+
+  const precioRefInput = document.getElementById('precioReferencia');
+  if (precioRefInput) precioRefInput.value = '';
+
+  const estacInput = document.getElementById('estacionamiento');
+  if (estacInput) estacInput.value = 'Sí';
+
+  const bodInput = document.getElementById('bodega');
+  if (bodInput) bodInput.value = 'Sí';
+
+  const pisoInput = document.getElementById('piso');
+  if (pisoInput) pisoInput.value = '5';
+
+  const ascInput = document.getElementById('ascensor');
+  if (ascInput) ascInput.value = 'Sí';
+
+  // 2. Desmarcar todas las amenidades
+  const checkboxes = document.querySelectorAll('input[name="amenidadCheck"]');
+  checkboxes.forEach(cb => { cb.checked = false; });
+
+  // 3. Ajustar visibilidad condicional de piso y ascensor
+  actualizarVisibilidadPisoAscensor();
+
+  // 4. Reinicializar comparables con 3 tarjetas vacías
+  inicializarComparables();
+
+  // 5. Restablecer panel lateral a bienvenida y ocultar avisos
+  const panelBienvenida = document.getElementById('panelBienvenida');
+  const panelResumenCompacto = document.getElementById('panelResumenCompacto');
+  if (panelBienvenida) panelBienvenida.classList.remove('hidden');
+  if (panelResumenCompacto) panelResumenCompacto.classList.add('hidden');
+  document.getElementById('avisoLegalSugerencias')?.classList.add('hidden');
+
+  // 6. Resetear estados de última tasación
+  AppState.ultimoInmueble = null;
+  AppState.ultimaTasacion = null;
+
+  // 7. Desplazar la vista suavemente al inicio del formulario para nueva tasación
+  const formEl = document.getElementById('formTasacion');
+  if (formEl) {
+    formEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
 
@@ -2952,7 +3148,7 @@ function mostrarResultados(tasacion, inmueble, fecha) {
   }
   const boxPisoAsc = document.getElementById('modalInmuebleBoxPisoAscensor');
   if (boxPisoAsc) {
-    if (inmueble.tipo === 'Departamento') {
+    if (inmueble.tipo === 'Departamento' || inmueble.tipo === 'Oficina') {
       boxPisoAsc.classList.remove('hidden');
       if (document.getElementById('modalInmueblePisoAscensor')) {
         document.getElementById('modalInmueblePisoAscensor').textContent = `Piso ${inmueble.piso || '-'} • Ascensor: ${inmueble.ascensor || 'No'}`;
@@ -3316,7 +3512,7 @@ async function cargarTasacionPorId(id) {
     if (document.getElementById('bodega')) document.getElementById('bodega').value = inmueble.bodega || 'No';
     if (document.getElementById('piso')) document.getElementById('piso').value = inmueble.piso || '';
     if (document.getElementById('ascensor')) document.getElementById('ascensor').value = inmueble.ascensor || 'No';
-    if (document.getElementById('amenidades')) document.getElementById('amenidades').value = inmueble.amenidades || '';
+    establecerAmenidadesEnFormulario(inmueble.amenidades || '');
 
     actualizarVisibilidadPisoAscensor();
 

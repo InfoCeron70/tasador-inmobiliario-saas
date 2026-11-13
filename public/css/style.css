@@ -93,6 +93,47 @@ button, input, select {
   width: 100%;
 }
 
+/* Modal de confirmación de cierre: siempre sobre el informe maximizado (z-index 9999) */
+#modalConfirmarCerrarInforme {
+  z-index: 10050 !important;
+}
+
+#modalConfirmarCerrarInforme > div {
+  position: relative !important;
+  z-index: 10051 !important;
+  pointer-events: auto !important;
+}
+
+/* Asegurar que la cabecera y pie de página del modal de informe siempre reciban clics en cualquier estado */
+#modalInformeCompleto #modalInformeCard > div:first-child,
+#modalInformeCompleto.modal-informe-maximized #modalInformeCard > div:first-child {
+  position: relative !important;
+  z-index: 30 !important;
+  pointer-events: auto !important;
+}
+
+#modalInformeCompleto #modalInformeCard > div:last-child,
+#modalInformeCompleto.modal-informe-maximized #modalInformeCard > div:last-child {
+  position: relative !important;
+  z-index: 30 !important;
+  pointer-events: auto !important;
+}
+
+/* Botones interactivos del informe (header y footer) */
+#btnCerrarModalInformeDesktop,
+#btnCerrarModalInforme,
+#btnCerrarModalInformePie,
+#btnModalPdf,
+#btnModalExcel,
+#btnModalPdfPie,
+#btnModalExcelPie,
+#btnMaximizarModalInforme {
+  position: relative !important;
+  z-index: 40 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
 /* ========================================================
    ACCESIBILIDAD VISUAL Y TIPOGRÁFICA EN MODO MAXIMIZADO
    ======================================================== */

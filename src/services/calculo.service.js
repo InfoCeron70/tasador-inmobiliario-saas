@@ -151,12 +151,13 @@ function calcularTasacion(inmueble, comparables, configMotor = {}) {
   const sumaUnitAjustados = comparables_analisis.reduce((acc, c) => acc + c.precio_unitario_ajustado, 0);
   const precio_unitario_promedio = Math.round(sumaUnitAjustados / comparables_analisis.length);
 
-  // 1.8 Ajuste por equipamiento del inmueble objetivo (Estacionamiento, Bodega, Ascensor)
+  // 1.8 Ajuste por equipamiento y estado del inmueble objetivo
   let factorEquipamiento = 1.0;
   const tieneEstacionamiento = String(inmueble.estacionamiento || '').toLowerCase().includes('s');
   const tieneBodega = String(inmueble.bodega || '').toLowerCase().includes('s');
   const tieneAscensor = String(inmueble.ascensor || '').toLowerCase().includes('s');
-  const esDepto = String(inmueble.tipo || '').toLowerCase().includes('depto') || String(inmueble.tipo || '').toLowerCase().includes('departamento');
+  const tipoLower = String(inmueble.tipo || '').toLowerCase();
+  const esDeptoOOficina = tipoLower.includes('depto') || tipoLower.includes('departamento') || tipoLower.includes('oficina');
   const pisoNum = Number(inmueble.piso) || 1;
 
   const notasEquipamiento = [];
@@ -171,7 +172,7 @@ function calcularTasacion(inmueble, comparables, configMotor = {}) {
     notasEquipamiento.push('bodega (+1%)');
   }
 
-  if (esDepto) {
+  if (esDeptoOOficina) {
     if (tieneAscensor) {
       factorEquipamiento += 0.01; // +1% ascensor en edificio
       notasEquipamiento.push('ascensor (+1%)');
@@ -179,6 +180,24 @@ function calcularTasacion(inmueble, comparables, configMotor = {}) {
       factorEquipamiento -= 0.02; // -2% piso alto sin ascensor
       notasEquipamiento.push(`piso ${pisoNum} sin ascensor (-2%)`);
     }
+  }
+
+  // Ajuste por estado de conservación del inmueble objetivo
+  const estadoConservacion = String(inmueble.estado_conservacion || inmueble.estadoConservacion || inmueble.estado || '').toLowerCase();
+  if (estadoConservacion.includes('excelente')) {
+    factorEquipamiento += 0.02; // +2% excelente estado
+    notasEquipamiento.push('estado excelente (+2%)');
+  } else if (estadoConservacion.includes('muy bueno')) {
+    factorEquipamiento += 0.01; // +1% muy buen estado
+    notasEquipamiento.push('estado muy bueno (+1%)');
+  }
+
+  // Ajuste por amenidades (3 o más amenidades seleccionadas)
+  const amenidadesStr = String(inmueble.amenidades || '').trim();
+  const cantAmenidades = amenidadesStr ? amenidadesStr.split(',').map(a => a.trim()).filter(Boolean).length : 0;
+  if (cantAmenidades >= 3) {
+    factorEquipamiento += 0.01; // +1% equipamiento integral (3+ amenidades)
+    notasEquipamiento.push(`${cantAmenidades} amenidades (+1%)`);
   }
 
   // 1.9 Multiplicar por superficie del inmueble y factor de equipamiento para obtener valor_referencia
@@ -196,7 +215,7 @@ function calcularTasacion(inmueble, comparables, configMotor = {}) {
   if (notasEquipamiento.length > 0) {
     const diffPct = Math.round((factorEquipamiento - 1) * 100);
     const signo = diffPct >= 0 ? '+' : '';
-    advertencias.unshift(`Ajuste de equipamiento del inmueble evaluado: Ponderación de ${signo}${diffPct}% por ${notasEquipamiento.join(', ')}.`);
+    advertencias.unshift(`Ajuste de equipamiento y conservación del inmueble: Ponderación de ${signo}${diffPct}% por ${notasEquipamiento.join(', ')}.`);
   }
 
   return {

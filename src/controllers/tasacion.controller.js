@@ -271,54 +271,89 @@ async function exportarPdf(req, res) {
 
     currentY += 32;
 
-    const esDepto = String(inmueble.tipo || '').toLowerCase().includes('depto') || String(inmueble.tipo || '').toLowerCase().includes('departamento');
-    const boxHeight = esDepto ? 96 : 82;
-    doc.rect(40, currentY, 515, boxHeight).fill('#F8FAFC').stroke('#E2E8F0');
+    const esDeptoOOficina = String(inmueble.tipo || '').toLowerCase().includes('depto') ||
+      String(inmueble.tipo || '').toLowerCase().includes('departamento') ||
+      String(inmueble.tipo || '').toLowerCase().includes('oficina');
 
-    doc.fillColor('#334155').fontSize(8.5).font('Helvetica');
+    // Medir altura dinámica para no superponer campos
+    doc.font('Helvetica').fontSize(8.5);
     const col1X = 52;
     const col2X = 215;
-    const col3X = 375;
+    const col3X = 380;
+
+    let innerY = currentY + 8;
+    const row1Y = innerY;
+    innerY += 16;
+    const row2Y = innerY;
+    innerY += 16;
+    const row3Y = innerY;
+    innerY += 16;
+    const row4Y = innerY;
+    innerY += 16;
+
+    let row5Y = null;
+    if (esDeptoOOficina) {
+      row5Y = innerY;
+      innerY += 16;
+    }
+
+    let row6Y = null;
+    let amenidadesHeight = 0;
+    if (inmueble.amenidades) {
+      row6Y = innerY;
+      amenidadesHeight = doc.heightOfString(inmueble.amenidades, { width: 418, lineGap: 1.5 });
+      innerY += Math.max(16, amenidadesHeight + 2);
+    }
+
+    const boxHeight = (innerY - currentY) + 6;
+    doc.rect(40, currentY, 515, boxHeight).fill('#F8FAFC').stroke('#E2E8F0');
+
+    doc.fillColor('#334155').fontSize(8.5);
 
     // Fila 1: Tipo, Superficie, Comuna
-    doc.font('Helvetica-Bold').text('Tipo:', col1X, currentY + 9)
-      .font('Helvetica').text(inmueble.tipo || '-', col1X + 35, currentY + 9);
-    doc.font('Helvetica-Bold').text('Superficie Útil:', col2X, currentY + 9)
-      .font('Helvetica').text(`${inmueble.superficie_m2} m²`, col2X + 80, currentY + 9);
-    doc.font('Helvetica-Bold').text('Comuna:', col3X, currentY + 9)
-      .font('Helvetica').text(inmueble.comuna || '-', col3X + 55, currentY + 9);
+    doc.font('Helvetica-Bold').text('Tipo:', col1X, row1Y)
+      .font('Helvetica').text(inmueble.tipo || '-', col1X + 32, row1Y, { width: 125, ellipsis: true });
+    doc.font('Helvetica-Bold').text('Superficie Útil:', col2X, row1Y)
+      .font('Helvetica').text(`${inmueble.superficie_m2} m²`, col2X + 75, row1Y);
+    doc.font('Helvetica-Bold').text('Comuna:', col3X, row1Y)
+      .font('Helvetica').text(inmueble.comuna || '-', col3X + 50, row1Y, { width: 115, ellipsis: true });
 
-    // Fila 2: Dormitorios/Baños, Antigüedad/Estado, Estacionamiento/Bodega
-    doc.font('Helvetica-Bold').text('Dorm / Baños:', col1X, currentY + 26)
-      .font('Helvetica').text(`${inmueble.dormitorios}D / ${inmueble.banos}B`, col1X + 75, currentY + 26);
-    doc.font('Helvetica-Bold').text('Antig. / Estado:', col2X, currentY + 26)
-      .font('Helvetica').text(`${inmueble.antiguedad}a / ${inmueble.estado_conservacion || '-'}`, col2X + 80, currentY + 26);
-    doc.font('Helvetica-Bold').text('Estac. / Bodega:', col3X, currentY + 26)
-      .font('Helvetica').text(`${inmueble.estacionamiento || 'No'} / ${inmueble.bodega || 'No'}`, col3X + 85, currentY + 26);
+    // Fila 2: Dorm / Baños, Antigüedad, Estado
+    doc.font('Helvetica-Bold').text('Dorm / Baños:', col1X, row2Y)
+      .font('Helvetica').text(`${inmueble.dormitorios}D / ${inmueble.banos}B`, col1X + 72, row2Y);
+    doc.font('Helvetica-Bold').text('Antigüedad:', col2X, row2Y)
+      .font('Helvetica').text(`${inmueble.antiguedad} años`, col2X + 62, row2Y);
+    doc.font('Helvetica-Bold').text('Estado:', col3X, row2Y)
+      .font('Helvetica').text(inmueble.estado_conservacion || '-', col3X + 42, row2Y, { width: 120, ellipsis: true });
 
-    // Fila 3: Dirección / Sector y P. Estimado
-    const dirTexto = inmueble.direccion ? inmueble.direccion : `Sector ${inmueble.comuna || '-'}`;
-    doc.font('Helvetica-Bold').text('Dirección:', col1X, currentY + 43)
-      .font('Helvetica').text(dirTexto, col1X + 55, currentY + 43, { width: 310, ellipsis: true });
+    // Fila 3: Estacionamiento, Bodega, Precio Referencia
+    doc.font('Helvetica-Bold').text('Estacionamiento:', col1X, row3Y)
+      .font('Helvetica').text(inmueble.estacionamiento || 'No', col1X + 85, row3Y);
+    doc.font('Helvetica-Bold').text('Bodega:', col2X, row3Y)
+      .font('Helvetica').text(inmueble.bodega || 'No', col2X + 48, row3Y);
     if (inmueble.precio_referencia) {
-      doc.font('Helvetica-Bold').text('P. Ref:', col3X, currentY + 43)
-        .font('Helvetica').text(formatearCLP(inmueble.precio_referencia), col3X + 45, currentY + 43);
+      doc.font('Helvetica-Bold').text('P. Ref.:', col3X, row3Y)
+        .font('Helvetica').text(formatearCLP(inmueble.precio_referencia) + ' CLP', col3X + 38, row3Y, { width: 125, ellipsis: true });
     }
 
-    // Fila 4: Si es Departamento (Piso y Ascensor) y/o Amenidades
-    if (esDepto) {
-      doc.font('Helvetica-Bold').text('Piso / Ascensor:', col1X, currentY + 60)
-        .font('Helvetica').text(`Piso ${inmueble.piso || '-'} / Ascensor: ${inmueble.ascensor || 'No'}`, col1X + 85, currentY + 60);
-      if (inmueble.amenidades) {
-        doc.font('Helvetica-Bold').text('Amenidades:', col2X, currentY + 60)
-          .font('Helvetica').text(inmueble.amenidades, col2X + 70, currentY + 60, { width: 260, ellipsis: true });
-      }
-    } else if (inmueble.amenidades) {
-      doc.font('Helvetica-Bold').text('Amenidades:', col1X, currentY + 60)
-        .font('Helvetica').text(inmueble.amenidades, col1X + 70, currentY + 60, { width: 450, ellipsis: true });
+    // Fila 4: Dirección / Sector
+    const dirTexto = inmueble.direccion ? inmueble.direccion : `Sector ${inmueble.comuna || '-'}`;
+    doc.font('Helvetica-Bold').text('Dirección / Sector:', col1X, row4Y)
+      .font('Helvetica').text(dirTexto, col1X + 95, row4Y, { width: 395, ellipsis: true });
+
+    // Fila 5: Piso y Ascensor (Si es Depto u Oficina)
+    if (esDeptoOOficina && row5Y !== null) {
+      doc.font('Helvetica-Bold').text('Piso / Ascensor:', col1X, row5Y)
+        .font('Helvetica').text(`Piso ${inmueble.piso || '-'}   |   Ascensor: ${inmueble.ascensor || 'No'}`, col1X + 85, row5Y);
     }
 
-    currentY += boxHeight + 15;
+    // Fila 6: Amenidades
+    if (inmueble.amenidades && row6Y !== null) {
+      doc.font('Helvetica-Bold').text('Amenidades:', col1X, row6Y)
+        .font('Helvetica').text(inmueble.amenidades, col1X + 72, row6Y, { width: 418, lineGap: 1.5 });
+    }
+
+    currentY += boxHeight + 14;
 
     // Caja de Valor de Referencia (Destacada en azul marino profundo)
     doc.rect(40, currentY, 515, 80).fill('#1E3A8A');
@@ -395,19 +430,25 @@ async function exportarPdf(req, res) {
       currentY += conclusionHeight + 10;
     }
 
-    // Advertencias en caja ámbar
+    // Advertencias en caja ámbar con espaciado e interlineado dinámico para evitar solapamiento
     if (tasacion.advertencias && tasacion.advertencias.length > 0) {
-      const advHeight = Math.min(80, 20 + tasacion.advertencias.length * 14);
-      doc.rect(40, currentY, 515, advHeight).fill('#FEF3C7').stroke('#F59E0B');
-      doc.fillColor('#92400E').fontSize(9).font('Helvetica-Bold')
+      const advs = tasacion.advertencias.slice(0, 4);
+      doc.font('Helvetica').fontSize(7.5);
+      const bulletHeights = advs.map(adv => doc.heightOfString(`• ${adv}`, { width: 485, lineGap: 1.5 }));
+      const totalContentHeight = bulletHeights.reduce((a, b) => a + b + 3, 0);
+      const advBoxHeight = 22 + totalContentHeight + 4;
+
+      doc.rect(40, currentY, 515, advBoxHeight).fill('#FEF3C7').stroke('#F59E0B');
+      doc.fillColor('#92400E').fontSize(8.5).font('Helvetica-Bold')
         .text('OBSERVACIONES Y ADVERTENCIAS:', 50, currentY + 6);
 
-      let advY = currentY + 20;
-      doc.font('Helvetica').fontSize(8).fillColor('#78350F');
-      tasacion.advertencias.slice(0, 4).forEach(adv => {
-        doc.text(`• ${adv}`, 50, advY, { width: 495 });
-        advY += 13;
+      let advY = currentY + 22;
+      doc.font('Helvetica').fontSize(7.5).fillColor('#78350F');
+      advs.forEach((adv, i) => {
+        doc.text(`• ${adv}`, 50, advY, { width: 485, lineGap: 1.5 });
+        advY += bulletHeights[i] + 3;
       });
+      currentY += advBoxHeight + 10;
     }
 
     // Pie de página
@@ -488,8 +529,8 @@ async function exportarExcel(req, res) {
       ['Estado de Conservación', inmueble.estado_conservacion || '-'],
       ['Estacionamiento', inmueble.estacionamiento || 'No'],
       ['Bodega', inmueble.bodega || 'No'],
-      ...(inmueble.tipo === 'Departamento' ? [
-        ['Piso (Departamento)', inmueble.piso ? Number(inmueble.piso) : '-'],
+      ...(inmueble.tipo === 'Departamento' || inmueble.tipo === 'Oficina' ? [
+        ['Piso (Departamento / Oficina)', inmueble.piso ? Number(inmueble.piso) : '-'],
         ['Ascensor en Edificio', inmueble.ascensor || 'No']
       ] : []),
       ['Amenidades / Áreas Comunes', inmueble.amenidades || 'Ninguna especificada'],
