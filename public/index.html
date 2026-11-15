@@ -28,7 +28,7 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <!-- Google Fonts & Custom CSS -->
-  <link rel="stylesheet" href="/css/style.css?v=2.2">
+  <link rel="stylesheet" href="/css/style.css?v=2.3">
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col justify-between">
 
@@ -614,13 +614,13 @@
                       <span class="w-2 h-2 rounded-full bg-blue-400"></span>
                       Inmuebles Comparables de Mercado
                     </h3>
-                    <!-- Botón de Ayuda Interactivo (Alta Visibilidad y Accesibilidad) -->
+                    <!-- Botón de Ayuda Interactivo (Alta Visibilidad y Accesibilidad en Móvil) -->
                     <button id="btnAyudaComparables" type="button" title="¿Qué es esto? Haz clic para ver una explicación sencilla"
-                      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-white hover:bg-blue-50 text-slate-900 border border-blue-400 shadow-sm hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group min-h-[36px]">
-                      <span class="w-4 h-4 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-black group-hover:bg-blue-700 transition-colors shrink-0">
+                      class="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-2.5 sm:py-1 rounded-full text-sm sm:text-xs font-bold bg-white hover:bg-blue-50 text-slate-900 border border-blue-400 shadow-md hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group min-h-[42px] sm:min-h-[36px]">
+                      <span class="w-5 h-5 sm:w-4 sm:h-4 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs sm:text-[10px] font-black group-hover:bg-blue-700 transition-colors shrink-0">
                         ?
                       </span>
-                      <span class="text-slate-900 font-extrabold tracking-tight">¿Qué es esto?</span>
+                      <span class="text-slate-900 font-extrabold tracking-tight text-sm sm:text-xs">¿Qué es esto?</span>
                     </button>
                   </div>
                   <p class="text-xs text-slate-400 mt-1">Agrega entre 2 y 5 propiedades comparables del sector.</p>
@@ -2645,6 +2645,6 @@
   </div>
 
   <!-- Script Principal del Frontend -->
-  <script src="/js/app.js?v=2.2"></script>
+  <script src="/js/app.js?v=2.3"></script>
 </body>
 </html>

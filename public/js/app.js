@@ -1103,7 +1103,7 @@ function renderizarComparables() {
       btnAgregar.classList.add('bg-slate-700', 'text-slate-400', 'opacity-60', 'cursor-not-allowed');
       if (btnTexto) btnTexto.textContent = 'Máximo de comparables';
       if (badge) {
-        badge.className = 'inline-flex items-center px-1.5 py-0.5 rounded-md text-[11px] font-bold font-mono bg-slate-800 text-slate-300 border border-slate-600';
+        badge.className = 'inline-flex items-center px-1.5 py-0.5 rounded-md text-xs font-bold font-mono bg-slate-800 text-slate-300 border border-slate-600';
         badge.innerHTML = `<span id="countComparables">${count}</span>/${max}`;
       }
       if (icon) icon.classList.add('hidden');
@@ -1112,7 +1112,7 @@ function renderizarComparables() {
       btnAgregar.classList.add('bg-blue-600', 'hover:bg-blue-500');
       if (btnTexto) btnTexto.textContent = 'Agregar Comparable';
       if (badge) {
-        badge.className = 'inline-flex items-center px-1.5 py-0.5 rounded-md text-[11px] font-bold font-mono bg-blue-800/80 text-blue-100 border border-blue-400/40';
+        badge.className = 'inline-flex items-center px-1.5 py-0.5 rounded-md text-xs font-bold font-mono bg-blue-800/80 text-blue-100 border border-blue-400/40';
         badge.innerHTML = `<span id="countComparables">${count}</span>/${max}`;
       }
       if (icon) icon.classList.remove('hidden');
@@ -1130,7 +1130,7 @@ function renderizarComparables() {
 
     card.innerHTML = `
       <div class="flex items-center justify-between pb-2 mb-2.5 border-b border-slate-700/60">
-        <span class="text-xs sm:text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
+        <span class="text-sm sm:text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
           <span class="w-6 h-6 rounded-full bg-blue-600 text-white shadow-sm flex items-center justify-center text-xs font-black shrink-0">
             ${idx + 1}
           </span>
@@ -1144,7 +1144,7 @@ function renderizarComparables() {
                 </svg>
                 Quitar
               </button>`
-            : '<span class="text-[11px] text-slate-500">Mínimo 2 requeridos</span>'
+            : '<span class="text-xs text-slate-500 font-medium">Mínimo 2 requeridos</span>'
         }
       </div>
 
@@ -1162,7 +1162,7 @@ function renderizarComparables() {
         <div>
           <label class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1">Distancia (km) *</label>
           <input type="number" step="0.1" min="0" placeholder="Ej: 0.5" required value="${comp.distancia_km}" data-field="distancia_km" data-index="${idx}" class="inputComparable w-full bg-white text-slate-900 placeholder:text-slate-400 placeholder-slate-400 text-base sm:text-xs rounded-xl sm:rounded-lg px-3 py-2.5 sm:py-1.5 min-h-[44px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium">
-          <p id="helperDistancia_${idx}" class="text-xs sm:text-[11px] text-slate-400 mt-1 min-h-[16px] transition-all">${calcularTextoDistancia(comp.distancia_km)}</p>
+          <p id="helperDistancia_${idx}" class="text-xs sm:text-xs text-slate-400 mt-1 min-h-[16px] transition-all">${calcularTextoDistancia(comp.distancia_km)}</p>
         </div>
       </div>
 
