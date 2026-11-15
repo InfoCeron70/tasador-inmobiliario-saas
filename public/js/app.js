@@ -2,10 +2,19 @@
  * Tasador Inmobiliario IA - Frontend Application Logic (SaaS con Autenticación y Créditos)
  */
 
+// Función auxiliar para parsear JSON seguro desde localStorage (previene caídas por JSON corrupto en móvil)
+const safeJsonParse = (str, fallback = null) => {
+  try {
+    return str ? JSON.parse(str) : fallback;
+  } catch (e) {
+    return fallback;
+  }
+};
+
 // Estado global de la aplicación
 const AppState = {
   token: localStorage.getItem('tasador_token') || null,
-  usuario: JSON.parse(localStorage.getItem('tasador_usuario') || 'null'),
+  usuario: safeJsonParse(localStorage.getItem('tasador_usuario')),
   googleClientId: null,
   googleConfigurado: false,
   packSeleccionado: { nombre: 'Pack Profesional (3 informes)', precio: '$45.000 CLP' },
@@ -18,7 +27,7 @@ const AppState = {
   modalInformeMaximizado: false,
   monedaActiva: 'CLP',      // 'CLP' | 'UF' | 'USD'
   indicadores: null,         // { uf, usd, fecha } una vez cargado
-  configMotor: JSON.parse(localStorage.getItem('tasador_config_motor') || 'null') || {
+  configMotor: safeJsonParse(localStorage.getItem('tasador_config_motor')) || {
     margenErrorRangoPct: 8,
     factorMayorPlusvaliaPct: 3,
     factorMenorPlusvaliaPct: -3,
@@ -92,18 +101,44 @@ const EJEMPLO_DATOS = {
   ]
 };
 
-// Inicialización cuando carga el DOM
-document.addEventListener('DOMContentLoaded', async () => {
-  inicializarComparables();
-  configurarEventos();
-  actualizarVisibilidadPisoAscensor();
-  const supInit = document.getElementById('superficieM2');
-  if (supInit && supInit.value) {
-    actualizarHelperSuperficie(supInit.value);
+// Inicialización cuando carga el DOM (compatible con navegadores móviles y scripts asíncronos)
+const iniciarApp = async () => {
+  try {
+    inicializarComparables();
+    configurarEventos();
+    actualizarVisibilidadPisoAscensor();
+    const supInit = document.getElementById('superficieM2');
+    if (supInit && supInit.value) {
+      actualizarHelperSuperficie(supInit.value);
+    }
+  } catch (err) {
+    console.error('Error durante inicialización DOM:', err);
   }
-  await cargarConfiguracionAuth();
-  await verificarEstadoSesion();
-});
+
+  try {
+    await cargarConfiguracionAuth();
+  } catch (err) {
+    console.error('Error cargando configuración auth:', err);
+  }
+
+  try {
+    await verificarEstadoSesion();
+  } catch (err) {
+    console.error('Error verificando estado de sesión:', err);
+    // Garantizar que la pantalla de autenticación sea visible si hay un fallo
+    const authSection = document.getElementById('authSection');
+    const mainAppSection = document.getElementById('mainAppSection');
+    if (authSection) authSection.classList.remove('hidden');
+    if (mainAppSection) mainAppSection.classList.add('hidden');
+  }
+};
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', iniciarApp);
+} else {
+  // El DOM ya terminó de parsearse (frecuente en navegadores móviles con scripts al final del body)
+  iniciarApp();
+}
 
 // ========================================================
 // 1. GESTIÓN DE SESIÓN Y AUTENTICACIÓN (GOOGLE OAUTH 2.0)
@@ -167,18 +202,22 @@ function inicializarGoogleIdentityServices() {
       cancel_on_tap_outside: true
     });
 
-    // Renderizar botón oficial de Google en contenedor
+    // Renderizar botón oficial de Google en contenedor solo si está visible (evita TypeError en GIS móvil)
     const container = document.getElementById('googleGsiBtnContainer');
-    if (container) {
-      window.google.accounts.id.renderButton(container, {
-        theme: 'outline',
-        size: 'large',
-        type: 'standard',
-        shape: 'pill',
-        text: 'continue_with',
-        logo_alignment: 'left',
-        width: 320
-      });
+    if (container && !container.classList.contains('hidden')) {
+      try {
+        window.google.accounts.id.renderButton(container, {
+          theme: 'outline',
+          size: 'large',
+          type: 'standard',
+          shape: 'pill',
+          text: 'continue_with',
+          logo_alignment: 'left',
+          width: 320
+        });
+      } catch (e) {
+        console.warn('Google renderButton omitido:', e);
+      }
     }
   } catch (err) {
     console.error('Error al inicializar Google Identity Services:', err);
@@ -202,18 +241,22 @@ function ejecutarLoginGoogle() {
     return;
   }
 
-  // Si el botón oficial de Google fue renderizado, simular click para abrir popup nativo
-  const gsiBtn = document.querySelector('#googleGsiBtnContainer div[role="button"]');
-  if (gsiBtn) {
-    gsiBtn.click();
-  } else {
-    // Alternativa: invocar prompt
-    window.google.accounts.id.prompt((notification) => {
-      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-        console.warn('Google One Tap no disponible, reintentando render');
-        inicializarGoogleIdentityServices();
-      }
-    });
+  try {
+    // Si el botón oficial de Google fue renderizado, simular click para abrir popup nativo
+    const gsiBtn = document.querySelector('#googleGsiBtnContainer div[role="button"]');
+    if (gsiBtn) {
+      gsiBtn.click();
+    } else {
+      // Invocar prompt de selección de cuenta de Google
+      window.google.accounts.id.prompt((notification) => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          console.warn('Google One Tap no disponible o cerrado');
+        }
+      });
+    }
+  } catch (e) {
+    console.error('Error al invocar Google OAuth:', e);
+    mostrarErrorAuth('No se pudo abrir la ventana de Google. Por favor intenta de nuevo.');
   }
 }
 
@@ -350,8 +393,8 @@ async function verificarEstadoSesion() {
   const mainAppSection = document.getElementById('mainAppSection');
 
   if (!AppState.token) {
-    authSection.classList.remove('hidden');
-    mainAppSection.classList.add('hidden');
+    if (authSection) authSection.classList.remove('hidden');
+    if (mainAppSection) mainAppSection.classList.add('hidden');
     return;
   }
 
@@ -368,8 +411,8 @@ async function verificarEstadoSesion() {
       localStorage.setItem('tasador_usuario', JSON.stringify(data.usuario));
 
       // Mostrar interfaz de aplicación
-      authSection.classList.add('hidden');
-      mainAppSection.classList.remove('hidden');
+      if (authSection) authSection.classList.add('hidden');
+      if (mainAppSection) mainAppSection.classList.remove('hidden');
 
       actualizarHeaderUsuario();
 
@@ -397,8 +440,8 @@ async function verificarEstadoSesion() {
   } catch (error) {
     console.warn('Error al verificar sesión:', error);
     if (AppState.usuario) {
-      authSection.classList.add('hidden');
-      mainAppSection.classList.remove('hidden');
+      if (authSection) authSection.classList.add('hidden');
+      if (mainAppSection) mainAppSection.classList.remove('hidden');
       actualizarHeaderUsuario();
       const tieneRol = usuarioTieneRol(AppState.usuario);
       if (!tieneRol) {
@@ -571,10 +614,9 @@ function cerrarSesion() {
   localStorage.removeItem('tasador_token');
   localStorage.removeItem('tasador_usuario');
 
-  document.getElementById('authSection').classList.remove('hidden');
-  document.getElementById('mainAppSection').classList.add('hidden');
+  document.getElementById('authSection')?.classList.remove('hidden');
+  document.getElementById('mainAppSection')?.classList.add('hidden');
   document.getElementById('adminViewSection')?.classList.add('hidden');
-  document.getElementById('modalAdmin')?.classList.add('hidden');
   document.getElementById('modalHistorial')?.classList.add('hidden');
   document.getElementById('modalInformeCompleto')?.classList.add('hidden');
   document.getElementById('modalAyudaComparables')?.classList.add('hidden');
@@ -1457,7 +1499,6 @@ function configurarEventos() {
   // Panel de Control Administrador (Vista Completa / Backoffice)
   document.getElementById('btnOpenAdminModal')?.addEventListener('click', () => abrirVistaAdmin(true));
   document.getElementById('btnVolverAppDesdeAdmin')?.addEventListener('click', () => cerrarVistaAdmin(true));
-  document.getElementById('btnCloseAdminModal')?.addEventListener('click', () => cerrarVistaAdmin(true));
   document.getElementById('formAdminCreditos')?.addEventListener('submit', procesarAgregarCreditosAdmin);
   document.getElementById('adminSearchUserInput')?.addEventListener('input', filtrarUsuariosAdmin);
   document.getElementById('btnAdminRefreshUsers')?.addEventListener('click', cargarUsuariosAdmin);
@@ -1594,8 +1635,6 @@ function configurarEventos() {
   document.getElementById('btnCerrarManualAdminPie')?.addEventListener('click', cerrarModalManualAdmin);
   document.getElementById('btnDescargarManualPdf')?.addEventListener('click', imprimirManualAdmin);
   document.getElementById('btnDescargarManualPdfPie')?.addEventListener('click', imprimirManualAdmin);
-  document.getElementById('btnImprimirManualAdmin')?.addEventListener('click', imprimirManualAdmin);
-  document.getElementById('btnImprimirManualAdminPie')?.addEventListener('click', imprimirManualAdmin);
   document.getElementById('modalManualAdmin')?.addEventListener('click', (e) => {
     if (e.target.id === 'modalManualAdmin') cerrarModalManualAdmin();
   });
