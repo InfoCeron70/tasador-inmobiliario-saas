@@ -146,6 +146,37 @@ button, input, select {
 }
 
 /* ========================================================
+   MODAL DE RECARGA: DIFERENCIACIÓN VISUAL PASO 2 (TRANSFERENCIA)
+   ======================================================== */
+#modalRecargaContainer {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+#modalRecargaContainer.modo-transferencia {
+  background: linear-gradient(180deg, #0f172a 0%, #020617 100%) !important;
+  border-top: 4px solid #10b981 !important; /* Borde superior 4px verde esmeralda */
+  border-left: 1px solid rgba(16, 185, 129, 0.35) !important;
+  border-right: 1px solid rgba(16, 185, 129, 0.35) !important;
+  border-bottom: 1px solid rgba(16, 185, 129, 0.25) !important;
+  box-shadow: 0 25px 50px -12px rgba(2, 6, 23, 0.95), 0 0 35px rgba(16, 185, 129, 0.18) !important;
+}
+
+.animar-paso-transferencia {
+  animation: fadeInPasoTransferencia 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInPasoTransferencia {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ========================================================
    ACCESIBILIDAD VISUAL Y TIPOGRÁFICA EN MODO MAXIMIZADO
    ======================================================== */
 #modalInformeCompleto.modal-informe-maximized #modalTituloComuna {

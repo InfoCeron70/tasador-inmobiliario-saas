@@ -2592,13 +2592,13 @@ function mostrarPasoPagoTransferencia(pack, precio) {
   if (vistaPacks) vistaPacks.classList.add('hidden');
   if (vistaPago) {
     vistaPago.classList.remove('hidden');
-    vistaPago.classList.add('flex');
+    vistaPago.classList.add('flex', 'animar-paso-transferencia');
   }
 
-  // Ajustar ancho del modal a un tamaño más compacto y enfocado para la vista de pago
+  // Ajustar ancho del modal y aplicar tema visual distintivo de Paso 2 (Transferencia Segura)
   if (modalContainer) {
     modalContainer.classList.remove('max-w-4xl');
-    modalContainer.classList.add('max-w-2xl');
+    modalContainer.classList.add('max-w-2xl', 'modo-transferencia');
   }
 }
 
@@ -2612,12 +2612,15 @@ function volverASeleccionPacks() {
 
   if (vistaPago) {
     vistaPago.classList.add('hidden');
-    vistaPago.classList.remove('flex');
+    vistaPago.classList.remove('flex', 'animar-paso-transferencia');
   }
-  if (vistaPacks) vistaPacks.classList.remove('hidden');
+  if (vistaPacks) {
+    vistaPacks.classList.remove('hidden');
+    vistaPacks.classList.add('animate-fade-in');
+  }
 
   if (modalContainer) {
-    modalContainer.classList.remove('max-w-2xl');
+    modalContainer.classList.remove('max-w-2xl', 'modo-transferencia');
     modalContainer.classList.add('max-w-4xl');
   }
 }
