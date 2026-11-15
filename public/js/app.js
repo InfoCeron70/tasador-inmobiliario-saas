@@ -1081,13 +1081,13 @@ function renderizarComparables() {
 
   AppState.comparables.forEach((comp, idx) => {
     const card = document.createElement('div');
-    card.className = 'bg-slate-800/90 border border-slate-700/80 rounded-2xl p-4 sm:p-5 transition duration-150';
+    card.className = 'bg-slate-800/90 border border-slate-700/80 rounded-2xl p-3.5 sm:p-5 transition duration-150';
 
     const puedeEliminar = AppState.comparables.length > AppState.minComparables;
     const entornoActual = comp.entorno || 'Mismo barrio / Condominio';
 
     card.innerHTML = `
-      <div class="flex items-center justify-between pb-2 mb-3 border-b border-slate-700/60">
+      <div class="flex items-center justify-between pb-2 mb-2.5 border-b border-slate-700/60">
         <span class="text-xs sm:text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
           <span class="w-6 h-6 rounded-full bg-blue-600 text-white shadow-sm flex items-center justify-center text-xs font-black shrink-0">
             ${idx + 1}
@@ -1096,7 +1096,7 @@ function renderizarComparables() {
         </span>
         ${
           puedeEliminar
-            ? `<button type="button" class="btnEliminarComp text-xs text-rose-400 hover:text-rose-300 flex items-center gap-1.5 transition min-h-[38px] px-2.5 py-1 rounded-lg hover:bg-rose-950/40" data-index="${idx}">
+            ? `<button type="button" class="btnEliminarComp text-xs text-rose-400 hover:text-rose-300 flex items-center gap-1.5 transition min-h-[36px] px-2.5 py-1 rounded-lg hover:bg-rose-950/40" data-index="${idx}">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                 </svg>
@@ -1106,33 +1106,33 @@ function renderizarComparables() {
         }
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 mb-2.5 sm:mb-3">
         <div>
-          <label class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1.5">Superficie (m²) *</label>
-          <input type="number" step="0.5" min="1" placeholder="Ej: 80" required value="${comp.superficie_m2}" data-field="superficie_m2" data-index="${idx}" class="inputComparable w-full bg-white text-slate-900 placeholder:text-slate-400 placeholder-slate-400 text-base sm:text-xs rounded-xl sm:rounded-lg px-3 py-2.5 sm:py-1.5 min-h-[46px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium">
+          <label class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1">Superficie (m²) *</label>
+          <input type="number" step="0.5" min="1" placeholder="Ej: 80" required value="${comp.superficie_m2}" data-field="superficie_m2" data-index="${idx}" class="inputComparable w-full bg-white text-slate-900 placeholder:text-slate-400 placeholder-slate-400 text-base sm:text-xs rounded-xl sm:rounded-lg px-3 py-2.5 sm:py-1.5 min-h-[44px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium">
         </div>
 
         <div>
-          <label class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1.5">Precio CLP ($) *</label>
-          <input type="text" inputmode="numeric" placeholder="Ej: 175.000.000" required value="${formatearMilesInput(comp.precio_clp)}" data-field="precio_clp" data-index="${idx}" class="inputComparable w-full bg-white text-slate-900 placeholder:text-slate-400 placeholder-slate-400 text-base sm:text-xs rounded-xl sm:rounded-lg px-3 py-2.5 sm:py-1.5 min-h-[46px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium font-mono-numbers">
+          <label class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1">Precio CLP ($) *</label>
+          <input type="text" inputmode="numeric" placeholder="Ej: 175.000.000" required value="${formatearMilesInput(comp.precio_clp)}" data-field="precio_clp" data-index="${idx}" class="inputComparable w-full bg-white text-slate-900 placeholder:text-slate-400 placeholder-slate-400 text-base sm:text-xs rounded-xl sm:rounded-lg px-3 py-2.5 sm:py-1.5 min-h-[44px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium font-mono-numbers">
         </div>
 
         <div>
-          <label class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1.5">Distancia (km) *</label>
-          <input type="number" step="0.1" min="0" placeholder="Ej: 0.5" required value="${comp.distancia_km}" data-field="distancia_km" data-index="${idx}" class="inputComparable w-full bg-white text-slate-900 placeholder:text-slate-400 placeholder-slate-400 text-base sm:text-xs rounded-xl sm:rounded-lg px-3 py-2.5 sm:py-1.5 min-h-[46px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium">
+          <label class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1">Distancia (km) *</label>
+          <input type="number" step="0.1" min="0" placeholder="Ej: 0.5" required value="${comp.distancia_km}" data-field="distancia_km" data-index="${idx}" class="inputComparable w-full bg-white text-slate-900 placeholder:text-slate-400 placeholder-slate-400 text-base sm:text-xs rounded-xl sm:rounded-lg px-3 py-2.5 sm:py-1.5 min-h-[44px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium">
           <p id="helperDistancia_${idx}" class="text-xs sm:text-[11px] text-slate-400 mt-1 min-h-[16px] transition-all">${calcularTextoDistancia(comp.distancia_km)}</p>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
         <div>
-          <label class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1.5 flex items-center justify-between">
+          <label class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1 flex items-center justify-between">
             <span class="text-slate-200">Entorno del Comparable *</span>
             <span class="text-xs font-bold text-amber-400 tracking-wide flex items-center gap-1">
               <span>✦</span> Ajuste plusvalía
             </span>
           </label>
-          <select data-field="entorno" data-index="${idx}" class="inputComparable w-full bg-white text-slate-900 text-base sm:text-xs rounded-xl sm:rounded-lg px-3 py-2.5 sm:py-1.5 min-h-[46px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium">
+          <select data-field="entorno" data-index="${idx}" class="inputComparable w-full bg-white text-slate-900 text-base sm:text-xs rounded-xl sm:rounded-lg px-3 py-2.5 sm:py-1.5 min-h-[44px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium">
             <option value="Mismo barrio / Condominio" ${entornoActual === 'Mismo barrio / Condominio' ? 'selected' : ''}>Mismo barrio / Condominio</option>
             <option value="Zona de mayor plusvalía" ${entornoActual === 'Zona de mayor plusvalía' ? 'selected' : ''}>Zona de mayor plusvalía</option>
             <option value="Zona de menor plusvalía" ${entornoActual === 'Zona de menor plusvalía' ? 'selected' : ''}>Zona de menor plusvalía</option>
@@ -1141,8 +1141,8 @@ function renderizarComparables() {
         </div>
 
         <div>
-          <label class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1.5">Diferencia / Nota relevante (opcional)</label>
-          <input type="text" placeholder="Ej: Sin estacionamiento, vista despejada..." value="${comp.diferencia_nota || ''}" data-field="diferencia_nota" data-index="${idx}" class="inputComparable w-full bg-white text-slate-900 placeholder:text-slate-400 placeholder-slate-400 text-base sm:text-xs rounded-xl sm:rounded-lg px-3 py-2.5 sm:py-1.5 min-h-[46px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
+          <label class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1">Diferencia / Nota relevante (opcional)</label>
+          <input type="text" placeholder="Ej: Sin estacionamiento, vista despejada..." value="${comp.diferencia_nota || ''}" data-field="diferencia_nota" data-index="${idx}" class="inputComparable w-full bg-white text-slate-900 placeholder:text-slate-400 placeholder-slate-400 text-base sm:text-xs rounded-xl sm:rounded-lg px-3 py-2.5 sm:py-1.5 min-h-[44px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
         </div>
       </div>
     `;
@@ -3487,16 +3487,16 @@ function mostrarResultados(tasacion, inmueble, fecha) {
       const nombreComp = item.nombre || `Comparable ${item.index || idx + 1} - Superficie y Ubicación`;
 
       const cardMob = document.createElement('div');
-      cardMob.className = 'bg-slate-800/90 rounded-2xl p-4 border border-slate-700 space-y-3 shadow-md';
+      cardMob.className = 'bg-slate-800/90 rounded-2xl p-3.5 sm:p-4 border border-slate-700 space-y-2.5 sm:space-y-3 shadow-md';
       cardMob.innerHTML = `
-        <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-700/60">
+        <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-700/60">
           <span class="font-bold text-white text-sm sm:text-base">${nombreComp}</span>
-          <span class="inline-block px-2.5 py-1 rounded-lg text-xs sm:text-sm font-bold font-mono-numbers ${factorBadgeClass}">
+          <span class="inline-block px-2 py-0.5 rounded-lg text-xs sm:text-sm font-bold font-mono-numbers ${factorBadgeClass}">
             Factor: ${factor.toFixed(3)}
           </span>
         </div>
 
-        <div class="grid grid-cols-2 gap-2 text-xs sm:text-sm bg-slate-900/80 p-3 rounded-xl border border-slate-700/60">
+        <div class="grid grid-cols-2 gap-2 text-xs sm:text-sm bg-slate-900/80 p-2.5 sm:p-3 rounded-xl border border-slate-700/60">
           <div>
             <span class="text-slate-400 text-xs block font-medium">P. Unit. Original</span>
             <span class="font-bold text-slate-200 font-mono-numbers text-xs sm:text-sm">
@@ -3512,7 +3512,7 @@ function mostrarResultados(tasacion, inmueble, fecha) {
         </div>
 
         <div class="text-xs sm:text-sm text-slate-200 leading-relaxed pt-0.5">
-          <span class="text-slate-400 font-semibold block mb-1 text-xs uppercase tracking-wider">Justificación Técnica:</span>
+          <span class="text-slate-400 font-semibold block mb-0.5 text-xs uppercase tracking-wider">Justificación Técnica:</span>
           <span>${item.justificacion || 'Ajuste de mercado'}</span>
         </div>
       `;

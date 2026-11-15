@@ -356,7 +356,7 @@ input::placeholder, select::placeholder, textarea::placeholder {
    OPTIMIZACIONES MÓVILES RESPONSIVE (ANDROID & IOS)
    ======================================================== */
 @media (max-width: 640px) {
-  /* Evitar auto-zoom en iOS Safari y asegurar excelente legibilidad táctil en Android */
+  /* Evitar auto-zoom en iOS Safari y asegurar altura proporcionada sin verse gigantes */
   input[type="text"],
   input[type="number"],
   input[type="email"],
@@ -365,11 +365,21 @@ input::placeholder, select::placeholder, textarea::placeholder {
   textarea {
     font-size: 16px !important;
     min-height: 44px !important;
+    padding-top: 0.625rem !important; /* py-2.5 (10px) */
+    padding-bottom: 0.625rem !important;
+    line-height: 1.35 !important;
+    box-sizing: border-box !important;
   }
 
-  /* Etiquetas de formulario claras y legibles */
+  /* Selectores alineados con la misma altura de caja */
+  select {
+    height: 44px !important;
+  }
+
+  /* Etiquetas de formulario claras, proporcionadas y legibles */
   label {
-    font-size: 14px;
+    font-size: 13px !important;
+    line-height: 1.3 !important;
   }
 
   /* Botones táctiles cómodos para el dedo (Touch Targets >= 44px) */

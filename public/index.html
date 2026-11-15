@@ -160,7 +160,7 @@
               </span>
               <span class="text-[10px] text-slate-400 font-medium">DeepSeek Engine</span>
             </div>
-            <h1 class="text-lg sm:text-xl font-black text-slate-900 tracking-tight leading-snug">
+            <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight leading-snug">
               Tasación Inmobiliaria Profesional
             </h1>
           </div>
@@ -304,17 +304,17 @@
             </div>
 
             <!-- Grid de 8 Campos del Inmueble -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-6 sm:mb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
               
               <!-- 1. Tipo (Casa / Departamento) -->
               <div>
-                <label for="tipoInmueble" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1.5 flex items-center">
+                <label for="tipoInmueble" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1 flex items-center">
                   <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                   </svg>
                   Tipo de Inmueble *
                 </label>
-                <select id="tipoInmueble" name="tipoInmueble" required class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-3 sm:py-2.5 min-h-[46px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                <select id="tipoInmueble" name="tipoInmueble" required class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-2.5 sm:py-2 min-h-[44px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
                   <option value="Departamento" selected>Departamento</option>
                   <option value="Casa">Casa</option>
                   <option value="Oficina">Oficina</option>
@@ -325,58 +325,58 @@
 
               <!-- 2. Superficie m² -->
               <div>
-                <label for="superficieM2" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1.5 flex items-center">
+                <label for="superficieM2" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1 flex items-center">
                   <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10a1 1 0 001 1h14a1 1 0 001-1V7a1 1 0 00-1-1H5a1 1 0 00-1 1zm4 0v4m4-4v2m4-2v4"/>
                   </svg>
                   Superficie Útil (m²) *
                 </label>
-                <input type="number" id="superficieM2" name="superficieM2" min="1" step="0.5" placeholder="Ej: 85" required class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-3 sm:py-2.5 min-h-[46px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                <input type="number" id="superficieM2" name="superficieM2" min="1" step="0.5" placeholder="Ej: 85" required class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-2.5 sm:py-2 min-h-[44px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
                 <p id="helperSuperficieM2" class="text-xs sm:text-[11px] text-slate-400 mt-1 min-h-[16px] transition-all"></p>
               </div>
 
               <!-- 3. Dormitorios -->
               <div>
-                <label for="dormitorios" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1.5 flex items-center">
+                <label for="dormitorios" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1 flex items-center">
                   <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v11m0-4h18m0-7v11M7 10h4a2 2 0 002-2V7a1 1 0 00-1-1H8a1 1 0 00-1 1v1z"/>
                   </svg>
                   Dormitorios *
                 </label>
-                <input type="number" id="dormitorios" name="dormitorios" min="1" max="20" placeholder="Ej: 3" required class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-3 sm:py-2.5 min-h-[46px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                <input type="number" id="dormitorios" name="dormitorios" min="1" max="20" placeholder="Ej: 3" required class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-2.5 sm:py-2 min-h-[44px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
               </div>
 
               <!-- 4. Baños -->
               <div>
-                <label for="banos" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1.5 flex items-center">
+                <label for="banos" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1 flex items-center">
                   <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
                   </svg>
                   Baños *
                 </label>
-                <input type="number" id="banos" name="banos" min="1" max="15" placeholder="Ej: 2" required class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-3 sm:py-2.5 min-h-[46px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                <input type="number" id="banos" name="banos" min="1" max="15" placeholder="Ej: 2" required class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-2.5 sm:py-2 min-h-[44px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
               </div>
 
               <!-- 5. Antigüedad (años) -->
               <div>
-                <label for="antiguedad" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1.5 flex items-center">
+                <label for="antiguedad" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1 flex items-center">
                   <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                   </svg>
                   Antigüedad (años) *
                 </label>
-                <input type="number" id="antiguedad" name="antiguedad" min="0" max="150" placeholder="Ej: 5 (0 = nuevo)" required class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-3 sm:py-2.5 min-h-[46px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                <input type="number" id="antiguedad" name="antiguedad" min="0" max="150" placeholder="Ej: 5 (0 = nuevo)" required class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-2.5 sm:py-2 min-h-[44px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
               </div>
 
               <!-- 6. Estado de conservación -->
               <div>
-                <label for="estadoConservacion" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1.5 flex items-center">
+                <label for="estadoConservacion" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1 flex items-center">
                   <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                   </svg>
                   Estado de Conservación *
                 </label>
-                <select id="estadoConservacion" name="estadoConservacion" required class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-3 sm:py-2.5 min-h-[46px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                <select id="estadoConservacion" name="estadoConservacion" required class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-2.5 sm:py-2 min-h-[44px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
                   <option value="Excelente">Excelente</option>
                   <option value="Muy Bueno">Muy Bueno</option>
                   <option value="Bueno" selected>Bueno</option>
@@ -387,7 +387,7 @@
 
               <!-- 7. Comuna -->
               <div>
-                <label for="comuna" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1.5 flex items-center justify-between">
+                <label for="comuna" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1 flex items-center justify-between">
                   <span class="flex items-center">
                     <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -396,7 +396,7 @@
                   </span>
                   <span class="text-[10px] text-slate-400">Región Metropolitana</span>
                 </label>
-                <select id="comuna" name="comuna" required class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-3 sm:py-2.5 min-h-[46px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                <select id="comuna" name="comuna" required class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-2.5 sm:py-2 min-h-[44px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
                   <option value="" disabled selected>Selecciona una comuna...</option>
                   <optgroup label="── Región Metropolitana (Santiago) ──">
                     <option value="Alhué">Alhué</option>
@@ -475,7 +475,7 @@
 
               <!-- 8. Dirección o Sector (Opcional) con Botón Ver en Mapa -->
               <div class="sm:col-span-2">
-                <label for="direccionInmueble" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1.5 flex items-center justify-between">
+                <label for="direccionInmueble" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1 flex items-center justify-between">
                   <span class="flex items-center">
                     <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
@@ -486,8 +486,8 @@
                   <span class="text-[10px] text-slate-400">Verificar en Google Maps</span>
                 </label>
                 <div class="flex gap-2">
-                  <input type="text" id="direccionInmueble" name="direccionInmueble" placeholder="Ej: Av. Las Condes 1234, Depto 502" class="flex-1 bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-3 sm:py-2.5 min-h-[46px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
-                  <button id="btnVerEnMapa" type="button" class="px-4 py-3 sm:py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm sm:text-xs transition flex items-center gap-1.5 shadow-md cursor-pointer shrink-0 active:scale-95 min-h-[46px] sm:min-h-0" title="Abrir ubicación en Google Maps">
+                  <input type="text" id="direccionInmueble" name="direccionInmueble" placeholder="Ej: Av. Las Condes 1234, Depto 502" class="flex-1 bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-2.5 sm:py-2 min-h-[44px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                  <button id="btnVerEnMapa" type="button" class="px-3.5 py-2.5 sm:py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm sm:text-xs transition flex items-center gap-1.5 shadow-md cursor-pointer shrink-0 active:scale-95 min-h-[44px] sm:min-h-0" title="Abrir ubicación en Google Maps">
                     <span>📍</span>
                     <span class="hidden sm:inline">Ver en Mapa</span>
                     <span class="sm:hidden">Mapa</span>
@@ -497,25 +497,25 @@
 
               <!-- 9. Precio de Referencia (Opcional) -->
               <div>
-                <label for="precioReferencia" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1.5 flex items-center">
+                <label for="precioReferencia" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1 flex items-center">
                   <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
                   </svg>
                   Precio de Referencia CLP (Opcional)
                 </label>
-                <input type="text" inputmode="numeric" id="precioReferencia" name="precioReferencia" placeholder="Ej: 185.000.000" class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-3 sm:py-2.5 min-h-[46px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                <input type="text" inputmode="numeric" id="precioReferencia" name="precioReferencia" placeholder="Ej: 185.000.000" class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-2.5 sm:py-2 min-h-[44px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
               </div>
 
               <!-- 10. Estacionamiento -->
               <div>
-                <label for="estacionamiento" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1.5 flex items-center">
+                <label for="estacionamiento" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1 flex items-center">
                   <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8a2 2 0 012 2v10a2 2 0 01-2 2H8a2 2 0 01-2-2V9a2 2 0 012-2z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 11h3a2 2 0 010 4H9v-4z"/>
                   </svg>
                   Estacionamiento
                 </label>
-                <select id="estacionamiento" name="estacionamiento" class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-3 sm:py-2.5 min-h-[46px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                <select id="estacionamiento" name="estacionamiento" class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-2.5 sm:py-2 min-h-[44px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
                   <option value="Sí" selected>Sí</option>
                   <option value="No">No</option>
                 </select>
@@ -523,37 +523,37 @@
 
               <!-- 11. Bodega -->
               <div>
-                <label for="bodega" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1.5 flex items-center">
+                <label for="bodega" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1 flex items-center">
                   <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                   </svg>
                   Bodega
                 </label>
-                <select id="bodega" name="bodega" class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-3 sm:py-2.5 min-h-[46px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                <select id="bodega" name="bodega" class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-2.5 sm:py-2 min-h-[44px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
                   <option value="Sí" selected>Sí</option>
                   <option value="No">No</option>
                 </select>
               </div>
 
               <!-- 12. Piso y Ascensor (Condicional: Solo si Departamento u Oficina) -->
-              <div id="seccionPisoAscensor" class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 p-3.5 sm:p-4 rounded-2xl bg-slate-800/60 border border-slate-700/70">
+              <div id="seccionPisoAscensor" class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl bg-slate-800/60 border border-slate-700/70">
                 <div>
-                  <label for="piso" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1.5 flex items-center">
+                  <label for="piso" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1 flex items-center">
                     <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                     </svg>
                     Piso (Departamento / Oficina)
                   </label>
-                  <input type="number" id="piso" name="piso" min="1" max="80" placeholder="Ej: 5" value="5" class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-3 sm:py-2.5 min-h-[46px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                  <input type="number" id="piso" name="piso" min="1" max="80" placeholder="Ej: 5" value="5" class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-2.5 sm:py-2 min-h-[44px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
                 </div>
                 <div>
-                  <label for="ascensor" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1.5 flex items-center">
+                  <label for="ascensor" class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1 flex items-center">
                     <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
                     </svg>
                     Ascensor en Edificio
                   </label>
-                  <select id="ascensor" name="ascensor" class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-3 sm:py-2.5 min-h-[46px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
+                  <select id="ascensor" name="ascensor" class="w-full bg-white text-slate-900 text-base sm:text-sm rounded-xl px-3.5 py-2.5 sm:py-2 min-h-[44px] sm:min-h-0 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition font-medium">
                     <option value="Sí" selected>Sí</option>
                     <option value="No">No</option>
                   </select>
@@ -562,7 +562,7 @@
 
               <!-- 13. Amenidades y Áreas Comunes (Casillas de verificación) -->
               <div class="sm:col-span-2">
-                <label class="block text-sm sm:text-xs font-semibold text-slate-200 mb-2 flex items-center justify-between">
+                <label class="block text-sm sm:text-xs font-semibold text-slate-200 mb-1.5 flex items-center justify-between">
                   <span class="flex items-center">
                     <svg class="w-4 h-4 text-slate-400 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
@@ -571,7 +571,7 @@
                   </span>
                   <span class="text-[10px] text-slate-400">Marca las que correspondan</span>
                 </label>
-                <div id="contenedorAmenidades" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 p-3.5 rounded-2xl bg-slate-800/60 border border-slate-700/70">
+                <div id="contenedorAmenidades" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-2.5 p-3 rounded-2xl bg-slate-800/60 border border-slate-700/70">
                   <label class="flex items-center gap-2.5 text-sm sm:text-xs font-medium text-slate-200 cursor-pointer hover:text-white select-none p-2 sm:p-1.5 rounded-xl hover:bg-slate-700/50 min-h-[44px] sm:min-h-0">
                     <input type="checkbox" name="amenidadCheck" value="Piscina" class="w-5 h-5 sm:w-4 sm:h-4 text-blue-600 rounded border-slate-500 focus:ring-blue-500 bg-slate-900 cursor-pointer shrink-0">
                     <span>🏊‍♂️ Piscina</span>
@@ -602,35 +602,31 @@
                   </label>
                 </div>
               </div>
-                    <span>🌳 Áreas Verdes</span>
-                  </label>
-                </div>
-              </div>
 
             </div>
 
             <!-- Sección 2: Inmuebles Comparables -->
-            <div class="pt-5 sm:pt-6 border-t border-slate-800 mb-6">
-              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+            <div class="pt-4 sm:pt-6 border-t border-slate-800 mb-5 sm:mb-6">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3.5 sm:mb-4">
                 <div>
                   <div class="flex items-center flex-wrap gap-2.5">
-                    <h3 class="text-base sm:text-base font-bold text-white flex items-center gap-2">
+                    <h3 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
                       <span class="w-2 h-2 rounded-full bg-blue-400"></span>
                       Inmuebles Comparables de Mercado
                     </h3>
                     <!-- Botón de Ayuda Interactivo (Alta Visibilidad y Accesibilidad) -->
                     <button id="btnAyudaComparables" type="button" title="¿Qué es esto? Haz clic para ver una explicación sencilla"
-                      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-bold bg-white hover:bg-blue-50 text-slate-900 border-2 border-blue-400 shadow-md hover:shadow-blue-500/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group min-h-[38px]">
-                      <span class="w-4 h-4 rounded-full bg-blue-600 text-white flex items-center justify-center text-[11px] font-black group-hover:bg-blue-700 transition-colors shrink-0">
+                      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-white hover:bg-blue-50 text-slate-900 border border-blue-400 shadow-sm hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group min-h-[36px]">
+                      <span class="w-4 h-4 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-black group-hover:bg-blue-700 transition-colors shrink-0">
                         ?
                       </span>
                       <span class="text-slate-900 font-extrabold tracking-tight">¿Qué es esto?</span>
                     </button>
                   </div>
-                  <p class="text-xs sm:text-xs text-slate-400 mt-1">Agrega entre 2 y 5 propiedades comparables del sector.</p>
+                  <p class="text-xs text-slate-400 mt-1">Agrega entre 2 y 5 propiedades comparables del sector.</p>
                 </div>
                 <button id="btnAgregarComparable" type="button"
-                  class="w-full sm:w-auto text-sm sm:text-xs font-bold px-4 py-3 sm:py-1.5 rounded-xl sm:rounded-lg bg-blue-600 hover:bg-blue-500 text-white transition flex items-center justify-center gap-2 shadow-sm whitespace-nowrap shrink-0 min-h-[46px] sm:min-h-0 cursor-pointer active:scale-95">
+                  class="w-full sm:w-auto text-sm sm:text-xs font-bold px-3.5 py-2.5 sm:py-1.5 rounded-xl sm:rounded-lg bg-blue-600 hover:bg-blue-500 text-white transition flex items-center justify-center gap-2 shadow-sm whitespace-nowrap shrink-0 min-h-[44px] sm:min-h-0 cursor-pointer active:scale-95">
                   <span class="flex items-center gap-1.5">
                     <svg id="iconAgregarComparable" class="w-4 h-4 sm:w-3.5 sm:h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -645,9 +641,24 @@
 
               <!-- Botón IA: Sugerir Comparables -->
               <button id="btnSugerirComparables" type="button"
-                class="w-full min-h-[48px] mb-4 flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl font-bold text-sm text-white transition shadow-lg
+                class="w-full min-h-[44px] mb-3 flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-xl font-bold text-sm text-white transition shadow-lg
                        bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600
                        hover:from-violet-500 hover:via-purple-500 hover:to-indigo-500
+                       focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-slate-900
+                       active:scale-[0.98] cursor-pointer">
+                <!-- Icono varita mágica -->
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M5 3l1.5 1.5M3 5l1.5 1.5M12 3l1.5 1.5M14 5l-1.5 1.5M19 12l1.5 1.5M17 14l1.5-1.5M5 19l1.5-1.5M3 17l1.5 1.5
+                       M9.5 9.5l5 5M7 7l10 10"/>
+                </svg>
+                <span id="btnSugerirTexto">✨ Sugerir Comparables con IA</span>
+                <!-- Spinner oculto mientras carga -->
+                <svg id="spinnerSugerir" class="hidden w-4 h-4 animate-spin shrink-0" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                </svg>
+              </button>
                        focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-slate-900
                        active:scale-[0.98] cursor-pointer">
                 <!-- Icono varita mágica -->
@@ -687,14 +698,14 @@
             </div>
 
             <!-- Botón de Envío Principal -->
-            <div class="pt-4">
-              <button id="btnGenerarAnalisis" type="submit" class="w-full min-h-[52px] bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-3.5 px-6 rounded-2xl shadow-xl shadow-emerald-600/30 transition duration-200 flex items-center justify-center gap-2 text-base group cursor-pointer active:scale-[0.99]">
+            <div class="pt-3 sm:pt-4">
+              <button id="btnGenerarAnalisis" type="submit" class="w-full min-h-[46px] bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-xl sm:rounded-2xl shadow-lg shadow-emerald-600/30 transition duration-200 flex items-center justify-center gap-2 text-base group cursor-pointer active:scale-[0.99]">
                 <svg id="iconSubmit" class="w-5 h-5 text-emerald-200 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                 </svg>
                 <span id="btnSubmitText">Generar Análisis (Consume 1 Crédito)</span>
               </button>
-              <p class="text-center text-xs text-slate-400 mt-2.5">
+              <p class="text-center text-xs text-slate-400 mt-2">
                 Procesamiento seguro con IA DeepSeek y almacenamiento en tu cuenta.
               </p>
             </div>
@@ -707,7 +718,7 @@
         <section class="lg:col-span-5 xl:col-span-5 space-y-6">
           
           <!-- Estado Inicial: Guía Informativa cuando no hay tasación activa -->
-          <div id="panelBienvenida" class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-8 shadow-sm">
+          <div id="panelBienvenida" class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-8 shadow-sm">
             <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-4">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -742,7 +753,7 @@
           </div>
 
           <!-- Tarjeta de Resultado Compacta -->
-          <div id="panelResumenCompacto" class="hidden bg-slate-900 text-white rounded-2xl shadow-xl p-5 sm:p-6 border border-slate-800 animate-fade-in space-y-4">
+          <div id="panelResumenCompacto" class="hidden bg-slate-900 text-white rounded-2xl shadow-xl p-4 sm:p-6 border border-slate-800 animate-fade-in space-y-4">
             
             <!-- Encabezado de Estado Exitoso -->
             <div class="flex items-center justify-between pb-3 border-b border-slate-800">
@@ -1084,8 +1095,8 @@
     <div id="modalRecargaContainer" class="bg-slate-900 border border-slate-700/80 rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl text-white animate-fade-in relative transition-all duration-300">
       
       <!-- Botón de Cerrar (X) -->
-      <button id="btnCloseSinCreditos" type="button" title="Cerrar modal" class="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition z-30 cursor-pointer active:scale-95">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <button id="btnCloseSinCreditos" type="button" title="Cerrar modal" class="absolute top-3 right-3 sm:top-4 sm:right-4 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition z-30 cursor-pointer active:scale-95">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
         </svg>
       </button>
@@ -1095,38 +1106,38 @@
       <!-- ========================================== -->
       <div id="vistaPacksRecarga" class="p-4 sm:p-8 overflow-y-auto max-h-[92vh] flex-1">
         <!-- Encabezado del Modal -->
-        <div class="text-center max-w-xl mx-auto mb-6 sm:mb-8 pt-2">
-          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-800 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-2.5">
+        <div class="text-center max-w-xl mx-auto mb-4 sm:mb-6 pt-1 sm:pt-2">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-800 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-2">
             <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
             </svg>
             Packs de Tasación • Activación Inmediata
           </div>
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Recarga tus Créditos</h2>
-          <p class="text-xs sm:text-sm text-slate-400 mt-1.5 leading-relaxed">
+          <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Recarga tus Créditos</h2>
+          <p class="text-xs sm:text-sm text-slate-300 mt-1 leading-relaxed">
             Selecciona el pack ideal para tus requerimientos inmobiliarios. A continuación verás los datos para transferir y podrás confirmar tu pago por WhatsApp.
           </p>
         </div>
 
         <!-- Cuadrícula de 3 Packs de Monetización -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-5 mb-5 sm:mb-6">
           
           <!-- PACK 1: Inicial -->
-          <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 flex flex-col justify-between hover:border-slate-600 transition shadow-sm">
+          <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-slate-600 transition shadow-sm">
             <div>
               <div class="flex items-center justify-between mb-2">
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Ocasional</span>
                 <span class="text-[11px] text-slate-400 font-medium">1 Crédito</span>
               </div>
-              <h3 class="text-lg font-extrabold text-white">Pack Inicial</h3>
+              <h3 class="text-base sm:text-lg font-bold text-white">Pack Inicial</h3>
               <p class="text-xs text-slate-400 mt-0.5">Para tasar una propiedad específica.</p>
 
-              <div class="my-4 pb-4 border-b border-slate-700/60">
+              <div class="my-3 sm:my-4 pb-3 sm:pb-4 border-b border-slate-700/60">
                 <div class="text-2xl sm:text-3xl font-black text-white font-mono-numbers">$ 20.000 <span class="text-xs font-normal text-slate-400 font-sans">CLP</span></div>
                 <span class="text-[11px] text-slate-400">$20.000 por informe</span>
               </div>
 
-              <ul class="text-xs text-slate-300 space-y-2 mb-6">
+              <ul class="text-xs sm:text-sm text-slate-300 space-y-1.5 sm:space-y-2 mb-5">
                 <li class="flex items-center gap-2">
                   <span class="text-emerald-400 font-bold">✓</span>
                   <span><strong>1 Informe</strong> con IA DeepSeek</span>
@@ -1146,7 +1157,7 @@
               </ul>
             </div>
 
-            <button type="button" class="btnComprarWhatsapp w-full min-h-[48px] bg-slate-700 hover:bg-emerald-600 text-white font-bold py-3.5 px-4 rounded-xl transition duration-150 flex items-center justify-center gap-2 text-sm shadow-md cursor-pointer active:scale-95"
+            <button type="button" class="btnComprarWhatsapp w-full min-h-[44px] bg-slate-700 hover:bg-emerald-600 text-white font-bold py-3 px-4 rounded-xl transition duration-150 flex items-center justify-center gap-2 text-sm sm:text-base shadow-md cursor-pointer active:scale-95"
               data-pack="Pack Inicial (1 informe)"
               data-precio="$20.000 CLP">
               <svg class="w-4 h-4 fill-emerald-400" viewBox="0 0 24 24">
@@ -1157,7 +1168,7 @@
           </div>
 
           <!-- PACK 2: Profesional (RECOMENDADO / MÁS POPULAR) -->
-          <div class="bg-slate-800 border-2 border-emerald-500 rounded-2xl p-5 sm:p-6 flex flex-col justify-between relative shadow-xl shadow-emerald-500/15 hover:border-emerald-400 transition transform md:-translate-y-1.5">
+          <div class="bg-slate-800 border-2 border-emerald-500 rounded-2xl p-4 sm:p-6 flex flex-col justify-between relative shadow-xl shadow-emerald-500/15 hover:border-emerald-400 transition transform md:-translate-y-1.5">
             <!-- Etiqueta Flotante Más Popular -->
             <span class="bg-emerald-500 text-slate-950 text-[10px] font-black uppercase tracking-wider px-3.5 py-1 rounded-full absolute -top-3.5 left-1/2 -translate-x-1/2 shadow-md whitespace-nowrap">
               ★ Más Popular • Recomendado
@@ -1170,11 +1181,11 @@
                   3 Créditos
                 </span>
               </div>
-              <h3 class="text-lg font-extrabold text-white">Pack Profesional</h3>
+              <h3 class="text-base sm:text-lg font-bold text-white">Pack Profesional</h3>
               <p class="text-xs text-slate-400 mt-0.5">El más elegido por agentes y propietarios.</p>
 
-              <div class="my-4 pb-4 border-b border-slate-700/60">
-                <div class="text-3xl sm:text-4xl font-black text-white font-mono-numbers">$ 45.000 <span class="text-xs font-normal text-slate-400 font-sans">CLP</span></div>
+              <div class="my-3 sm:my-4 pb-3 sm:pb-4 border-b border-slate-700/60">
+                <div class="text-2xl sm:text-4xl font-black text-white font-mono-numbers">$ 45.000 <span class="text-xs font-normal text-slate-400 font-sans">CLP</span></div>
                 <div class="flex items-center gap-2 mt-1">
                   <span class="text-xs text-emerald-400 font-bold">$15.000 por informe</span>
                   <span class="text-[10px] text-emerald-300 bg-emerald-950/90 border border-emerald-800/80 px-2 py-0.2 rounded-md font-semibold">
@@ -1183,7 +1194,7 @@
                 </div>
               </div>
 
-              <ul class="text-xs text-slate-200 space-y-2 mb-6">
+              <ul class="text-xs sm:text-sm text-slate-200 space-y-1.5 sm:space-y-2 mb-5">
                 <li class="flex items-center gap-2">
                   <span class="text-emerald-400 font-bold">✓</span>
                   <span><strong>3 Informes</strong> con IA DeepSeek</span>
@@ -1203,7 +1214,7 @@
               </ul>
             </div>
 
-            <button type="button" class="btnComprarWhatsapp w-full min-h-[48px] bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3.5 px-4 rounded-xl shadow-lg shadow-emerald-500/30 transition duration-150 flex items-center justify-center gap-2 text-sm cursor-pointer active:scale-95"
+            <button type="button" class="btnComprarWhatsapp w-full min-h-[44px] bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 px-4 rounded-xl shadow-lg shadow-emerald-500/30 transition duration-150 flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer active:scale-95"
               data-pack="Pack Profesional (3 informes)"
               data-precio="$45.000 CLP">
               <svg class="w-4 h-4 fill-slate-950" viewBox="0 0 24 24">
@@ -1214,9 +1225,54 @@
           </div>
 
           <!-- PACK 3: Corredor -->
-          <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 flex flex-col justify-between hover:border-slate-600 transition shadow-sm">
+          <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-slate-600 transition shadow-sm">
             <div>
               <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Corredoras</span>
+                <span class="text-[11px] text-slate-400 font-medium">5 Créditos</span>
+              </div>
+              <h3 class="text-base sm:text-lg font-bold text-white">Pack Corredor</h3>
+              <p class="text-xs text-slate-400 mt-0.5">Para oficinas y corredores con alto flujo.</p>
+
+              <div class="my-3 sm:my-4 pb-3 sm:pb-4 border-b border-slate-700/60">
+                <div class="text-2xl sm:text-3xl font-black text-white font-mono-numbers">$ 70.000 <span class="text-xs font-normal text-slate-400 font-sans">CLP</span></div>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="text-xs text-blue-300 font-bold">$14.000 por informe</span>
+                  <span class="text-[10px] text-blue-300 bg-blue-950/90 border border-blue-800/80 px-2 py-0.2 rounded-md font-semibold">
+                    Ahorras $30.000
+                  </span>
+                </div>
+              </div>
+
+              <ul class="text-xs sm:text-sm text-slate-300 space-y-1.5 sm:space-y-2 mb-5">
+                <li class="flex items-center gap-2">
+                  <span class="text-emerald-400 font-bold">✓</span>
+                  <span><strong>5 Informes</strong> con IA DeepSeek</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="text-emerald-400 font-bold">✓</span>
+                  <span>Exportación completa <strong>PDF y Excel</strong></span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="text-emerald-400 font-bold">✓</span>
+                  <span>Factores de ajuste por comuna y tipología</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="text-emerald-400 font-bold">✓</span>
+                  <span>Soporte prioritario para corredoras</span>
+                </li>
+              </ul>
+            </div>
+
+            <button type="button" class="btnComprarWhatsapp w-full min-h-[44px] bg-slate-700 hover:bg-emerald-600 text-white font-bold py-3 px-4 rounded-xl transition duration-150 flex items-center justify-center gap-2 text-sm sm:text-base shadow-md cursor-pointer active:scale-95"
+              data-pack="Pack Corredor (5 informes)"
+              data-precio="$70.000 CLP">
+              <svg class="w-4 h-4 fill-emerald-400" viewBox="0 0 24 24">
+                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.173.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.043.073.043.419-.101.824z"/>
+              </svg>
+              <span>Comprar vía WhatsApp</span>
+            </button>
+          </div>
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Corredoras</span>
                 <span class="text-[11px] text-slate-400 font-medium">5 Créditos</span>
               </div>
@@ -1421,28 +1477,28 @@
   <!-- 4.1 MODAL: CONFIRMAR GENERACIÓN DE ANÁLISIS (CONSUMO DE CRÉDITO) -->
   <!-- ========================================== -->
   <div id="modalConfirmarGeneracion" class="fixed inset-0 z-[70] bg-slate-950/85 backdrop-blur-md hidden flex items-center justify-center p-4" style="z-index: 70;">
-    <div class="bg-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-8 max-w-md w-full max-h-[92vh] overflow-y-auto text-center text-white shadow-2xl animate-fade-in relative">
+    <div class="bg-slate-900 border border-slate-700/80 rounded-2xl sm:rounded-3xl p-4 sm:p-6 max-w-md w-full max-h-[92vh] overflow-y-auto text-center text-white shadow-2xl animate-fade-in relative">
       <!-- Icono de Portapapeles / Análisis -->
-      <div class="w-16 h-16 rounded-3xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg shadow-emerald-500/10">
+      <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-2xl mx-auto mb-3 shadow-md shadow-emerald-500/10">
         📋
       </div>
       
       <!-- Título -->
-      <h3 class="text-xl sm:text-2xl font-black text-white tracking-tight mb-2">
+      <h3 class="text-lg sm:text-xl font-bold text-white tracking-tight mb-2">
         ¿Generar Análisis?
       </h3>
       
       <!-- Mensaje explicativo solicitado -->
-      <p class="text-slate-300 text-sm leading-relaxed mb-6">
+      <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-4">
         Estás a punto de consumir 1 crédito para generar el informe. ¿Deseas continuar o prefieres revisar los datos ingresados antes de continuar?
       </p>
 
       <!-- Botones de Acción -->
-      <div class="flex flex-col-reverse sm:flex-row items-center gap-3">
-        <button id="btnRevisarDatosGeneracion" type="button" class="w-full sm:w-1/2 min-h-[48px] py-3.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-sm transition cursor-pointer border border-slate-700 active:scale-95">
+      <div class="flex flex-col-reverse sm:flex-row items-center gap-2.5 sm:gap-3">
+        <button id="btnRevisarDatosGeneracion" type="button" class="w-full sm:w-1/2 min-h-[44px] py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-sm sm:text-base transition cursor-pointer border border-slate-700 active:scale-95">
           Revisar datos
         </button>
-        <button id="btnConfirmarGenerarAnalisis" type="button" class="w-full sm:w-1/2 min-h-[48px] py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-sm shadow-lg shadow-emerald-600/30 transition cursor-pointer flex items-center justify-center gap-2 active:scale-95">
+        <button id="btnConfirmarGenerarAnalisis" type="button" class="w-full sm:w-1/2 min-h-[44px] py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-sm sm:text-base shadow-lg shadow-emerald-600/30 transition cursor-pointer flex items-center justify-center gap-2 active:scale-95">
           <span id="btnConfirmarGenerarTexto">✓ Sí, generar análisis</span>
         </button>
       </div>
@@ -1467,14 +1523,14 @@
               </span>
               <span class="text-[11px] sm:text-xs text-slate-400 whitespace-nowrap" id="modalFechaEmision">-</span>
             </div>
-            <h2 class="text-base sm:text-xl font-extrabold text-white mt-1 leading-snug" id="modalTituloComuna">
+            <h2 class="text-base sm:text-lg font-bold text-white mt-1 leading-snug" id="modalTituloComuna">
               Tasación en Las Condes
             </h2>
           </div>
 
-          <!-- Botón de Cerrar para Móvil (Touch Target 44x44) -->
-          <button id="btnCerrarModalInforme" type="button" title="Cerrar Informe" class="sm:hidden w-11 h-11 flex items-center justify-center rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white shrink-0 cursor-pointer relative z-30 active:scale-95">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <!-- Botón de Cerrar para Móvil (Touch Target Cómodo y Proporcionado) -->
+          <button id="btnCerrarModalInforme" type="button" title="Cerrar Informe" class="sm:hidden w-9 h-9 flex items-center justify-center rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white shrink-0 cursor-pointer relative z-30 active:scale-95">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
           </button>
@@ -1483,20 +1539,20 @@
         <!-- Fila de Acciones: Botones PDF / Excel, Maximizar y Cerrar Desktop -->
         <div class="flex items-center justify-between sm:justify-end gap-2 pt-2 sm:pt-0 border-t border-slate-800/80 sm:border-0">
           <div class="flex items-center gap-2 w-full sm:w-auto">
-            <button id="btnModalPdf" type="button" class="flex-1 sm:flex-none min-h-[44px] sm:min-h-0 text-sm sm:text-xs font-bold px-3.5 py-2.5 sm:py-1.5 rounded-xl sm:rounded-lg bg-red-600/90 hover:bg-red-500 text-white transition flex items-center justify-center gap-1.5 shadow-sm cursor-pointer active:scale-95">
+            <button id="btnModalPdf" type="button" class="flex-1 sm:flex-none min-h-[40px] text-xs font-bold px-3 py-2 sm:py-1.5 rounded-xl sm:rounded-lg bg-red-600/90 hover:bg-red-500 text-white transition flex items-center justify-center gap-1.5 shadow-sm cursor-pointer active:scale-95">
               <svg class="w-4 h-4 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
               </svg>
               PDF
             </button>
-            <button id="btnModalExcel" type="button" class="flex-1 sm:flex-none min-h-[44px] sm:min-h-0 text-sm sm:text-xs font-bold px-3.5 py-2.5 sm:py-1.5 rounded-xl sm:rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white transition flex items-center justify-center gap-1.5 shadow-sm cursor-pointer active:scale-95">
+            <button id="btnModalExcel" type="button" class="flex-1 sm:flex-none min-h-[40px] text-xs font-bold px-3 py-2 sm:py-1.5 rounded-xl sm:rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white transition flex items-center justify-center gap-1.5 shadow-sm cursor-pointer active:scale-95">
               <svg class="w-4 h-4 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
               </svg>
               Excel
             </button>
             <!-- Botón Maximizar / Restaurar Pantalla Completa -->
-            <button id="btnMaximizarModalInforme" type="button" title="Maximizar a Pantalla Completa" class="flex-1 sm:flex-none min-h-[44px] sm:min-h-0 text-sm sm:text-xs font-bold px-3.5 py-2.5 sm:py-1.5 rounded-xl sm:rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-600/90 hover:border-slate-400 transition flex items-center justify-center gap-1.5 shadow-sm cursor-pointer active:scale-95">
+            <button id="btnMaximizarModalInforme" type="button" title="Maximizar a Pantalla Completa" class="flex-1 sm:flex-none min-h-[40px] text-xs font-semibold px-2.5 py-2 sm:py-1.5 rounded-xl sm:rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-600/90 hover:border-slate-400 transition flex items-center justify-center gap-1.5 shadow-sm cursor-pointer active:scale-95">
               <span id="btnMaximizarIcono" class="flex items-center">
                 <svg class="w-4 h-4 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
@@ -1517,7 +1573,7 @@
       </div>
 
       <!-- Cuerpo del Informe con Scroll Adaptable -->
-      <div id="modalInformeBody" class="p-4 sm:p-6 overflow-y-auto space-y-5 sm:space-y-6 flex-1">
+      <div id="modalInformeBody" class="p-4 sm:p-6 overflow-y-auto space-y-4 sm:space-y-6 flex-1">
 
         <!-- Toggle de Moneda + Indicadores del Día -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-800/60 border border-slate-700/70 rounded-xl px-4 py-3">
@@ -1719,9 +1775,9 @@
         </div>
 
         <!-- Grupo de Botones: PDF, Excel y Volver / Nueva Tasación -->
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto order-1 sm:order-2">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto order-1 sm:order-2">
           <!-- Botón PDF Inferior -->
-          <button id="btnModalPdfPie" type="button" class="w-full sm:w-auto min-h-[46px] px-5 py-3 rounded-xl bg-red-600/90 hover:bg-red-500 text-white font-bold text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer active:scale-95 relative z-30">
+          <button id="btnModalPdfPie" type="button" class="w-full sm:w-auto min-h-[44px] px-4 py-3 rounded-xl bg-red-600/90 hover:bg-red-500 text-white font-bold text-base shadow-md transition flex items-center justify-center gap-2 cursor-pointer active:scale-95 relative z-30">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
             </svg>
@@ -1729,7 +1785,7 @@
           </button>
 
           <!-- Botón Excel Inferior -->
-          <button id="btnModalExcelPie" type="button" class="w-full sm:w-auto min-h-[46px] px-5 py-3 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer active:scale-95 relative z-30">
+          <button id="btnModalExcelPie" type="button" class="w-full sm:w-auto min-h-[44px] px-4 py-3 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-base shadow-md transition flex items-center justify-center gap-2 cursor-pointer active:scale-95 relative z-30">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
             </svg>
@@ -1737,7 +1793,7 @@
           </button>
 
           <!-- Botón Cerrar Informe / Volver a Nueva Tasación -->
-          <button id="btnCerrarModalInformePie" type="button" class="w-full sm:w-auto min-h-[46px] px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 font-bold text-sm transition flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-95 relative z-30" title="Cerrar el informe e iniciar una nueva tasación">
+          <button id="btnCerrarModalInformePie" type="button" class="w-full sm:w-auto min-h-[44px] px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 font-bold text-base transition flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-95 relative z-30" title="Cerrar el informe e iniciar una nueva tasación">
             <span>✕</span>
             <span>Volver / Nueva Tasación</span>
           </button>
@@ -1752,28 +1808,28 @@
   <!-- 5.1 MODAL: CONFIRMAR CIERRE Y NUEVA TASACIÓN -->
   <!-- ========================================== -->
   <div id="modalConfirmarCerrarInforme" class="fixed inset-0 z-[10050] bg-slate-950/85 backdrop-blur-md hidden flex items-center justify-center p-4" style="z-index: 10050;">
-    <div class="bg-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-8 max-w-md w-full max-h-[92vh] overflow-y-auto text-center text-white shadow-2xl animate-fade-in relative">
+    <div class="bg-slate-900 border border-slate-700/80 rounded-2xl sm:rounded-3xl p-4 sm:p-6 max-w-md w-full max-h-[92vh] overflow-y-auto text-center text-white shadow-2xl animate-fade-in relative">
       <!-- Icono de Advertencia -->
-      <div class="w-16 h-16 rounded-3xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg shadow-amber-500/10">
+      <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-2xl mx-auto mb-3 shadow-md shadow-amber-500/10">
         ⚠️
       </div>
       
       <!-- Título -->
-      <h3 class="text-xl sm:text-2xl font-black text-white tracking-tight mb-2">
+      <h3 class="text-lg sm:text-xl font-bold text-white tracking-tight mb-2">
         ¿Cerrar el informe?
       </h3>
       
       <!-- Mensaje explicativo -->
-      <p class="text-slate-300 text-sm leading-relaxed mb-6">
+      <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-4">
         Si cierras el informe, perderás los datos actuales. Para generar una nueva tasación, deberás cargar los datos nuevamente y consumirás otro crédito.
       </p>
 
       <!-- Botones de Acción -->
-      <div class="flex flex-col-reverse sm:flex-row items-center gap-3">
-        <button id="btnCancelarCerrarInforme" type="button" class="w-full sm:w-1/2 min-h-[48px] py-3.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-sm transition cursor-pointer border border-slate-700 active:scale-95">
+      <div class="flex flex-col-reverse sm:flex-row items-center gap-2.5 sm:gap-3">
+        <button id="btnCancelarCerrarInforme" type="button" class="w-full sm:w-1/2 min-h-[44px] py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-sm sm:text-base transition cursor-pointer border border-slate-700 active:scale-95">
           Cancelar
         </button>
-        <button id="btnConfirmarCerrarLimpiar" type="button" class="w-full sm:w-1/2 min-h-[48px] py-3.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 active:bg-amber-700 text-white font-bold text-sm shadow-lg shadow-amber-600/30 transition cursor-pointer flex items-center justify-center gap-2 active:scale-95">
+        <button id="btnConfirmarCerrarLimpiar" type="button" class="w-full sm:w-1/2 min-h-[44px] py-3 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 active:bg-amber-700 text-white font-bold text-sm sm:text-base shadow-lg shadow-amber-600/30 transition cursor-pointer flex items-center justify-center gap-2 active:scale-95">
           <span>🗑️ Sí, cerrar y limpiar</span>
         </button>
       </div>
