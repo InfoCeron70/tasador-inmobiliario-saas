@@ -352,6 +352,44 @@ input::placeholder, select::placeholder, textarea::placeholder {
   }
 }
 
+/* ========================================================
+   OPTIMIZACIONES MÓVILES RESPONSIVE (ANDROID & IOS)
+   ======================================================== */
+@media (max-width: 640px) {
+  /* Evitar auto-zoom en iOS Safari y asegurar excelente legibilidad táctil en Android */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="password"],
+  select,
+  textarea {
+    font-size: 16px !important;
+    min-height: 44px !important;
+  }
+
+  /* Etiquetas de formulario claras y legibles */
+  label {
+    font-size: 14px;
+  }
+
+  /* Botones táctiles cómodos para el dedo (Touch Targets >= 44px) */
+  button {
+    touch-action: manipulation;
+  }
+
+  /* Desplazamiento táctil acelerado y fluido */
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Modales en móvil: ocupan el ancho con margen de 16px (p-4) y scroll vertical libre */
+  .modal-mobile-scroll {
+    max-height: calc(100vh - 2rem) !important;
+    overflow-y: auto !important;
+  }
+}
+
+
 
 
 
