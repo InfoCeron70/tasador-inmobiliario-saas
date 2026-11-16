@@ -2525,6 +2525,24 @@ function abrirModalRecarga() {
   const modal = document.getElementById('modalSinCreditos');
   if (modal) {
     volverASeleccionPacks(); // Siempre inicia en el Paso 1 (selección de pack)
+
+    // Actualizar visualización clara del saldo disponible actual en el modal
+    const saldoEl = document.getElementById('saldoActualModalRecarga');
+    const tagAgotado = document.getElementById('tagSaldoAgotado');
+    const alertaBanner = document.getElementById('alertaSaldoModalRecarga');
+    const creditosActuales = AppState.usuario?.creditos ?? 0;
+
+    if (saldoEl) saldoEl.textContent = creditosActuales;
+    if (creditosActuales === 0) {
+      if (saldoEl) saldoEl.className = 'text-xl sm:text-2xl font-black text-rose-400 font-mono-numbers';
+      if (tagAgotado) tagAgotado.classList.remove('hidden');
+      if (alertaBanner) alertaBanner.className = 'mt-3.5 inline-flex items-center gap-2 px-4 py-1.5 rounded-2xl bg-rose-950/70 border border-rose-800/80 shadow-md';
+    } else {
+      if (saldoEl) saldoEl.className = 'text-xl sm:text-2xl font-black text-emerald-400 font-mono-numbers';
+      if (tagAgotado) tagAgotado.classList.add('hidden');
+      if (alertaBanner) alertaBanner.className = 'mt-3.5 inline-flex items-center gap-2 px-4 py-1.5 rounded-2xl bg-slate-950/90 border border-slate-700/80 shadow-md';
+    }
+
     modal.classList.remove('hidden');
     document.body.classList.add('overflow-hidden');
   }
@@ -2585,9 +2603,22 @@ function mostrarPasoPagoTransferencia(pack, precio) {
   const modalContainer = document.getElementById('modalRecargaContainer');
   const pagoNombre = document.getElementById('pagoPackNombre');
   const pagoPrecio = document.getElementById('pagoPackPrecio');
+  const pagoCreditos = document.getElementById('pagoPackCreditosTexto');
 
   if (pagoNombre) pagoNombre.textContent = pack;
   if (pagoPrecio) pagoPrecio.innerHTML = `${precio} <span class="text-xs font-normal text-slate-400 font-sans">CLP</span>`;
+
+  if (pagoCreditos) {
+    if (pack.includes('5')) {
+      pagoCreditos.textContent = '5 Créditos';
+    } else if (pack.includes('3')) {
+      pagoCreditos.textContent = '3 Créditos';
+    } else if (pack.includes('1')) {
+      pagoCreditos.textContent = '1 Crédito';
+    } else {
+      pagoCreditos.textContent = pack;
+    }
+  }
 
   if (vistaPacks) vistaPacks.classList.add('hidden');
   if (vistaPago) {

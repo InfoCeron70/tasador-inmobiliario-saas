@@ -1102,6 +1102,14 @@
           <p class="text-xs sm:text-sm text-slate-300 mt-1 leading-relaxed">
             Selecciona el pack ideal para tus requerimientos inmobiliarios. A continuación verás los datos para transferir y podrás confirmar tu pago por WhatsApp.
           </p>
+
+          <!-- Banner destacado del saldo actual de créditos -->
+          <div id="alertaSaldoModalRecarga" class="mt-3.5 inline-flex items-center gap-2 px-4 py-1.5 rounded-2xl bg-slate-950/90 border border-slate-700/80 shadow-md">
+            <span class="text-xs sm:text-sm text-slate-300 font-medium">Tu saldo disponible:</span>
+            <span id="saldoActualModalRecarga" class="text-lg sm:text-xl font-black text-amber-400 font-mono-numbers">0</span>
+            <span class="text-xs sm:text-sm font-bold text-white uppercase tracking-wider">Créditos</span>
+            <span id="tagSaldoAgotado" class="hidden text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-rose-900/90 text-rose-200 border border-rose-700">Agotados</span>
+          </div>
         </div>
 
         <!-- Cuadrícula de 3 Packs de Monetización -->
@@ -1110,9 +1118,12 @@
           <!-- PACK 1: Inicial -->
           <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-slate-600 transition shadow-sm">
             <div>
-              <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center justify-between mb-3 gap-2">
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Ocasional</span>
-                <span class="text-[11px] text-slate-400 font-medium">1 Crédito</span>
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-900 border border-slate-700 shadow-sm">
+                  <span class="text-2xl sm:text-3xl font-black text-emerald-400 font-mono-numbers">1</span>
+                  <span class="text-base sm:text-lg font-black text-white uppercase tracking-wider">Crédito</span>
+                </div>
               </div>
               <h3 class="text-base sm:text-lg font-bold text-white">Pack Inicial</h3>
               <p class="text-xs text-slate-400 mt-0.5">Para tasar una propiedad específica.</p>
@@ -1125,7 +1136,7 @@
               <ul class="text-xs sm:text-sm text-slate-300 space-y-1.5 sm:space-y-2 mb-5">
                 <li class="flex items-center gap-2">
                   <span class="text-emerald-400 font-bold">✓</span>
-                  <span><strong>1 Informe</strong> con IA DeepSeek</span>
+                  <span><strong class="text-emerald-400 text-sm sm:text-base font-extrabold">1 Crédito</strong> (1 Informe con IA DeepSeek)</span>
                 </li>
                 <li class="flex items-center gap-2">
                   <span class="text-emerald-400 font-bold">✓</span>
@@ -1160,11 +1171,12 @@
             </span>
 
             <div>
-              <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center justify-between mb-3 gap-2">
                 <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Profesionales</span>
-                <span class="text-[11px] font-bold text-emerald-300 bg-emerald-950 px-2 py-0.5 rounded-full border border-emerald-800">
-                  3 Créditos
-                </span>
+                <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-xl bg-emerald-950 border-2 border-emerald-400 shadow-md shadow-emerald-500/25">
+                  <span class="text-2xl sm:text-3xl font-black text-emerald-300 font-mono-numbers">3</span>
+                  <span class="text-base sm:text-lg font-black text-white uppercase tracking-wider">Créditos</span>
+                </div>
               </div>
               <h3 class="text-base sm:text-lg font-bold text-white">Pack Profesional</h3>
               <p class="text-xs text-slate-400 mt-0.5">El más elegido por agentes y propietarios.</p>
@@ -1182,7 +1194,7 @@
               <ul class="text-xs sm:text-sm text-slate-200 space-y-1.5 sm:space-y-2 mb-5">
                 <li class="flex items-center gap-2">
                   <span class="text-emerald-400 font-bold">✓</span>
-                  <span><strong>3 Informes</strong> con IA DeepSeek</span>
+                  <span><strong class="text-emerald-300 text-sm sm:text-base font-extrabold">3 Créditos</strong> (3 Informes con IA DeepSeek)</span>
                 </li>
                 <li class="flex items-center gap-2">
                   <span class="text-emerald-400 font-bold">✓</span>
@@ -1212,9 +1224,12 @@
           <!-- PACK 3: Corredor -->
           <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-slate-600 transition shadow-sm">
             <div>
-              <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center justify-between mb-3 gap-2">
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Corredoras</span>
-                <span class="text-[11px] text-slate-400 font-medium">5 Créditos</span>
+                <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-xl bg-slate-900 border border-slate-700 shadow-sm">
+                  <span class="text-2xl sm:text-3xl font-black text-emerald-400 font-mono-numbers">5</span>
+                  <span class="text-base sm:text-lg font-black text-white uppercase tracking-wider">Créditos</span>
+                </div>
               </div>
               <h3 class="text-base sm:text-lg font-bold text-white">Pack Corredor</h3>
               <p class="text-xs text-slate-400 mt-0.5">Para oficinas y corredores con alto flujo.</p>
@@ -1232,7 +1247,7 @@
               <ul class="text-xs sm:text-sm text-slate-300 space-y-1.5 sm:space-y-2 mb-5">
                 <li class="flex items-center gap-2">
                   <span class="text-emerald-400 font-bold">✓</span>
-                  <span><strong>5 Informes</strong> con IA DeepSeek</span>
+                  <span><strong class="text-emerald-400 text-sm sm:text-base font-extrabold">5 Créditos</strong> (5 Informes con IA DeepSeek)</span>
                 </li>
                 <li class="flex items-center gap-2">
                   <span class="text-emerald-400 font-bold">✓</span>
@@ -1317,14 +1332,17 @@
         <!-- Cuerpo con Desplazamiento (Scroll): Datos de Pago -->
         <div class="flex-1 min-h-0 overflow-y-auto px-4 sm:px-6 py-4 space-y-4">
           <!-- Resumen del Pack Seleccionado -->
-          <div class="bg-gradient-to-r from-emerald-950/90 via-slate-900 to-slate-900 border border-emerald-500/50 rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-md">
+          <div class="bg-gradient-to-r from-emerald-950/90 via-slate-900 to-slate-900 border border-emerald-500/50 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-md">
             <div>
-              <span class="text-[10px] text-emerald-400 uppercase tracking-wider font-extrabold block mb-0.5">Has seleccionado</span>
-              <h3 id="pagoPackNombre" class="text-base sm:text-lg font-black text-white">Pack Profesional (3 informes)</h3>
-              <p class="text-xs text-slate-400">Activación directa en tu cuenta tras confirmar comprobante.</p>
+              <span class="text-xs text-emerald-400 uppercase tracking-wider font-extrabold block mb-1">Has seleccionado</span>
+              <h3 id="pagoPackNombre" class="text-lg sm:text-xl font-black text-white">Pack Profesional (3 informes)</h3>
+              <div id="pagoPackCreditosBadge" class="mt-2.5 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-emerald-950 border border-emerald-500/60 shadow-sm">
+                <span class="text-xs sm:text-sm text-slate-200 font-semibold">Estás comprando:</span>
+                <span id="pagoPackCreditosTexto" class="text-lg sm:text-xl font-black text-emerald-300 font-mono-numbers">3 Créditos</span>
+              </div>
             </div>
             <div class="text-left sm:text-right shrink-0">
-              <span class="text-[11px] text-slate-400 block font-medium">Monto a transferir:</span>
+              <span class="text-xs text-slate-400 block font-medium">Monto a transferir:</span>
               <div id="pagoPackPrecio" class="text-2xl sm:text-3xl font-black text-emerald-400 font-mono-numbers">$ 45.000 <span class="text-xs font-normal text-slate-400 font-sans">CLP</span></div>
             </div>
           </div>
@@ -1431,7 +1449,7 @@
       
       <!-- Mensaje explicativo solicitado -->
       <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-4">
-        Estás a punto de consumir 1 crédito para generar el informe. ¿Deseas continuar o prefieres revisar los datos ingresados antes de continuar?
+        Estás a punto de consumir <strong class="text-emerald-400 font-extrabold text-base sm:text-lg">1 crédito</strong> para generar el informe. ¿Deseas continuar o prefieres revisar los datos ingresados antes de continuar?
       </p>
 
       <!-- Botones de Acción -->
