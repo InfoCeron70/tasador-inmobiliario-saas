@@ -1,7 +1,7 @@
 {
   "name": "tasacion-inmobiliaria-chile",
   "version": "1.0.0",
-  "description": "Aplicación web profesional para tasación de inmuebles en Chile con IA DeepSeek, SQLite, PDF y Excel",
+  "description": "Aplicación web profesional para tasación de inmuebles en Chile con IA DeepSeek, PostgreSQL, PDF y Excel",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -13,7 +13,7 @@
     "chile",
     "deepseek",
     "ai",
-    "sqlite",
+    "postgresql",
     "pdfkit",
     "exceljs"
   ],
@@ -30,7 +30,7 @@
     "jsonwebtoken": "^9.0.3",
     "nodemailer": "^10.4.0",
     "pdfkit": "^0.20.2",
-    "resend": "^6.37.0",
-    "sqlite3": "^6.0.1"
+    "pg": "^8.23.1",
+    "resend": "^6.37.0"
   }
 }

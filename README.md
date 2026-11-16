@@ -1,6 +1,6 @@
 # Tasador Inmobiliario IA (Chile) 🇨🇱 • Modelo SaaS
 
-Aplicación web profesional para la **Tasación de Inmuebles** habitacionales en el mercado chileno bajo un modelo **SaaS (Software as a Service)** con sistema de autenticación por tokens **JWT**, consumo de **créditos por tasación**, panel de **administración**, persistencia relacional en **SQLite3**, exportación en memoria a **PDF/Excel**, e Inteligencia Artificial (**DeepSeek**).
+Aplicación web profesional para la **Tasación de Inmuebles** habitacionales en el mercado chileno bajo un modelo **SaaS (Software as a Service)** con sistema de autenticación por tokens **JWT**, consumo de **créditos por tasación**, panel de **administración**, persistencia relacional en **PostgreSQL**, exportación en memoria a **PDF/Excel**, e Inteligencia Artificial (**DeepSeek**).
 
 ---
 
@@ -8,7 +8,7 @@ Aplicación web profesional para la **Tasación de Inmuebles** habitacionales en
 
 - **Backend**: Node.js v18+ / v24+ con Express 5.
 - **Autenticación & Seguridad**: `jsonwebtoken` (JWT en `localStorage`), `bcryptjs` (hash de contraseñas con salt), `dotenv` y `cors`.
-- **Base de Datos**: SQLite3 (`sqlite3`) con tablas `usuarios` e `historial`.
+- **Base de Datos**: PostgreSQL (`pg`) con tablas `usuarios` e `historial`.
 - **Inteligencia Artificial**: DeepSeek API (`deepseek-flash`) con salida JSON estricta (`response_format: { type: "json_object" }`) y motor técnico de respaldo.
 - **Exportación en Memoria**: `pdfkit` (PDF institucional) y `exceljs` (Planilla de cálculo con formato moneda CLP).
 - **Frontend**: HTML5, Vanilla JavaScript y Tailwind CSS (CDN) con diseño Enterprise Financiero responsivo móvil/desktop.
@@ -43,7 +43,7 @@ Al inicializar la base de datos, el sistema inserta automáticamente la cuenta m
 | `POST` | `/api/auth/login` | Público | Inicia sesión y devuelve token JWT y créditos actuales. |
 | `GET` | `/api/auth/perfil` | Usuario | Devuelve los datos del usuario y saldo de créditos actualizados. |
 | `POST` | `/api/admin/agregar-creditos` | **Admin** | Asigna/recarga créditos a un usuario por su email. |
-| `POST` | `/api/tasacion` | Usuario | Consume 1 crédito, calcula tasación con IA y guarda en SQLite. |
+| `POST` | `/api/tasacion` | Usuario | Consume 1 crédito, calcula tasación con IA y guarda en PostgreSQL. |
 | `GET` | `/api/tasaciones` | Usuario | Historial de tasaciones (filtrado por `usuario_id`). |
 | `GET` | `/api/tasaciones/:id` | Usuario | Detalle de tasación por ID. |
 | `POST` | `/api/exportar/pdf` | Público | Genera y descarga informe en memoria PDF. |
@@ -56,6 +56,8 @@ Al inicializar la base de datos, el sistema inserta automáticamente la cuenta m
 1. **Variables de Entorno (`.env`)**:
    ```env
    PORT=3000
+   DATABASE_URL=postgresql://postgres:postgres@localhost:5432/tasaciones_db
+   DATABASE_SSL=false
    JWT_SECRET=super_secreto_tasador_inmobiliario_jwt_2026
    DEEPSEEK_API_KEY=tu_api_key_de_deepseek_aqui
    DEEPSEEK_MODEL=deepseek-flash

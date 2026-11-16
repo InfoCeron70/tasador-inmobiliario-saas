@@ -853,7 +853,7 @@
     <footer class="bg-white border-t border-slate-200 py-6 mt-10 sm:mt-12">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3 text-center sm:text-left">
         <div>
-          <span class="font-bold text-slate-700">Tasador Inmobiliario IA / Chile</span> — Sistema SaaS de Valuación con DeepSeek, SQLite, JWT, PDFKit & ExcelJS.
+          <span class="font-bold text-slate-700">Tasador Inmobiliario IA / Chile</span> — Sistema SaaS de Valuación con DeepSeek, PostgreSQL, JWT, PDFKit & ExcelJS.
         </div>
         <div class="flex items-center gap-3">
           <span>Chile • UF & CLP</span>
@@ -1777,9 +1777,9 @@
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- 6. MODAL: HISTORIAL DE TASACIONES (SQLITE) -->
-  <!-- ========================================== -->
+  <!-- ============================================== -->
+  <!-- 6. MODAL: HISTORIAL DE TASACIONES (POSTGRESQL) -->
+  <!-- ============================================== -->
   <div id="modalHistorial" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-0 sm:p-4">
     <div class="bg-white w-full h-full sm:h-auto sm:max-h-[85vh] sm:max-w-3xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-fade-in border-0 sm:border border-slate-200">
       
@@ -1789,7 +1789,7 @@
           <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
-          <h3 class="text-sm sm:text-base font-bold">Historial de Tasaciones (SQLite)</h3>
+          <h3 class="text-sm sm:text-base font-bold">Historial de Tasaciones</h3>
         </div>
         <button id="btnCerrarHistorial" type="button" class="w-11 h-11 flex items-center justify-center text-slate-400 hover:text-white transition rounded-xl hover:bg-slate-800" title="Cerrar historial">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

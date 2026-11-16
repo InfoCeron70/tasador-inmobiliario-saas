@@ -124,7 +124,7 @@ async function crearTasacion(req, res) {
 
     const fechaHoy = new Date().toISOString().slice(0, 10);
 
-    // 6. Persistencia en SQLite asociada al usuario_id
+    // 6. Persistencia en PostgreSQL asociada al usuario_id
     const guardado = await db.guardarTasacion({
       usuario_id: req.usuario.id,
       fecha: fechaHoy,

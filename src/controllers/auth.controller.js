@@ -296,7 +296,7 @@ async function googleAuth(req, res) {
     const nombre = payload.name || payload.given_name || email.split('@')[0];
     const picture = payload.picture || '';
 
-    // Buscar o registrar usuario en SQLite (garantiza rol 'admin' para informatica.full@gmail.com)
+    // Buscar o registrar usuario en PostgreSQL (garantiza rol 'admin' para informatica.full@gmail.com)
     const usuario = await db.obtenerOCrearUsuarioGoogle({
       email,
       nombre,
